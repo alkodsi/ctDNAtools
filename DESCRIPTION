@@ -1,0 +1,26 @@
+Package: ctDNAtools
+Title: Tools to analyze ctDNA mutation data
+Version: 0.0.1
+Authors@R: 
+    person(given = "Amjad",
+           family = "Alkodsi",
+           role = c("aut", "cre"),
+           email = "amjad.alkodsi@gmail.com",
+           comment = c(ORCID = ""))
+Description: Tools to analyze ctDNA mutation data
+License: GPL (>= 2)
+Depends: 
+    R (>= 3.6.1),
+    magrittr
+Imports:
+    dplyr (>= 0.8.3),
+    tidyr (>= 0.8.3),
+    purrr (>= 0.3.2),
+    Rsamtools (>= 2.0.0),
+    assertthat (>= 0.2.1),
+    GenomicRanges (>= 1.36.0)
+Suggests:
+    BSgenome.Hsapiens.UCSC.hg19
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
