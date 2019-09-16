@@ -40,15 +40,13 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vafThreshol
     
     message("Getting ref and alt Counts \n")
 
-    altReads <- purrr::pmap_dbl(list(mutations$CHROM, mutations$POS, mutations$ALT), 
-        function(x, y, z) getReadCounts(chr = x, pos = y, base = z, bam = bam, tag = tag, 
-            min_base_quality = min_base_quality, min_mapq = min_mapq, max_depth = max_depth, 
-            include_indels = include_indels))
+    refAltReads <- get_mutations_read_counts(mutations = mutations, bam = bam, tag = tag,
+            min_base_quality = min_base_quality, max_depth = max_depth, 
+            include_indels = include_indels, min_mapq = min_mapq)
+
+    altReads <- refAltReads$alt
     
-    refReads <- purrr::pmap_dbl(list(mutations$CHROM, mutations$POS, mutations$REF), 
-        function(x, y, z) getReadCounts(chr = x, pos = y, base = z, bam = bam, tag = tag, 
-            min_base_quality = min_base_quality, min_mapq = min_mapq, max_depth = max_depth, 
-            include_indels = include_indels))
+    refReads <- refAltReads$ref
 
     refAlt <- data.frame(Ref = refReads, Alt = altReads)
     
