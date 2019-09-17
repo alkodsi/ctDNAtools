@@ -4,7 +4,7 @@
 \alias{get_background_rate}
 \title{Compute the background mismatch rate from a bam file}
 \usage{
-get_background_rate(bam, targets, reference, vafThreshold = 0.1,
+get_background_rate(bam, targets, reference, vaf_threshold = 0.1,
   tag = "", min_base_quality = 20, max_depth = 1e+05,
   min_mapq = 30)
 }
@@ -15,7 +15,7 @@ get_background_rate(bam, targets, reference, vafThreshold = 0.1,
 
 \item{reference}{the reference genome in BSgenome format}
 
-\item{vafThreshold}{the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)}
+\item{vaf_threshold}{the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)}
 
 \item{tag}{the RG tag if the bam has more than one sample}
 
@@ -26,7 +26,7 @@ get_background_rate(bam, targets, reference, vafThreshold = 0.1,
 \item{min_mapq}{the minimum mapping quality for a read to be counted}
 }
 \value{
-a scalar, the mismatch rate
+a list containing the general mismatch rate and substitution-specific rates
 }
 \description{
 Runs through the target regions base by base counting the mismatches. Then it divides sum(msimatches)/sum(depths) for all bases in the targets
