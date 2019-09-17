@@ -1,18 +1,17 @@
 #' Get read counts for a specific base in the genome
 #'
-#' Uses samtools pileup to get the read counts of the genomic position and the base specified
+#' Uses samtools pileup to get the read counts for each base in the genomic position specified
 #' @param chr chromosome name
 #' @param pos genomic coordinate
-#' @param base the basepair for which count the reads
 #' @param bam path to bam file
 #' @param tag the RG tag if the bam has more than one sample
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param max_depth maximum depth above which sampling will happen
 #' @param include_indels whether to include indels in the pileup
 #' @param min_mapq the minimum mapping quality for a read to be counted
-#' @return a scalar, number of reads matching the base in the specified genomic position
+#' @return a list, number of reads for each of the four basepairs
 
-getReadCounts <- function(chr, pos, base, bam, tag = "", min_base_quality = 20, max_depth = 1e+05, 
+get_read_counts <- function(chr, pos, bam, tag = "", min_base_quality = 20, max_depth = 1e+05, 
     include_indels = F, min_mapq = 30) {
 
     gr <- GRanges(chr, IRanges(pos, pos))
@@ -29,7 +28,10 @@ getReadCounts <- function(chr, pos, base, bam, tag = "", min_base_quality = 20, 
     
     p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam)
 
-    depth <- ifelse(!base %in% p$nucleotide, 0, p[p$nucleotide == base, "count"])
-    
-    return(depth)
+    cbase <- ifelse("C" %in% p$nucleotide, p[p$nucleotide == "C", "count"], 0)
+    gbase <- ifelse("G" %in% p$nucleotide, p[p$nucleotide == "G", "count"], 0)
+    abase <- ifelse("A" %in% p$nucleotide, p[p$nucleotide == "A", "count"], 0)
+    tbase <- ifelse("T" %in% p$nucleotide, p[p$nucleotide == "T", "count"], 0)
+   
+    return(list(A = abase, C = cbase, G = gbase, T = tbase))
 }

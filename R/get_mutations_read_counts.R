@@ -17,14 +17,13 @@ get_mutations_read_counts <- function(mutations, bam, tag = "", min_base_quality
   assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
                           assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
   
-  ref <- purrr::pmap_dbl(list(mutations$CHROM, mutations$POS, mutations$REF),
-           function(x, y, z) getReadCounts(chr = x, pos = y, base = z, bam = bam,
-                                           tag = tag, min_base_quality = min_base_quality,
-                                           min_mapq = min_mapq, max_depth = max_depth, include_indels = include_indels))
+  readcounts <- purrr::pmap_dfr(list(mutations$CHROM, mutations$POS, mutations$REF, mutations$ALT),
+           function(chr, pos, ref, alt) {
+              counts <- get_read_counts(chr = chr, pos = pos, bam = bam,
+                         tag = tag, min_base_quality = min_base_quality,
+                         min_mapq = min_mapq, max_depth = max_depth, include_indels = include_indels)
+              data.frame(ref = counts[[ref]], alt = counts[[alt]])
+            })
   
-  alt <- purrr::pmap_dbl(list(mutations$CHROM, mutations$POS, mutations$ALT),
-           function(x, y, z) getReadCounts(chr = x, pos = y, base = z, bam = bam,
-                                           tag = tag, min_base_quality = min_base_quality,
-                                           min_mapq = min_mapq, max_depth = max_depth, include_indels = include_indels))
- return(list(ref = ref, alt = alt))  
+ return(list(ref = readcounts$ref, alt = readcounts$alt))  
 }
