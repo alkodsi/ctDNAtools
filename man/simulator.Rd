@@ -4,21 +4,21 @@
 \alias{simulator}
 \title{A function to sample from binomial distribution}
 \usage{
-simulator(nVariants, depths, rate, altReads, seed)
+simulator(depths, rate, altReads, substitutions = NULL, seed)
 }
 \arguments{
-\item{nVariants}{the number of variants to simulate.}
-
 \item{depths}{a vector with the depths of the variants}
 
-\item{rate}{the mismatch rate}
+\item{rate}{A list containing mismatch rates as produced by get_background_rate function}
 
 \item{altReads}{the observed variant allele reads}
+
+\item{substitutions}{character vector containing the substitutions e.g. CT, TG etc.}
 
 \item{seed}{the random seed}
 }
 \value{
-a scalar. Either 1 if the simulation exceedds observed variant alleles or 0 otherwise
+a scalar. Either 1 if the simulation exceeds observed variant alleles or 0 otherwise
 }
 \description{
 Samples from binomial distribution N variants with different depths and fixed mismatch rate for one permutation. Return 1 if the simulation exceeds observed alt allele reads or 0 otherwise

@@ -11,15 +11,16 @@
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param max_depth maximum depth above which sampling will happen
 #' @param min_mapq the minimum mapping quality for a read to be counted
+#' @param by_substitution boolean whether to run the test according to substitution-specific background rate
 #' @param n_permutation the number of permutations
 #' @param seed the random seed
 #' @return a named list contains: counts, a data frame of read counts of reference and variant alleles for the reporter mutations in the tested sample,
-#'         backgroundRate, a scalar estimating background rate, and pvalue, the p-value of the test
+#'         backgroundRate, a list of substituion-specific background rate, and pvalue, the p-value of the test
 #' @export
 
 test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_threshold = 0.1, 
     min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, 
-    n_permutation = 1e+04, seed = 123) {
+    by_substitution = T, n_permutation = 1e+04, seed = 123) {
     
     assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
         assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
@@ -35,7 +36,6 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
         tag = tag, vaf_threshold = vaf_threshold, min_base_quality = min_base_quality, 
         max_depth = max_depth, min_mapq = min_mapq)
 
-    message(paste("Background rate is", bg, "\n"))
     
     message("Getting ref and alt Counts \n")
 
@@ -50,9 +50,28 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
     
     message("Running permutation test \n")
     
-    posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
-        rate = bg / 3, seed = seed, n_permutation = n_permutation)
+    if(by_substitution){
+      
+      subs <- paste0(mutations$REF, mutations$ALT)
+      assertthat::assert_that(all(nchar(subs) == 2), msg = "Only SNVs are supported")
+      
+      substitutions <- case_when(subs %in% c("CT", "GA") ~ "CT",
+                  subs %in% c("CA", "GT") ~ "CA",
+                  subs %in% c("CG", "GC") ~ "CG",
+                  subs %in% c("TA", "AT") ~ "TA",
+                  subs %in% c("TC", "AG") ~ "TC",
+                  subs %in% c("TG", "AC") ~ "TG")
 
+      posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
+        substitutions = substitutions, rate = bg, seed = seed, n_permutation = n_permutation)
+    
+    } else {
+    
+      posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
+        rate = bg, seed = seed, n_permutation = n_permutation)
+    
+    }
+    
     message(paste("Pvalue = ", posTest, "\n"))
 
     message(paste("Sample is ctDNA", ifelse(posTest < 0.05, "positive\n", "negative\n")))

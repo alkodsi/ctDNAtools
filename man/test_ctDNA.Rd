@@ -6,7 +6,8 @@
 \usage{
 test_ctDNA(mutations, bam, targets, reference, tag = "",
   vaf_threshold = 0.1, min_base_quality = 20, max_depth = 1e+05,
-  min_mapq = 30, n_permutation = 10000, seed = 123)
+  min_mapq = 30, by_substitution = T, n_permutation = 10000,
+  seed = 123)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}
@@ -27,13 +28,15 @@ test_ctDNA(mutations, bam, targets, reference, tag = "",
 
 \item{min_mapq}{the minimum mapping quality for a read to be counted}
 
+\item{by_substitution}{boolean whether to run the test according to substitution-specific background rate}
+
 \item{n_permutation}{the number of permutations}
 
 \item{seed}{the random seed}
 }
 \value{
 a named list contains: counts, a data frame of read counts of reference and variant alleles for the reporter mutations in the tested sample,
-        backgroundRate, a scalar estimating background rate, and pvalue, the p-value of the test
+        backgroundRate, a list of substituion-specific background rate, and pvalue, the p-value of the test
 }
 \description{
 Given a set of reporter mutation, this functions counts the reads matching the reporter mutations in the sample to be tested, 
