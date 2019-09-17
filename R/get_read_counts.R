@@ -7,12 +7,11 @@
 #' @param tag the RG tag if the bam has more than one sample
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param max_depth maximum depth above which sampling will happen
-#' @param include_indels whether to include indels in the pileup
 #' @param min_mapq the minimum mapping quality for a read to be counted
 #' @return a list, number of reads for each of the four basepairs
 
-get_read_counts <- function(chr, pos, bam, tag = "", min_base_quality = 20, max_depth = 1e+05, 
-    include_indels = F, min_mapq = 30) {
+get_read_counts <- function(chr, pos, bam, tag = "", min_base_quality = 20,
+     max_depth = 1e+05,  min_mapq = 30) {
 
     gr <- GRanges(chr, IRanges(pos, pos))
     
@@ -22,9 +21,9 @@ get_read_counts <- function(chr, pos, bam, tag = "", min_base_quality = 20, max_
         sbp <- Rsamtools::ScanBamParam(which = gr, tagFilter = list(RG = tag))
     }
 
-    pileupParam <- Rsamtools::PileupParam(max_depth = max_depth, min_base_quality = min_base_quality, 
-        min_mapq = min_mapq, distinguish_strands = F, include_deletions = include_indels, 
-        include_insertions = include_indels)
+    pileupParam <- Rsamtools::PileupParam(max_depth = max_depth, 
+        min_base_quality = min_base_quality, min_mapq = min_mapq, 
+        distinguish_strands = F, include_deletions = F, include_insertions = F)
     
     p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam)
 

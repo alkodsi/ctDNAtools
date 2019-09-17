@@ -9,7 +9,7 @@
 #' @return a scalar, permutation p-value.
 #' @export
 
-positivityTest <- function(depths, altReads, rate, seed, nPermutation) {
+positivity_test <- function(depths, altReads, rate, seed, nPermutation) {
     set.seed(seed)
     
     assertthat::assert_that(assertthat::noNA(depths), assertthat::not_empty(depths))

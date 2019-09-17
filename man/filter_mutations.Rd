@@ -6,7 +6,7 @@
 \usage{
 filter_mutations(mutations, bams, tags = rep("", length(bams)),
   min_alt_reads = 2, min_samples = 2, min_base_quality = 20,
-  max_depth = 1e+05, include_indels = F, min_mapq = 30)
+  max_depth = 1e+05, min_mapq = 30)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}
@@ -22,8 +22,6 @@ filter_mutations(mutations, bams, tags = rep("", length(bams)),
 \item{min_base_quality}{minimum base quality for a read to be counted}
 
 \item{max_depth}{maximum depth above which sampling will happen}
-
-\item{include_indels}{whether to include indels in the pileup}
 
 \item{min_mapq}{the minimum mapping quality for a read to be counted}
 }

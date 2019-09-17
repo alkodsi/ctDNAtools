@@ -5,8 +5,7 @@
 \title{Counts ref and alt reads for a set of mutations}
 \usage{
 get_mutations_read_counts(mutations, bam, tag = "",
-  min_base_quality = 20, max_depth = 1e+05, include_indels = F,
-  min_mapq = 30)
+  min_base_quality = 20, max_depth = 1e+05, min_mapq = 30)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}
@@ -18,8 +17,6 @@ get_mutations_read_counts(mutations, bam, tag = "",
 \item{min_base_quality}{minimum base quality for a read to be counted}
 
 \item{max_depth}{maximum depth above which sampling will happen}
-
-\item{include_indels}{whether to include indels in the pileup}
 
 \item{min_mapq}{the minimum mapping quality for a read to be counted}
 }

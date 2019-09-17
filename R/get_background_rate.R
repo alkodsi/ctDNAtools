@@ -8,13 +8,12 @@
 #' @param tag the RG tag if the bam has more than one sample
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param max_depth maximum depth above which sampling will happen
-#' @param include_indels whether to include indels in the pileup
 #' @param min_mapq the minimum mapping quality for a read to be counted
 #' @return a scalar, the mismatch rate
 #' @export
 
-getBackgroundRate <- function(bam, targets, reference, vafThreshold = 0.1, tag = "", 
-    min_base_quality = 20, max_depth = 1e+05, include_indels = F, min_mapq = 30) {
+get_background_rate <- function(bam, targets, reference, vafThreshold = 0.1, tag = "", 
+    min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
     
 
     gr <- GRanges(targets$chr, IRanges(targets$start, targets$end))
@@ -31,16 +30,17 @@ getBackgroundRate <- function(bam, targets, reference, vafThreshold = 0.1, tag =
     }
 
     pileupParam <- Rsamtools::PileupParam(max_depth = max_depth, min_base_quality = min_base_quality, 
-        min_mapq = min_mapq, distinguish_strands = F, include_deletions = include_indels, 
-        include_insertions = include_indels)
+        min_mapq = min_mapq, distinguish_strands = F, include_deletions = F, 
+        include_insertions = F)
     
     p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam) %>% 
         tidyr::spread(-nucleotide, count, fill = 0) %>% 
         dplyr::mutate(ref = as.character(getSeq(reference, GRanges(seqnames, IRanges(pos, pos))))) %>% 
         dplyr::mutate(depth = A + C + G + T)
     
-    pAnn <- dplyr::mutate(p, refCount = purrr::map2_dbl(c(1:nrow(p)), p$ref, 
-      ~p[.x, .y]), nonRefCount = depth - refCount) %>% dplyr::filter(nonRefCount/depth < vafThreshold)
+    pAnn <- dplyr::mutate(p, refCount = purrr::map2_dbl(c(1:nrow(p)), p$ref, ~p[.x, .y]),
+                      nonRefCount = depth - refCount) %>% 
+            dplyr::filter(nonRefCount/depth < vafThreshold)
     
     rate <- sum(as.numeric(pAnn$nonRefCount))/sum(as.numeric(pAnn$depth))
     

@@ -6,8 +6,7 @@
 \usage{
 test_ctDNA(mutations, bam, targets, reference, tag = "",
   vafThreshold = 0.1, min_base_quality = 20, max_depth = 10000,
-  include_indels = F, min_mapq = 30, nPermutation = 10000,
-  seed = 123)
+  min_mapq = 30, nPermutation = 10000, seed = 123)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}
@@ -25,8 +24,6 @@ test_ctDNA(mutations, bam, targets, reference, tag = "",
 \item{min_base_quality}{minimum base quality for a read to be counted}
 
 \item{max_depth}{maximum depth above which sampling will happen}
-
-\item{include_indels}{whether to include indels in the pileup}
 
 \item{min_mapq}{the minimum mapping quality for a read to be counted}
 
