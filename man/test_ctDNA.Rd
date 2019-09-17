@@ -5,8 +5,8 @@
 \title{Tests the ctDNA positivity of a sample}
 \usage{
 test_ctDNA(mutations, bam, targets, reference, tag = "",
-  vafThreshold = 0.1, min_base_quality = 20, max_depth = 10000,
-  min_mapq = 30, nPermutation = 10000, seed = 123)
+  vaf_threshold = 0.1, min_base_quality = 20, max_depth = 1e+05,
+  min_mapq = 30, n_permutation = 10000, seed = 123)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}
@@ -19,7 +19,7 @@ test_ctDNA(mutations, bam, targets, reference, tag = "",
 
 \item{tag}{the RG tag if the bam has more than one sample}
 
-\item{vafThreshold}{the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)}
+\item{vaf_threshold}{the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)}
 
 \item{min_base_quality}{minimum base quality for a read to be counted}
 
@@ -27,7 +27,7 @@ test_ctDNA(mutations, bam, targets, reference, tag = "",
 
 \item{min_mapq}{the minimum mapping quality for a read to be counted}
 
-\item{nPermutation}{the number of permutations}
+\item{n_permutation}{the number of permutations}
 
 \item{seed}{the random seed}
 }

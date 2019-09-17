@@ -11,7 +11,7 @@
 #'         alt, vector of read counts of the alternative allele
 
 get_mutations_read_counts <- function(mutations, bam, tag = "", min_base_quality = 20, 
-            max_depth = 100000, min_mapq = 30) {
+            max_depth = 1e+05, min_mapq = 30) {
   
   assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
                           assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))

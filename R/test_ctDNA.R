@@ -6,20 +6,20 @@
 #' @param bam path to bam file
 #' @param targets a data frame with the target regions. Must have three columns: chr, start and end
 #' @param reference the reference genome in BSgenome format
-#' @param vafThreshold the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)
+#' @param vaf_threshold the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)
 #' @param tag the RG tag if the bam has more than one sample
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param max_depth maximum depth above which sampling will happen
 #' @param min_mapq the minimum mapping quality for a read to be counted
-#' @param nPermutation the number of permutations
+#' @param n_permutation the number of permutations
 #' @param seed the random seed
 #' @return a named list contains: counts, a data frame of read counts of reference and variant alleles for the reporter mutations in the tested sample,
 #'         backgroundRate, a scalar estimating background rate, and pvalue, the p-value of the test
 #' @export
 
-test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vafThreshold = 0.1, 
-    min_base_quality = 20, max_depth = 10000, min_mapq = 30, 
-    nPermutation = 10000, seed = 123) {
+test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_threshold = 0.1, 
+    min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, 
+    n_permutation = 1e+04, seed = 123) {
     
     assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
         assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
@@ -32,7 +32,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vafThreshol
     message("Estimating background rate ...\n")
 
     bg <- get_background_rate(bam = bam, targets = targets, reference = reference, 
-        tag = tag, vafThreshold = vafThreshold, min_base_quality = min_base_quality, 
+        tag = tag, vaf_threshold = vaf_threshold, min_base_quality = min_base_quality, 
         max_depth = max_depth, min_mapq = min_mapq)
 
     message(paste("Background rate is", bg, "\n"))
@@ -51,7 +51,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vafThreshol
     message("Running permutation test \n")
     
     posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
-        rate = bg / 3, seed = seed, nPermutation = nPermutation)
+        rate = bg / 3, seed = seed, n_permutation = n_permutation)
 
     message(paste("Pvalue = ", posTest, "\n"))
 
