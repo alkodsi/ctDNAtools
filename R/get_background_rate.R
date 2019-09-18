@@ -16,7 +16,7 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
     min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
     
 
-    gr <- GRanges(targets$chr, IRanges(targets$start, targets$end))
+    gr <- GenomicRanges::GRanges(targets$chr, IRanges::IRanges(targets$start, targets$end))
     
     assertthat::assert_that(class(reference) == "BSgenome")
     assertthat::assert_that(is.data.frame(targets), 
@@ -35,7 +35,8 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
     
     p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam) %>% 
         tidyr::spread(-nucleotide, count, fill = 0) %>% 
-        dplyr::mutate(ref = as.character(getSeq(reference, GRanges(seqnames, IRanges(pos, pos))))) %>% 
+        dplyr::mutate(ref = as.character(BSgenome::getSeq(reference, 
+                 GenomicRanges::GRanges(seqnames, IRanges::IRanges(pos, pos))))) %>% 
         dplyr::mutate(depth = A + C + G + T)
     
     pAnn <- dplyr::mutate(p, refCount = purrr::map2_dbl(c(1:nrow(p)), p$ref, ~p[.x, .y]),

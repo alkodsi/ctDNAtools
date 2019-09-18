@@ -29,7 +29,10 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
         assertthat::has_name(targets, c("chr", "start", "end")))
 
     assertthat::assert_that(class(reference) == "BSgenome")
-    
+     
+    subs <- paste0(mutations$REF, mutations$ALT)
+    assertthat::assert_that(all(nchar(subs) == 2), msg = "Only SNVs are supported")
+
     message("Estimating background rate ...\n")
 
     bg <- get_background_rate(bam = bam, targets = targets, reference = reference, 
@@ -51,11 +54,8 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
     message("Running permutation test \n")
     
     if(by_substitution){
-      
-      subs <- paste0(mutations$REF, mutations$ALT)
-      assertthat::assert_that(all(nchar(subs) == 2), msg = "Only SNVs are supported")
-      
-      substitutions <- case_when(subs %in% c("CT", "GA") ~ "CT",
+           
+      substitutions <- dplyr::case_when(subs %in% c("CT", "GA") ~ "CT",
                   subs %in% c("CA", "GT") ~ "CA",
                   subs %in% c("CG", "GC") ~ "CG",
                   subs %in% c("TA", "AT") ~ "TA",

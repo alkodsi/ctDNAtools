@@ -13,7 +13,7 @@
 get_read_counts <- function(chr, pos, bam, tag = "", min_base_quality = 20,
      max_depth = 1e+05,  min_mapq = 30) {
 
-    gr <- GRanges(chr, IRanges(pos, pos))
+    gr <- GenomicRanges::GRanges(chr, IRanges::IRanges(pos, pos))
     
     if (tag == "") {
         sbp <- Rsamtools::ScanBamParam(which = gr)
