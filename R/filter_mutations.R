@@ -18,6 +18,10 @@ filter_mutations <- function(mutations, bams, tags = rep("", length(bams)),
               min_alt_reads = 2, min_samples = 2, 
               min_base_quality = 20, max_depth = 100000, min_mapq = 30) {
 
+  assertthat::assert_that(is.character(bams))
+  assertthat::assert_that(length(bams) >= min_samples)
+  assertthat::assert_that(length(bams) == length(tags))
+
   message("Filtering mutations ...\n") 
 
   altMatrix <- purrr::map2_dfc(bams, tags, 

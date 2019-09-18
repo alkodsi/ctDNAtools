@@ -6,8 +6,9 @@
 \usage{
 test_ctDNA(mutations, bam, targets, reference, tag = "",
   vaf_threshold = 0.1, min_base_quality = 20, max_depth = 1e+05,
-  min_mapq = 30, by_substitution = T, n_permutation = 10000,
-  seed = 123)
+  min_mapq = 30, bam_list = character(), bam_list_tags = rep("",
+  length(bam_list)), min_alt_reads = 1, min_samples = 1,
+  by_substitution = T, n_permutation = 10000, seed = 123)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}
@@ -27,6 +28,14 @@ test_ctDNA(mutations, bam, targets, reference, tag = "",
 \item{max_depth}{maximum depth above which sampling will happen}
 
 \item{min_mapq}{the minimum mapping quality for a read to be counted}
+
+\item{bam_list}{A vector containing the paths to bam files used to filter mutations. Mutations that have more than min_alt_reads in more than min_samples will be filtered.}
+
+\item{bam_list_tags}{the RG tags for the bams included in bams list.}
+
+\item{min_alt_reads}{When bam_list is provided, this sets the minimum number of alternative allele reads for a sample to be counted.}
+
+\item{min_samples}{When number of samples having more than min_alt_reads exceeds this number, the mutation will be filtered.}
 
 \item{by_substitution}{boolean whether to run the test according to substitution-specific background rate}
 
