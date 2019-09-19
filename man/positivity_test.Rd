@@ -5,7 +5,7 @@
 \title{Compute a p-value of ctDNA positivity}
 \usage{
 positivity_test(depths, altReads, rate, substitutions = NULL, seed,
-  n_permutation = 10000)
+  n_simulations = 10000)
 }
 \arguments{
 \item{depths}{a vector with the depths of the variants}
@@ -18,11 +18,11 @@ positivity_test(depths, altReads, rate, substitutions = NULL, seed,
 
 \item{seed}{the random seed}
 
-\item{n_permutation}{the number of permutations to run.}
+\item{n_simulations}{the number of simulations to run.}
 }
 \value{
-a scalar, permutation p-value.
+a scalar, simulation p-value.
 }
 \description{
-A function to determine ctDNA positivity with N repeated permutations. Return a p-value based on permutation test. Calls simulator function  n_permutation times.
+A function to determine ctDNA positivity with N repeated Monte Carlo simulations. Return a p-value based on Monte Carlo simulation test. Calls simulator function  n_simulations times.
 }

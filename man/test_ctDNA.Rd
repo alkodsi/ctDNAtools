@@ -8,7 +8,7 @@ test_ctDNA(mutations, bam, targets, reference, tag = "",
   vaf_threshold = 0.1, min_base_quality = 20, max_depth = 1e+05,
   min_mapq = 30, bam_list = character(), bam_list_tags = rep("",
   length(bam_list)), min_alt_reads = 1, min_samples = 1,
-  by_substitution = T, n_permutation = 10000, seed = 123)
+  by_substitution = T, n_simulations = 10000, seed = 123)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}
@@ -39,7 +39,7 @@ test_ctDNA(mutations, bam, targets, reference, tag = "",
 
 \item{by_substitution}{boolean whether to run the test according to substitution-specific background rate}
 
-\item{n_permutation}{the number of permutations}
+\item{n_simulations}{the number of simulations}
 
 \item{seed}{the random seed}
 }
@@ -49,5 +49,5 @@ a named list contains: counts, a data frame of read counts of reference and vari
 }
 \description{
 Given a set of reporter mutation, this functions counts the reads matching the reporter mutations in the sample to be tested, 
-estimates the mismatch rate for the sample to be tested, and then runs a permutation test to determine whether the tested sample is positive or negative.
+estimates the mismatch rate for the sample to be tested, and then runs a Monte Carlo simulation test to determine whether the tested sample is positive or negative.
 }

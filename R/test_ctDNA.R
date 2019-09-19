@@ -1,7 +1,7 @@
 #' Tests the ctDNA positivity of a sample
 #'
 #' Given a set of reporter mutation, this functions counts the reads matching the reporter mutations in the sample to be tested, 
-#' estimates the mismatch rate for the sample to be tested, and then runs a permutation test to determine whether the tested sample is positive or negative.
+#' estimates the mismatch rate for the sample to be tested, and then runs a Monte Carlo simulation test to determine whether the tested sample is positive or negative.
 #' @param mutations A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.
 #' @param bam path to bam file
 #' @param targets a data frame with the target regions. Must have three columns: chr, start and end
@@ -16,7 +16,7 @@
 #' @param min_alt_reads When bam_list is provided, this sets the minimum number of alternative allele reads for a sample to be counted.
 #' @param min_samples When number of samples having more than min_alt_reads exceeds this number, the mutation will be filtered.
 #' @param by_substitution boolean whether to run the test according to substitution-specific background rate
-#' @param n_permutation the number of permutations
+#' @param n_simulations the number of simulations
 #' @param seed the random seed
 #' @return a named list contains: counts, a data frame of read counts of reference and variant alleles for the reporter mutations in the tested sample,
 #'         backgroundRate, a list of substituion-specific background rate, and pvalue, the p-value of the test
@@ -25,7 +25,7 @@
 test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_threshold = 0.1, 
     min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, 
     bam_list = character(), bam_list_tags = rep("",length(bam_list)), min_alt_reads = 1, min_samples = 1,
-    by_substitution = T, n_permutation = 1e+04, seed = 123) {
+    by_substitution = T, n_simulations = 1e+04, seed = 123) {
     
     assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
         assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
@@ -63,7 +63,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
 
     refAlt <- data.frame(Ref = refReads, Alt = altReads)
     
-    message("Running permutation test \n")
+    message("Running Monte Carlo simulations \n")
     
     if(by_substitution){
            
@@ -75,12 +75,12 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
                   subs %in% c("TG", "AC") ~ "TG")
 
       posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
-        substitutions = substitutions, rate = bg, seed = seed, n_permutation = n_permutation)
+        substitutions = substitutions, rate = bg, seed = seed, n_simulations = n_simulations)
     
     } else {
     
       posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
-        rate = bg, seed = seed, n_permutation = n_permutation)
+        rate = bg, seed = seed, n_simulations = n_simulations)
     
     }
     
