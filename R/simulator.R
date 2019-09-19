@@ -1,3 +1,17 @@
+#` Helper function
+#'
+#' Compares simulated and observed
+compare_simulated_observed <- function(simulated, observed){
+
+	  comparison <- purrr::map_dbl(c(0:max(observed)),
+       ~ as.numeric(sum(simulated >= .x) >= sum(observed >= .x)))
+    
+      out <- ifelse(sum(comparison) == length(comparison), 1, 0)
+      return(out)
+
+}
+
+
 #' A function to sample from binomial distribution
 #'
 #' Samples from binomial distribution N variants with different depths and fixed mismatch rate for one permutation. Return 1 if the simulation exceeds observed alt allele reads or 0 otherwise
@@ -22,23 +36,22 @@ simulator <- function(depths, rate, altReads, substitutions = NULL, seed) {
     if(is.null(substitutions)){
     
       sim <- rbinom(n = n_variants, size = depths, prob = rate$rate/3)
-    
+      out <- compare_simulated_observed(simulated = sim, observed = altReads)
+
     } else {
     
       assertthat::assert_that(length(depths) == length(substitutions))
-      substitutions <- factor(substitutions, levels = c("CT", "CA", "CG","TA","TC","TG"))
 
       depths_list <- split(depths, substitutions)
-      altReads <- unlist(split(altReads, substitutions))
+      altReads_list <- split(altReads, substitutions)
     
-      sim <- unlist(map(c("CT", "CA", "CG","TA","TC","TG"),
-      	  ~ rbinom(n = length(depths_list[[.x]]), size = depths_list[[.x]], prob = rate[[.x]])))
-    }
+      sim <- map(names(depths_list),
+      	  ~ rbinom(n = length(depths_list[[.x]]), size = depths_list[[.x]], prob = rate[[.x]]))
 
-    comparison <- purrr::map_dbl(c(0:max(altReads)),
-       ~ as.numeric(sum(sim >= .x) >= sum(altReads >= .x)))
-    
-    out <- ifelse(sum(comparison) == length(comparison), 1, 0)
+      comparison_by_sub <- map2_dbl(sim, altReads_list,
+      	  ~ compare_simulated_observed(simulated = .x, observed = .y))
+      out <- ifelse(sum(comparison_by_sub) == length(comparison_by_sub), 1, 0)
+    }
     
     return(out)
 }
