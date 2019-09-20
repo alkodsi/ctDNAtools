@@ -14,7 +14,7 @@ compare_simulated_observed <- function(simulated, observed){
 
 #' A function to sample from binomial distribution
 #'
-#' Samples from binomial distribution N variants with different depths and fixed mismatch rate for one permutation. Return 1 if the simulation exceeds observed alt allele reads or 0 otherwise
+#' Samples from binomial distribution N variants with different depths and fixed mismatch rate for one simulation. Return 1 if the simulation exceeds observed alt allele reads or 0 otherwise
 #' @param depths a vector with the depths of the variants
 #' @param rate A list containing mismatch rates as produced by get_background_rate function
 #' @param altReads the observed variant allele reads
