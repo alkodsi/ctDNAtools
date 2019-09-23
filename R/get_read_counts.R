@@ -47,7 +47,7 @@ verify_tag <- function(bam, tag) {
 }
 
 #' Helper function to extract SM from a bam file
-get_bam_SM <- function(bam, tag = ""){
+get_bam_SM <- function(bam, tag = "") {
 
     header <- Rsamtools::scanBamHeader(bam)
     if(tag == ""){
@@ -61,4 +61,13 @@ get_bam_SM <- function(bam, tag = ""){
     }
    return(sm) 
 
+}
+
+#' Helper function to extract chromosome names from a bam file
+get_bam_chr <- function(bam) {
+   
+  header <- Rsamtools::scanBamHeader(bam)[[1]]$text
+  chr <- gsub("SN:", "", purrr::map_chr(header[ names(header) == "@SQ" ], 1))
+  return(chr)
+   
 }

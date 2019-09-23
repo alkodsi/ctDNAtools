@@ -43,9 +43,25 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
     assertthat::assert_that(all(nchar(mutations$REF) == 1), all(nchar(mutations$ALT) == 1),
        msg = "Only SNVs are supported") 
     
+    assertthat::assert_that(is.character(mutations$REF), is.character(mutations$ALT),
+         all(mutations$REF %in% c("A", "C", "T", "G")), all(mutations$ALT %in% c("A", "C", "T", "G")),
+         msg = "REF and ALT in mutations should be characters having basepairs")
+
+    assertthat::assert_that(is.numeric(mutations$POS), all(mutations$POS > 0))
+
+    assertthat::assert_that(is.numeric(targets$start), all(mutations$start > 0),
+        is.numeric(targets$end), all(mutations$end > 0))
+
+    assertthat::assert_that(all(mutations$CHROM %in% seqnames(reference)), 
+                 all(targets$chr %in% seqnames(reference)),
+                 msg = "Chromosomes in mutations and/or targets don't match the specified reference")
+
     assertthat::assert_that(is.character(bam), length(bam) == 1, file.exists(bam))
 
     assertthat::assert_that(is.character(tag), length(tag) == 1)
+
+    assertthat::assert_that(all(get_bam_chr(bam) %in% seqnames(reference)),
+                  msg = "Chromosomes in bam file don't match the specified reference")
 
     assertthat::assert_that(is.numeric(vaf_threshold), vaf_threshold > 0, 
         vaf_threshold <= 1, length(vaf_threshold) == 1)
@@ -82,6 +98,11 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
 
        assertthat::assert_that(is.character(bam_list), all(file.exists(bam_list))) 
 
+       bam_list_chr <- purrr::map(bam_list, get_bam_chr)
+
+       assertthat::assert_that(all(purrr::map_lgl(bam_list_chr, ~ all(.x %in% seqnames(reference)))), 
+          msg = "The chromosomes in at least one of the specified bams in bam_list don't match the reference")
+
        assertthat::assert_that(is.character(bam_list_tags), length(bam_list_tags) == length(bam_list))
        
        if(any(bam_list_tags != "")){
@@ -107,9 +128,6 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
     
     }
 
-    subs <- paste0(mutations$REF, mutations$ALT)
-    
-
     message("Estimating background rate ...")
 
     bg <- get_background_rate(bam = bam, targets = targets, reference = reference, 
@@ -131,8 +149,11 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
     message("Running Monte Carlo simulations")
     
     if(by_substitution){
-           
-      substitutions <- dplyr::case_when(subs %in% c("CT", "GA") ~ "CT",
+      
+      subs <- paste0(mutations$REF, mutations$ALT)
+     
+      substitutions <- dplyr::case_when(
+                  subs %in% c("CT", "GA") ~ "CT",
                   subs %in% c("CA", "GT") ~ "CA",
                   subs %in% c("CG", "GC") ~ "CG",
                   subs %in% c("TA", "AT") ~ "TA",
