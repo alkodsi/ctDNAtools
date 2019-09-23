@@ -1,6 +1,6 @@
 Package: ctDNAtools
 Title: Tools to analyze ctDNA mutation data
-Version: 0.0.5
+Version: 0.1.0
 Authors@R: 
     person(given = "Amjad",
            family = "Alkodsi",
@@ -18,8 +18,9 @@ Imports:
     purrr (>= 0.3.2),
     Rsamtools (>= 2.0.0),
     assertthat (>= 0.2.1),
-    GenomicRanges (>= 1.36.0),
+    GenomicRanges,
     IRanges,
+    GenomeInfoDb,
     BSgenome
 Suggests:
     BSgenome.Hsapiens.UCSC.hg19
