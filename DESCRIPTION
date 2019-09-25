@@ -21,7 +21,9 @@ Imports:
     GenomicRanges,
     IRanges,
     GenomeInfoDb,
-    BSgenome
+    BSgenome,
+    ggplot2,
+    GenomicAlignments
 Suggests:
     BSgenome.Hsapiens.UCSC.hg19
 Encoding: UTF-8
