@@ -38,11 +38,18 @@ get_mutation_read_names <- function(bam, chr, pos, alt, tag = "") {
     }
 
     sm <- get_bam_SM(bam = bam, tag = tag)
-
-    out <- data.frame(ID = paste(sm, names(stackedStrings), sep = "_"), 
-  	  seq = as.data.frame(stackedStrings)[,1])
+    if(length(stackedStrings) != 0){
+      
+      out <- data.frame(ID = paste(sm, names(stackedStrings), sep = "_"), 
+  	    seq = as.data.frame(stackedStrings)[,1])
   
-    return(unique(as.character(out[out$seq == alt, "ID"])))
+      return(unique(as.character(out[out$seq == alt, "ID"])))
+   
+   } else {
+
+      return(character(0))
+   
+   }
 }
 
 
