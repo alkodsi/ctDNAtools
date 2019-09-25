@@ -48,21 +48,21 @@ positivity_test <- function(depths, altReads, rate, substitutions = NULL, seed =
             all(nchar(substitutions) == 2), 
             all(substitutions %in% c("CT","CA","CG","TA","TC","TG", "AT","AG","AC","GC","GA","GT")))
    
-        subs <- dplyr::case_when(
+        substitutions <- dplyr::case_when(
            substitutions %in% c("CT", "GA") ~ "CT",
            substitutions %in% c("CA", "GT") ~ "CA",
            substitutions %in% c("CG", "GC") ~ "CG",
            substitutions %in% c("TA", "AT") ~ "TA",
            substitutions %in% c("TC", "AG") ~ "TC",
            substitutions %in% c("TG", "AC") ~ "TG")
-    
+           
        assertthat::assert_that(assertthat::has_name(rate, c("CT","CG","CA","TC","TA","TG")))
     }
 
     seeds <- round(runif(n = n_simulations, min = 0, max = 1e+08))
     
     pvalue <- (sum(purrr::map_dbl(seeds, ~ simulator(depths = depths, rate = rate, 
-        altReads = altReads, substitutions = subs, seed = .x)))+1) / (n_simulations + 1)
+        altReads = altReads, substitutions = substitutions, seed = .x)))+1) / (n_simulations + 1)
     
     return(pvalue)
 }

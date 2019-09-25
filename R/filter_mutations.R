@@ -22,7 +22,7 @@ filter_mutations <- function(mutations, bams, tags = rep("", length(bams)),
   assertthat::assert_that(length(bams) >= min_samples)
   assertthat::assert_that(length(bams) == length(tags))
 
-  message("Filtering mutations ...\n") 
+  message("Filtering mutations ...") 
 
   altMatrix <- purrr::map2_dfc(bams, tags, 
                       ~ get_mutations_read_counts(mutations = mutations, bam = .x, tag = .y,
@@ -31,7 +31,7 @@ filter_mutations <- function(mutations, bams, tags = rep("", length(bams)),
   
   idx <- rowSums(altMatrix > min_alt_reads) > min_samples
 
-  message(paste("Dropped", sum(idx), "mutations\n"))
+  message(paste("Dropped", sum(idx), "mutations"))
   
   return(mutations[!idx, ])
 }
