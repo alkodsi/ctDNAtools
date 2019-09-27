@@ -10,6 +10,7 @@
 #' @param high_bound Integer with the highest fragment length
 #' @return A data frame with the columns Sample (SM tag in bam), ID (read ID), size (fragment size), and category (only if mutations is provided)
 #' @export 
+#' @importFrom rlang .data
 
 get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA, low_bound = 1, high_bound = 400) {
 
@@ -65,14 +66,14 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
     	ID = paste(sm, scanned_bam$qname, sep = "_"), 
     	size = abs(scanned_bam$isize),
     	stringsAsFactors = F) %>%
-      dplyr::filter(size >= low_bound & size <= high_bound)
+      dplyr::filter(.data$size >= low_bound & .data$size <= high_bound)
 
     if(!is.null(mutations)) {
      
         read_names <- unique(unlist(get_mutations_read_names(bam = bam, tag = tag, mutations = mutations)))
         
         fragment_lengths <- dplyr::mutate(fragment_lengths, 
-        	category = ifelse(ID %in% read_names, "mutated", "other"))
+        	category = ifelse(.data$ID %in% read_names, "mutated", "other"))
     }
 
     return(fragment_lengths)

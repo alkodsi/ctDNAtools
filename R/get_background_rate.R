@@ -11,6 +11,8 @@
 #' @param min_mapq the minimum mapping quality for a read to be counted
 #' @return a list containing the general mismatch rate and substitution-specific rates
 #' @export
+#' @importFrom magrittr %>%
+#' @importFrom rlang .data
 
 get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, tag = "", 
     min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
@@ -34,23 +36,26 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
         include_insertions = F)
     
     p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam) %>% 
-        tidyr::spread(-nucleotide, count, fill = 0) %>% 
+
+        tidyr::pivot_wider(names_from = .data$nucleotide, values_from = .data$count, 
+            values_fill = list(count = 0)) %>% 
+        as.data.frame() %>%
         dplyr::mutate(ref = as.character(BSgenome::getSeq(reference, 
-                 GenomicRanges::GRanges(seqnames, IRanges::IRanges(pos, pos))))) %>% 
-        dplyr::mutate(depth = A + C + G + T)
+                 GenomicRanges::GRanges(.data$seqnames, IRanges::IRanges(.data$pos, .data$pos))))) %>% 
+        dplyr::mutate(depth = .data$A + .data$C + .data$G + .data$T)
     
     pAnn <- dplyr::mutate(p, refCount = purrr::map2_dbl(c(1:nrow(p)), p$ref, ~p[.x, .y]),
-                      nonRefCount = depth - refCount) %>% 
-            dplyr::filter(nonRefCount/depth < vaf_threshold)
+                      nonRefCount = .data$depth - .data$refCount) %>% 
+            dplyr::filter((.data$nonRefCount/.data$depth) < vaf_threshold)
     
     rate_by_sub <- pAnn %>% 
-          dplyr::group_by(ref) %>% 
+          dplyr::group_by(.data$ref) %>% 
           dplyr::summarize(
-              depth = sum(as.numeric(depth)), 
-              A = sum(as.numeric(A)), 
-              C = sum(as.numeric(C)), 
-              G = sum(as.numeric(G)), 
-              T = sum(as.numeric(T))) %>%
+              depth = sum(as.numeric(.data$depth)), 
+              A = sum(as.numeric(.data$A)), 
+              C = sum(as.numeric(.data$C)), 
+              G = sum(as.numeric(.data$G)), 
+              T = sum(as.numeric(.data$T))) %>%
            as.data.frame()
     
     CA <- (rate_by_sub[ rate_by_sub$ref == "C", "A"] + rate_by_sub[ rate_by_sub$ref == "G", "T"]) /
@@ -75,5 +80,6 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
     
     return(list(rate = rate, CA = CA, CG = CG, CT = CT,
                 TA = TA, TC = TC, TG = TG))
+
 }
 

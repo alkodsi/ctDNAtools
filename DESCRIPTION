@@ -1,20 +1,20 @@
 Package: ctDNAtools
 Title: Tools to analyze ctDNA mutation data
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person(given = "Amjad",
            family = "Alkodsi",
            role = c("aut", "cre"),
            email = "amjad.alkodsi@gmail.com",
            comment = c(ORCID = ""))
-Description: Tools to analyze ctDNA mutation data
-License: GPL (>= 2)
+Description: The package contains tools to analyze ctDNA mutation data.
+License: GPL + file LICENSE
 Depends: 
-    R (>= 3.6.1),
-    magrittr
+    R (>= 3.6.0),
 Imports:
+    magrittr,
     dplyr (>= 0.8.3),
-    tidyr (>= 0.8.3),
+    tidyr (>= 1.0.0),
     purrr (>= 0.3.2),
     Rsamtools (>= 2.0.0),
     assertthat (>= 0.2.1),
@@ -23,7 +23,8 @@ Imports:
     GenomeInfoDb,
     BSgenome,
     ggplot2,
-    GenomicAlignments
+    GenomicAlignments,
+    rlang
 Suggests:
     BSgenome.Hsapiens.UCSC.hg19
 Encoding: UTF-8

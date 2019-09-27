@@ -21,6 +21,7 @@ compare_simulated_observed <- function(simulated, observed){
 #' @param substitutions character vector containing the substitutions e.g. CT, TG etc.
 #' @param seed the random seed
 #' @return a scalar. Either 1 if the simulation exceeds observed variant alleles or 0 otherwise
+#' @importFrom stats C rbinom runif
 
 simulator <- function(depths, rate, altReads, substitutions = NULL, seed) {
     
@@ -45,10 +46,10 @@ simulator <- function(depths, rate, altReads, substitutions = NULL, seed) {
       depths_list <- split(depths, substitutions)
       altReads_list <- split(altReads, substitutions)
     
-      sim <- map(names(depths_list),
+      sim <- purrr::map(names(depths_list),
       	  ~ rbinom(n = length(depths_list[[.x]]), size = depths_list[[.x]], prob = rate[[.x]]))
 
-      comparison_by_sub <- map2_dbl(sim, altReads_list,
+      comparison_by_sub <- purrr::map2_dbl(sim, altReads_list,
       	  ~ compare_simulated_observed(simulated = .x, observed = .y))
       out <- ifelse(sum(comparison_by_sub) == length(comparison_by_sub), 1, 0)
     }
