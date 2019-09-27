@@ -2,24 +2,32 @@
 #'
 #' A function to extract fragment lengths from a bam file. Optionally, given a mutation data frame, it can categorize read lengths 
 #' in mutated vs non-mutated reads.
-#' @param bam path to bam file
+#' @param bam path to bam file.
 #' @param mutations An optional data frame with mutations. Must have the columns CHROM, POS, REF, ALT.
-#' @param tag the RG tag if the bam has more than one samplee
-#' @param isProperPair a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA)
-#' @param low_bound Integer with the lowest fragment length
-#' @param high_bound Integer with the highest fragment length
-#' @return A data frame with the columns Sample (SM tag in bam), ID (read ID), size (fragment size), and category (only if mutations is provided)
+#' @param tag the RG tag if the bam has more than one samplee.
+#' @param isProperPair a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).
+#' @param min_size Integer with the lowest fragment length.
+#' @param max_size Integer with the highest fragment length.
+#' @param ignore_trimmed logical, whether to remove reads that have been hard trimmed.
+#' @param different_strands logical, whether to keep only reads whose mates map to different strand.
+#' @param simple_cigar logical, whether to include only reads with simple cigar.
+#' @return A data frame with the columns Sample (SM tag in bam), ID (read ID), size (fragment size), and category (only if mutations is provided).
 #' @export 
 #' @importFrom rlang .data
+#' @importFrom magrittr %>%
 
-get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA, low_bound = 1, high_bound = 400) {
+get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA, 
+	min_size = 1, max_size = 400, ignore_trimmed = T, different_strands = T, simple_cigar = T) {
 
     assertthat::assert_that(!missing(bam), is.character(bam), length(bam) == 1, file.exists(bam))
 
     assertthat::assert_that(is.character(tag), length(tag) == 1)
     
-    assertthat::assert_that(is.logical(isProperPair), is.numeric(low_bound), is.numeric(high_bound),
-    	length(isProperPair) == 1, length(low_bound) == 1, length(high_bound) == 1)
+    assertthat::assert_that(is.logical(isProperPair), is.logical(ignore_trimmed), 
+    	is.logical(different_strands), is.logical(simple_cigar),
+    	is.numeric(min_size), is.numeric(max_size),
+    	length(isProperPair) == 1, length(ignore_trimmed) == 1, length(different_strands) == 1, 
+    	length(simple_cigar) == 1, length(min_size) == 1, length(max_size) == 1)
 
     if(!is.null(mutations)) {
         
@@ -49,24 +57,41 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
 	    assertthat::assert_that(verify_tag(bam = bam, tag = tag), 
            msg = "Specified tag not found")
 	    
-	    sbp <- Rsamtools::ScanBamParam(flag = flag, 
-	       tagFilter = list(RG = tag), what = Rsamtools::scanBamWhat())
+	    sbp <- Rsamtools::ScanBamParam(flag = flag, mapqFilter = 30, simpleCigar = simple_cigar,
+	       tagFilter = list(RG = tag), what = c("qname","flag","qwidth","isize"))
     
     } else {
 
-        sbp <- Rsamtools::ScanBamParam(flag = flag, what = Rsamtools::scanBamWhat())
+        sbp <- Rsamtools::ScanBamParam(flag = flag, mapqFilter = 30, simpleCigar = simple_cigar,
+           what = c("qname","flag","qwidth","isize"))
     
     }
     
     sm <- get_bam_SM(bam = bam, tag = tag)
     
-    scanned_bam <- Rsamtools::scanBam(bam, param = sbp)[[1]]
-   
+    scanned_bam <- Rsamtools::scanBam(bam, param = sbp)[[1]] %>%
+        dplyr::bind_cols() %>% as.data.frame()
+
+    if(different_strands){
+       
+        flag_matrix <- Rsamtools::bamFlagAsBitMatrix(as.integer(scanned_bam$flag))
+    
+        scanned_bam <- scanned_bam[xor(flag_matrix[,'isMinusStrand'], flag_matrix[,'isMateMinusStrand']),]
+    }
+
+    if(ignore_trimmed){
+    	
+    	read_length <- max(scanned_bam$qwidth)
+        
+        scanned_bam <- scanned_bam %>%
+          filter(.data$qwidth == read_length)
+    }
+
     fragment_lengths <- data.frame(Sample = sm, 
-    	ID = paste(sm, scanned_bam$qname, sep = "_"), 
+    	ID = paste(sm, scanned_bam$qname, sep = "_"),
     	size = abs(scanned_bam$isize),
     	stringsAsFactors = F) %>%
-      dplyr::filter(.data$size >= low_bound & .data$size <= high_bound)
+      dplyr::filter(.data$size >= min_size & .data$size <= max_size)
 
     if(!is.null(mutations)) {
      
@@ -91,11 +116,8 @@ plot_density <- function(df, var = "size", color = "Sample", binwidth = 2.5) {
  
     ggplot2::ggplot() + 
     ggplot2::geom_freqpoly(data = df, 
-  	   ggplot2::aes_string(x = "size", y = "..density..", color = color), 
+  	   ggplot2::aes_string(x = var, y = "..density..", color = color), 
   	   binwidth = binwidth) +
     ggplot2::theme_minimal()
 
 }
-
-
-
