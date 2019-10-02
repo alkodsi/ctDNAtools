@@ -25,7 +25,7 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
     
     assertthat::assert_that(is.logical(isProperPair), is.logical(ignore_trimmed), 
     	is.logical(different_strands), is.logical(simple_cigar),
-    	is.numeric(min_size), is.numeric(max_size),
+    	is.numeric(min_size), is.numeric(max_size), max_size > min_size, 
     	length(isProperPair) == 1, length(ignore_trimmed) == 1, length(different_strands) == 1, 
     	length(simple_cigar) == 1, length(min_size) == 1, length(max_size) == 1)
 
@@ -136,7 +136,6 @@ get_mutations_fragment_size <- function(bam, mutations, tag = "", isProperPair =
 
   return(mutation_frag_size)
 }
-
 
 
 #' Plot density of variable
