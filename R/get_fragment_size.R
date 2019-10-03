@@ -84,7 +84,7 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
     	read_length <- max(scanned_bam$qwidth)
         
         scanned_bam <- scanned_bam %>%
-          filter(.data$qwidth == read_length)
+          dplyr::filter(.data$qwidth == read_length)
     }
 
     fragment_lengths <- data.frame(Sample = sm, 

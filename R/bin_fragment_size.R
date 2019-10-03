@@ -6,7 +6,7 @@
 #' @param by the break length
 #' @return A numeric vector having counts within bins normalized by the sum of the variable
 
-get_hist_bins <- function(x, from, to, by){
+get_hist_bins <- function(x, from, to, by, normalized){
 	
 	assertthat::assert_that(is.numeric(x))
 
@@ -19,8 +19,16 @@ get_hist_bins <- function(x, from, to, by){
     }
 
     h <- hist(x, breaks = breaks, plot = F)
-
-    return(h$counts/sum(h$counts))
+    
+    if(normalized){
+      
+      return(h$counts/sum(h$counts))
+    
+    } else {
+      
+      return(h$counts)
+    
+    }
 }
 
 
@@ -42,9 +50,10 @@ sample_proportion <- function(x, proportion = 0.5, seed = 42) {
 }
 
 
-#' Get histogram density of fragment lengths from a bam file
+#' Get histogram of fragment lengths from a bam file
 #'
-#' The function first extracts fragment length from a bam file then computes the histogram over defined bins. Optionally,
+#' The function first extracts fragment length from a bam file then computes the histogram over defined bins. If normalized is TRUE, 
+#' the counts per bin will be normalized to the total read counts. Optionally,
 #' it can computes the histogram of fragment lengths only for mutated reads (confirmed ctDNA molecules).
 
 #' @param bam path to bam file.
@@ -52,6 +61,7 @@ sample_proportion <- function(x, proportion = 0.5, seed = 42) {
 #' @param tag the RG tag if the bam has more than one samplee.
 #' @param bin_size the width of the bin (breaks) of the histogram.
 #' @param mutated_only A logical, whether to return the counts for only mutated reads. The 'mutations' input should be given when TRUE.
+#' @param normalized A logical, whether to normalize the counts to the total number of reads.
 #' @param augmented A logical, whether to create additional samples by sampling proportion of the reads.
 #' @param n_augmentation Number of pseudo-samples to create.
 #' @param augment_proportion the fraction of the reads to sample in each augmented sample.
@@ -69,11 +79,12 @@ sample_proportion <- function(x, proportion = 0.5, seed = 42) {
 #' @export
 
 bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, mutated_only = F,
-    augmented = F, n_augmentation = 10, augment_proportion = 0.5, seed = 123, isProperPair = NA, 
-	min_size = 1, max_size = 400, ignore_trimmed = T, different_strands = T, simple_cigar = F) {
+    normalized = F, augmented = F, n_augmentation = 10, augment_proportion = 0.5, seed = 123, 
+    isProperPair = NA, min_size = 1, max_size = 400, ignore_trimmed = T, 
+    different_strands = T, simple_cigar = F) {
 
-  assertthat::assert_that(is.logical(mutated_only), is.logical(augmented),
-  	    length(mutated_only) == 1, length(augmented) == 1)
+  assertthat::assert_that(is.logical(mutated_only), is.logical(augmented), is.logical(normalized),
+  	    length(mutated_only) == 1, length(augmented) == 1, length(normalized) == 1)
 
   assertthat::assert_that(is.numeric(bin_size), bin_size %% 1 == 0,
         length(bin_size) == 1, bin_size > 0)
@@ -107,10 +118,11 @@ bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, mut
   
   }
   
-  message(paste("binning", nrow(frag_length), "reads ..."))
+  message(sprintf("binning %s reads ...", nrow(frag_length)))
 
   out <- data.frame(counts = get_hist_bins(frag_length$size, 
-     	   from = min_size, to = max_size, by = bin_size))
+     	   from = min_size, to = max_size, by = bin_size,
+         normalized = normalized))
 
   colnames(out) <- frag_length$Sample[1]
 
@@ -122,12 +134,13 @@ bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, mut
  
     augs <- purrr::map_dfc(seeds, 
     	~ get_hist_bins( sample_proportion(frag_length$size, proportion = augment_proportion, seed = .x),
-    		from = min_size, to = max_size, by = bin_size)) %>%
+    		from = min_size, to = max_size, by = bin_size, normalized = normalized)) %>%
        as.data.frame()
 
     colnames(augs) <- paste0(frag_length$Sample[1], "_resample", c(1:ncol(augs)))   
 
-    out <- dplyr::bind_cols(out, augs)
+    out <- dplyr::bind_cols(out, augs) %>%
+       as.data.frame()
   
   }
 

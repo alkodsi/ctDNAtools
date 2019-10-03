@@ -2,13 +2,13 @@
 % Please edit documentation in R/bin_fragment_size.R
 \name{bin_fragment_size}
 \alias{bin_fragment_size}
-\title{Get histogram density of fragment lengths from a bam file}
+\title{Get histogram of fragment lengths from a bam file}
 \usage{
 bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
-  mutated_only = F, augmented = F, n_augmentation = 10,
-  augment_proportion = 0.5, seed = 123, isProperPair = NA,
-  min_size = 1, max_size = 400, ignore_trimmed = T,
-  different_strands = T, simple_cigar = F)
+  mutated_only = F, normalized = F, augmented = F,
+  n_augmentation = 10, augment_proportion = 0.5, seed = 123,
+  isProperPair = NA, min_size = 1, max_size = 400,
+  ignore_trimmed = T, different_strands = T, simple_cigar = F)
 }
 \arguments{
 \item{bam}{path to bam file.}
@@ -20,6 +20,8 @@ bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
 \item{bin_size}{the width of the bin (breaks) of the histogram.}
 
 \item{mutated_only}{A logical, whether to return the counts for only mutated reads. The 'mutations' input should be given when TRUE.}
+
+\item{normalized}{A logical, whether to normalize the counts to the total number of reads.}
 
 \item{augmented}{A logical, whether to create additional samples by sampling proportion of the reads.}
 
@@ -46,6 +48,7 @@ A data frame with one column corresponding to the sample name from the bam.
 Each row has the count of fragment lengths within the bin normalized by the total number of reads.
 }
 \description{
-The function first extracts fragment length from a bam file then computes the histogram over defined bins. Optionally,
+The function first extracts fragment length from a bam file then computes the histogram over defined bins. If normalized is TRUE, 
+the counts per bin will be normalized to the total read counts. Optionally,
 it can computes the histogram of fragment lengths only for mutated reads (confirmed ctDNA molecules).
 }

@@ -4,7 +4,7 @@
 \alias{get_hist_bins}
 \title{Helper function to bin a variable}
 \usage{
-get_hist_bins(x, from, to, by)
+get_hist_bins(x, from, to, by, normalized)
 }
 \arguments{
 \item{x}{the variable to be binned}
