@@ -14,24 +14,22 @@
 #'         alt, vector of read counts of the alternative allele
 #' @export
 
-filter_mutations <- function(mutations, bams, tags = rep("", length(bams)),
-              min_alt_reads = 2, min_samples = 2, 
-              min_base_quality = 20, max_depth = 100000, min_mapq = 30) {
-
-  assertthat::assert_that(is.character(bams))
-  assertthat::assert_that(length(bams) >= min_samples)
-  assertthat::assert_that(length(bams) == length(tags))
-
-  message("Filtering mutations ...") 
-
-  altMatrix <- purrr::map2_dfc(bams, tags, 
-                      ~ get_mutations_read_counts(mutations = mutations, bam = .x, tag = .y,
-                               min_base_quality = min_base_quality, min_mapq = min_mapq, 
-                               max_depth = max_depth)$alt)
-  
-  idx <- rowSums(altMatrix > min_alt_reads) > min_samples
-
-  message(paste("Dropped", sum(idx), "mutations"))
-  
-  return(mutations[!idx, ])
+filter_mutations <- function(mutations, bams, tags = rep("", length(bams)), min_alt_reads = 2, 
+    min_samples = 2, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
+    
+    assertthat::assert_that(is.character(bams))
+    assertthat::assert_that(length(bams) >= min_samples)
+    assertthat::assert_that(length(bams) == length(tags))
+    
+    message("Filtering mutations ...")
+    
+    altMatrix <- purrr::map2_dfc(bams, tags, ~ get_mutations_read_counts(mutations = mutations, 
+        bam = .x, tag = .y, min_base_quality = min_base_quality, min_mapq = min_mapq, 
+        max_depth = max_depth)$alt)
+    
+    idx <- rowSums(altMatrix > min_alt_reads) > min_samples
+    
+    message(paste("Dropped", sum(idx), "mutations"))
+    
+    return(mutations[!idx, ])
 }

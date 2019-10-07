@@ -7,11 +7,10 @@
 #' @export
 
 plot_density <- function(df, var = "size", color = "Sample", binwidth = 2.5) {
- 
+    
     ggplot2::ggplot() + 
-    ggplot2::geom_freqpoly(data = df, 
-  	   ggplot2::aes_string(x = var, y = "..density..", color = color), 
-  	   binwidth = binwidth) +
+    ggplot2::geom_freqpoly(data = df, ggplot2::aes_string(x = var, y = "..density..", color = color),
+     binwidth = binwidth) + 
     ggplot2::theme_minimal()
-
+    
 }

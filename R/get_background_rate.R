@@ -17,69 +17,62 @@
 get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, tag = "", 
     min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
     
-
+    
     gr <- GenomicRanges::GRanges(targets$chr, IRanges::IRanges(targets$start, targets$end))
     
     assertthat::assert_that(class(reference) == "BSgenome")
-    assertthat::assert_that(is.data.frame(targets), 
-          assertthat::not_empty(targets), 
-          assertthat::has_name(targets, c("chr", "start", "end")))
+    assertthat::assert_that(is.data.frame(targets), assertthat::not_empty(targets), 
+        assertthat::has_name(targets, c("chr", "start", "end")))
     
     if (tag == "") {
         sbp <- Rsamtools::ScanBamParam(which = gr)
     } else {
         sbp <- Rsamtools::ScanBamParam(which = gr, tagFilter = list(RG = tag))
     }
-
+    
     pileupParam <- Rsamtools::PileupParam(max_depth = max_depth, min_base_quality = min_base_quality, 
-        min_mapq = min_mapq, distinguish_strands = F, include_deletions = F, 
-        include_insertions = F)
+        min_mapq = min_mapq, distinguish_strands = F, include_deletions = F, include_insertions = F)
     
     p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam) %>% 
-
-        tidyr::pivot_wider(names_from = .data$nucleotide, values_from = .data$count, 
-            values_fill = list(count = 0)) %>% 
-        as.data.frame() %>%
+        
+    tidyr::pivot_wider(names_from = .data$nucleotide, values_from = .data$count, 
+          values_fill = list(count = 0)) %>% 
+        as.data.frame() %>% 
         dplyr::mutate(ref = as.character(BSgenome::getSeq(reference, 
-                 GenomicRanges::GRanges(.data$seqnames, IRanges::IRanges(.data$pos, .data$pos))))) %>% 
+            GenomicRanges::GRanges(.data$seqnames, IRanges::IRanges(.data$pos, .data$pos))))) %>% 
         dplyr::mutate(depth = .data$A + .data$C + .data$G + .data$T)
     
     pAnn <- dplyr::mutate(p, refCount = purrr::map2_dbl(c(1:nrow(p)), p$ref, ~p[.x, .y]),
-                      nonRefCount = .data$depth - .data$refCount) %>% 
-            dplyr::filter((.data$nonRefCount/.data$depth) < vaf_threshold)
+        nonRefCount = .data$depth - .data$refCount) %>% 
+        dplyr::filter((.data$nonRefCount/.data$depth) < vaf_threshold)
     
-    rate_by_sub <- pAnn %>% 
-          dplyr::group_by(.data$ref) %>% 
-          dplyr::summarize(
-              depth = sum(as.numeric(.data$depth)), 
-              A = sum(as.numeric(.data$A)), 
-              C = sum(as.numeric(.data$C)), 
-              G = sum(as.numeric(.data$G)), 
-              T = sum(as.numeric(.data$T))) %>%
-           as.data.frame()
+    rate_by_sub <- pAnn %>% dplyr::group_by(.data$ref) %>%
+        dplyr::summarize(depth = sum(as.numeric(.data$depth)), 
+             A = sum(as.numeric(.data$A)), C = sum(as.numeric(.data$C)), G = sum(as.numeric(.data$G)), 
+             T = sum(as.numeric(.data$T))) %>% 
+        as.data.frame()
     
-    CA <- (rate_by_sub[ rate_by_sub$ref == "C", "A"] + rate_by_sub[ rate_by_sub$ref == "G", "T"]) /
-          (rate_by_sub[ rate_by_sub$ref == "C", "depth"] + rate_by_sub[ rate_by_sub$ref == "G", "depth"])
+    CA <- (rate_by_sub[rate_by_sub$ref == "C", "A"] + rate_by_sub[rate_by_sub$ref == "G", "T"]) /
+       (rate_by_sub[rate_by_sub$ref == "C", "depth"] + rate_by_sub[rate_by_sub$ref == "G", "depth"])
     
-    CG <- (rate_by_sub[ rate_by_sub$ref == "C", "G"] + rate_by_sub[ rate_by_sub$ref == "G", "C"]) /
-          (rate_by_sub[ rate_by_sub$ref == "C", "depth"] + rate_by_sub[ rate_by_sub$ref == "G", "depth"])              
+    CG <- (rate_by_sub[rate_by_sub$ref == "C", "G"] + rate_by_sub[rate_by_sub$ref == "G", "C"]) /
+       (rate_by_sub[rate_by_sub$ref == "C", "depth"] + rate_by_sub[rate_by_sub$ref == "G", "depth"])
     
-    CT <- (rate_by_sub[ rate_by_sub$ref == "C", "T"] + rate_by_sub[ rate_by_sub$ref == "G", "A"]) /
-          (rate_by_sub[ rate_by_sub$ref == "C", "depth"] + rate_by_sub[ rate_by_sub$ref == "G", "depth"])
-
-    TA <- (rate_by_sub[ rate_by_sub$ref == "T", "A"] + rate_by_sub[ rate_by_sub$ref == "A", "T"]) /
-          (rate_by_sub[ rate_by_sub$ref == "T", "depth"] + rate_by_sub[ rate_by_sub$ref == "A", "depth"])
+    CT <- (rate_by_sub[rate_by_sub$ref == "C", "T"] + rate_by_sub[rate_by_sub$ref == "G", "A"]) /
+       (rate_by_sub[rate_by_sub$ref == "C", "depth"] + rate_by_sub[rate_by_sub$ref == "G", "depth"])
     
-    TC <- (rate_by_sub[ rate_by_sub$ref == "T", "C"] + rate_by_sub[ rate_by_sub$ref == "A", "G"]) /
-          (rate_by_sub[ rate_by_sub$ref == "T", "depth"] + rate_by_sub[ rate_by_sub$ref == "A", "depth"])              
+    TA <- (rate_by_sub[rate_by_sub$ref == "T", "A"] + rate_by_sub[rate_by_sub$ref == "A", "T"]) /
+       (rate_by_sub[rate_by_sub$ref == "T", "depth"] + rate_by_sub[rate_by_sub$ref == "A", "depth"])
     
-    TG <- (rate_by_sub[ rate_by_sub$ref == "T", "G"] + rate_by_sub[ rate_by_sub$ref == "A", "C"]) /
-          (rate_by_sub[ rate_by_sub$ref == "T", "depth"] + rate_by_sub[ rate_by_sub$ref == "A", "depth"])
-          
+    TC <- (rate_by_sub[rate_by_sub$ref == "T", "C"] + rate_by_sub[rate_by_sub$ref == "A", "G"]) /
+       (rate_by_sub[rate_by_sub$ref == "T", "depth"] + rate_by_sub[rate_by_sub$ref == "A", "depth"])
+    
+    TG <- (rate_by_sub[rate_by_sub$ref == "T", "G"] + rate_by_sub[rate_by_sub$ref == "A", "C"]) /
+       (rate_by_sub[rate_by_sub$ref == "T", "depth"] + rate_by_sub[rate_by_sub$ref == "A", "depth"])
+    
     rate <- sum(as.numeric(pAnn$nonRefCount))/sum(as.numeric(pAnn$depth))
     
-    return(list(rate = rate, CA = CA, CG = CG, CT = CT,
-                TA = TA, TC = TC, TG = TG))
-
+    return(list(rate = rate, CA = CA, CG = CG, CT = CT, TA = TA, TC = TC, TG = TG))
+    
 }
 

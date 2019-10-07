@@ -6,13 +6,13 @@
 #' @return a vector having randomly sampled proportion of the input variable.
 
 sample_proportion <- function(x, proportion = 0.5, seed = 42) {
-
+    
     sample.size <- round(length(x) * proportion)
-
+    
     set.seed(seed)
-
+    
     return(sample(x, size = sample.size))
-
+    
 }
 
 
@@ -44,72 +44,67 @@ sample_proportion <- function(x, proportion = 0.5, seed = 42) {
 #' @importFrom magrittr %>%
 #' @export
 
-bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, mutated_only = F,
-    normalized = F, augmented = F, n_augmentation = 10, augment_proportion = 0.5, seed = 123, 
-    isProperPair = NA, min_size = 1, max_size = 400, ignore_trimmed = T, 
+bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, mutated_only = F, 
+    normalized = F, augmented = F, n_augmentation = 10, augment_proportion = 0.5, 
+    seed = 123, isProperPair = NA, min_size = 1, max_size = 400, ignore_trimmed = T, 
     different_strands = T, simple_cigar = F) {
-
-  assertthat::assert_that(is.logical(mutated_only), is.logical(augmented), is.logical(normalized),
-  	    length(mutated_only) == 1, length(augmented) == 1, length(normalized) == 1)
-
-  assertthat::assert_that(is.numeric(bin_size), bin_size %% 1 == 0,
+    
+    assertthat::assert_that(is.logical(mutated_only), is.logical(augmented), 
+        is.logical(normalized), length(mutated_only) == 1, 
+        length(augmented) == 1, length(normalized) == 1)
+    
+    assertthat::assert_that(is.numeric(bin_size), bin_size%%1 == 0, 
         length(bin_size) == 1, bin_size > 0)
-
-  assertthat::assert_that(is.numeric(n_augmentation), n_augmentation %% 1 == 0,
-        length(n_augmentation) == 1)
-
-  assertthat::assert_that(is.numeric(augment_proportion), augment_proportion < 1, 
-  	    augment_proportion > 0, length(augment_proportion) == 1)
-
-  assertthat::assert_that(is.numeric(seed), seed %% 1 == 0,
-        length(seed) == 1)
-
-  if(mutated_only) {
-
-    assertthat::assert_that(!is.null(mutations), 
-    	msg = "mutations should be specified when mutated_only is TRUE")
-  
-    frag_length <- get_fragment_size(bam = bam, mutations = mutations, tag = tag, 
-    	isProperPair = isProperPair, min_size = min_size, max_size = max_size, 
-    	ignore_trimmed = ignore_trimmed, different_strands = different_strands, 
-    	simple_cigar = simple_cigar) %>%
-      dplyr::filter(.data$category == "mutated")
-  
-  } else {
-
-  	frag_length <- get_fragment_size(bam = bam, tag = tag, 
-    	isProperPair = isProperPair, min_size = min_size, max_size = max_size, 
-    	ignore_trimmed = ignore_trimmed, different_strands = different_strands, 
-    	simple_cigar = simple_cigar)
-  
-  }
-  
-  message(sprintf("binning %s reads ...", nrow(frag_length)))
-
-  out <- data.frame(counts = get_hist_bins(frag_length$size, 
-     	   from = min_size, to = max_size, by = bin_size,
-         normalized = normalized))
-
-  colnames(out) <- frag_length$Sample[1]
-
-  if(augmented) {
-
-    set.seed(seed)
-
-    seeds <- round(runif(n = n_augmentation, min = 0, max = 1e+08))
- 
-    augs <- purrr::map_dfc(seeds, 
-    	~ get_hist_bins( sample_proportion(frag_length$size, proportion = augment_proportion, seed = .x),
-    		from = min_size, to = max_size, by = bin_size, normalized = normalized)) %>%
-       as.data.frame()
-
-    colnames(augs) <- paste0(frag_length$Sample[1], "_resample", c(1:ncol(augs)))   
-
-    out <- dplyr::bind_cols(out, augs) %>%
-       as.data.frame()
-  
-  }
-
-  return(out)
-
+    
+    assertthat::assert_that(is.numeric(n_augmentation), n_augmentation%%1 == 0,
+     length(n_augmentation) == 1)
+    
+    assertthat::assert_that(is.numeric(augment_proportion), augment_proportion < 1,
+     augment_proportion > 0, length(augment_proportion) == 1)
+    
+    assertthat::assert_that(is.numeric(seed), seed%%1 == 0, length(seed) == 1)
+    
+    if (mutated_only) {
+        
+        assertthat::assert_that(!is.null(mutations), 
+            msg = "mutations should be specified when mutated_only is TRUE")
+        
+        frag_length <- get_fragment_size(bam = bam, mutations = mutations, tag = tag, 
+            isProperPair = isProperPair, min_size = min_size, max_size = max_size, 
+            ignore_trimmed = ignore_trimmed, different_strands = different_strands, 
+            simple_cigar = simple_cigar) %>% dplyr::filter(.data$category == "mutated")
+        
+    } else {
+        
+        frag_length <- get_fragment_size(bam = bam, tag = tag, isProperPair = isProperPair, 
+            min_size = min_size, max_size = max_size, ignore_trimmed = ignore_trimmed, 
+            different_strands = different_strands, simple_cigar = simple_cigar)
+        
+    }
+    
+    message(sprintf("binning %s reads ...", nrow(frag_length)))
+    
+    out <- data.frame(counts = get_hist_bins(frag_length$size, from = min_size, to = max_size, 
+        by = bin_size, normalized = normalized))
+    
+    colnames(out) <- frag_length$Sample[1]
+    
+    if (augmented) {
+        
+        set.seed(seed)
+        
+        seeds <- round(runif(n = n_augmentation, min = 0, max = 1e+08))
+        
+        augs <- purrr::map_dfc(seeds, ~get_hist_bins(sample_proportion(frag_length$size, 
+            proportion = augment_proportion, seed = .x), from = min_size, to = max_size, 
+            by = bin_size, normalized = normalized)) %>% as.data.frame()
+        
+        colnames(augs) <- paste0(frag_length$Sample[1], "_resample", c(1:ncol(augs)))
+        
+        out <- dplyr::bind_cols(out, augs) %>% as.data.frame()
+        
+    }
+    
+    return(out)
+    
 }

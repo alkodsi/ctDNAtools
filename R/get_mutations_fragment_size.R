@@ -15,17 +15,18 @@
 #' @export 
 
 get_mutations_fragment_size <- function(bam, mutations, tag = "", isProperPair = NA, 
-	min_size = 1, max_size = 400, ignore_trimmed = T, different_strands = T, simple_cigar = F) {
-
-  assertthat::assert_that(!missing(mutations), !missing(bam))
-
-  frag_size <- get_fragment_size(bam = bam, tag = tag, isProperPair = isProperPair,
-  	    min_size = min_size, max_size = max_size, ignore_trimmed = ignore_trimmed, 
-  	    different_strands = different_strands, simple_cigar = simple_cigar)
-
-  read_names <- get_mutations_read_names(bam = bam, mutations = mutations, tag = tag)
-
-  mutation_frag_size <- purrr::map(read_names, ~ frag_size[ frag_size$ID %in% .x, "size"])
-
-  return(mutation_frag_size)
+    min_size = 1, max_size = 400, ignore_trimmed = T, different_strands = T, simple_cigar = F) {
+    
+    assertthat::assert_that(!missing(mutations), !missing(bam))
+    
+    frag_size <- get_fragment_size(bam = bam, tag = tag, isProperPair = isProperPair, 
+        min_size = min_size, max_size = max_size, ignore_trimmed = ignore_trimmed, 
+        different_strands = different_strands, simple_cigar = simple_cigar)
+    
+    read_names <- get_mutations_read_names(bam = bam, mutations = mutations, tag = tag)
+    
+    mutation_frag_size <- purrr::map(read_names, ~frag_size[frag_size$ID %in% .x, 
+        "size"])
+    
+    return(mutation_frag_size)
 }

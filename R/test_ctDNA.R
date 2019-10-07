@@ -22,154 +22,153 @@
 #'         backgroundRate, a list of substituion-specific background rate, and pvalue, the p-value of the test
 #' @export
 
-test_ctDNA <- function(mutations, bam, targets, reference, tag = "",
-    vaf_threshold = 0.1, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, 
-    bam_list = character(), bam_list_tags = rep("",length(bam_list)), 
-    min_alt_reads = 1, min_samples = 1,
-    by_substitution = F, n_simulations = 1e+04, seed = 123) {
+test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_threshold = 0.1, 
+    min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, bam_list = character(), 
+    bam_list_tags = rep("", length(bam_list)), min_alt_reads = 1, min_samples = 1, 
+    by_substitution = F, n_simulations = 10000, seed = 123) {
     
-    assertthat::assert_that(!missing(mutations), !missing(bam), 
-        !missing(targets), !missing(reference),
-        msg = "mutations, bam, targets and reference are all required")
-
+    assertthat::assert_that(!missing(mutations), !missing(bam), !missing(targets), 
+        !missing(reference), msg = "mutations, bam, targets and reference are all required")
+    
     assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
         assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
-
+    
     assertthat::assert_that(is.data.frame(targets), assertthat::not_empty(targets), 
         assertthat::has_name(targets, c("chr", "start", "end")))
-
+    
     assertthat::assert_that(class(reference) == "BSgenome")
     
     assertthat::assert_that(all(nchar(mutations$REF) == 1), all(nchar(mutations$ALT) == 1),
-        msg = "Only SNVs are supported") 
+        msg = "Only SNVs are supported")
     
-    assertthat::assert_that(is.character(mutations$REF), is.character(mutations$ALT),
+    assertthat::assert_that(is.character(mutations$REF), is.character(mutations$ALT), 
         all(mutations$REF %in% c("A", "C", "T", "G")), all(mutations$ALT %in% c("A", "C", "T", "G")),
         msg = "REF and ALT in mutations should be characters having basepairs")
-
+    
     assertthat::assert_that(is.numeric(mutations$POS), all(mutations$POS > 0))
-
-    assertthat::assert_that(is.numeric(targets$start), all(mutations$start > 0),
+    
+    assertthat::assert_that(is.numeric(targets$start), all(mutations$start > 0), 
         is.numeric(targets$end), all(mutations$end > 0))
-
+    
     assertthat::assert_that(all(mutations$CHROM %in% GenomeInfoDb::seqnames(reference)), 
-        all(targets$chr %in% GenomeInfoDb::seqnames(reference)),
+        all(targets$chr %in% GenomeInfoDb::seqnames(reference)), 
         msg = "Chromosomes in mutations and/or targets don't match the specified reference")
-
+    
     assertthat::assert_that(is.character(bam), length(bam) == 1, file.exists(bam))
-
+    
     assertthat::assert_that(is.character(tag), length(tag) == 1)
-
-    assertthat::assert_that(all(get_bam_chr(bam) %in% GenomeInfoDb::seqnames(reference)),
+    
+    assertthat::assert_that(all(get_bam_chr(bam) %in% GenomeInfoDb::seqnames(reference)), 
         msg = "Chromosomes in bam file don't match the specified reference")
-
+    
     assertthat::assert_that(is.numeric(vaf_threshold), vaf_threshold > 0, 
         vaf_threshold <= 1, length(vaf_threshold) == 1)
-
-    assertthat::assert_that(is.numeric(min_base_quality), length(min_base_quality) == 1, 
-        min_base_quality %% 1 == 0, min_base_quality > 0)
-
+    
+    assertthat::assert_that(is.numeric(min_base_quality), length(min_base_quality) == 1,
+        min_base_quality%%1 == 0, min_base_quality > 0)
+    
     assertthat::assert_that(is.numeric(max_depth), length(max_depth) == 1, 
-        max_depth %% 1 == 0, max_depth > 0)
-
+        max_depth%%1 == 0, max_depth > 0)
+    
     assertthat::assert_that(is.numeric(min_mapq), length(min_mapq) == 1, 
-        min_mapq %% 1 == 0, min_mapq > 0)
-
+        min_mapq%%1 == 0, min_mapq > 0)
+    
     assertthat::assert_that(is.numeric(n_simulations), length(n_simulations) == 1, 
-        n_simulations %% 1 == 0, n_simulations > 0)
-
-    assertthat::assert_that(is.numeric(seed), length(seed) == 1, 
-        seed %% 1 == 0, seed >= 0)
-
+        n_simulations%%1 == 0, n_simulations > 0)
+    
+    assertthat::assert_that(is.numeric(seed), length(seed) == 1, seed%%1 == 0, 
+        seed >= 0)
+    
     assertthat::assert_that(is.logical(by_substitution), length(by_substitution) == 1)
-
-    if(tag != ""){
+    
+    if (tag != "") {
         
-        assertthat::assert_that(verify_tag(bam = bam, tag = tag), 
-           msg = "Specified tag not found")
+        assertthat::assert_that(verify_tag(bam = bam, tag = tag), msg = "Specified tag not found")
+    
     }
-
-    if(length(bam_list) > 0){
-       
-        assertthat::assert_that(is.numeric(min_alt_reads), length(min_alt_reads) == 1, 
-           min_alt_reads %% 1 == 0, min_alt_reads >= 0)
-
+    
+    if (length(bam_list) > 0) {
+        
+        assertthat::assert_that(is.numeric(min_alt_reads), length(min_alt_reads) == 1,
+            min_alt_reads%%1 == 0, min_alt_reads >= 0)
+        
         assertthat::assert_that(is.numeric(min_samples), length(min_samples) == 1, 
-           min_samples %% 1 == 0, min_samples >= 0)
-
-        assertthat::assert_that(is.character(bam_list), all(file.exists(bam_list))) 
-
+            min_samples%%1 == 0, min_samples >= 0)
+        
+        assertthat::assert_that(is.character(bam_list), all(file.exists(bam_list)))
+        
         bam_list_chr <- purrr::map(bam_list, get_bam_chr)
-
+        
         assertthat::assert_that(all(purrr::map_lgl(bam_list_chr, ~ all(.x %in% GenomeInfoDb::seqnames(reference)))), 
             msg = "The chromosomes in at least one of the specified bams in bam_list don't match the reference")
-
-        assertthat::assert_that(is.character(bam_list_tags), length(bam_list_tags) == length(bam_list))
-       
-        if(any(bam_list_tags != "")){
-           
-           tag_verification <- purrr::map2_lgl(bam_list[ bam_list_tags != "" ], 
-              bam_list_tags[ bam_list_tags != "" ], verify_tag)
-         
-           assertthat::assert_that(all(tag_verification), 
-              msg = paste("specified tag for", 
-                   paste(bam_list[ bam_list_tags != "" ][! tag_verification ], collapse = " , "),
-                    "is not correct"))
-       }
+        
+        assertthat::assert_that(is.character(bam_list_tags), 
+            length(bam_list_tags) == length(bam_list))
+        
+        if (any(bam_list_tags != "")) {
+            
+            tag_verification <- purrr::map2_lgl(bam_list[bam_list_tags != ""],
+                 bam_list_tags[bam_list_tags != ""], verify_tag)
+            
+            assertthat::assert_that(all(tag_verification), 
+                msg = paste("specified tag for", paste(bam_list[bam_list_tags != ""][!tag_verification], collapse = " , "), 
+                "is not correct"))
+        
+        }
     }
-   
+    
     sm <- get_bam_SM(bam = bam, tag = tag)
-
+    
     message(paste("Analyzing Sample", sm))
-
-    if(length(bam_list) > 0){
-       
-        mutations <- filter_mutations(mutations = mutations, bams = bam_list, tags = bam_list_tags,
-           min_alt_reads = min_alt_reads, min_samples = min_samples, min_base_quality = min_base_quality,
-           max_depth = max_depth, min_mapq = min_mapq)
     
+    if (length(bam_list) > 0) {
+        
+        mutations <- filter_mutations(mutations = mutations, bams = bam_list, tags = bam_list_tags, 
+            min_alt_reads = min_alt_reads, min_samples = min_samples, min_base_quality = min_base_quality, 
+            max_depth = max_depth, min_mapq = min_mapq)
+        
     }
-
-         
-    message("Estimating background rate ...")  
-      
-    bg <- get_background_rate(bam = bam, targets = targets, reference = reference, 
-       tag = tag, vaf_threshold = vaf_threshold, min_base_quality = min_base_quality, 
-       max_depth = max_depth, min_mapq = min_mapq)
     
-
-      
+    
+    message("Estimating background rate ...")
+    
+    bg <- get_background_rate(bam = bam, targets = targets, reference = reference, 
+        tag = tag, vaf_threshold = vaf_threshold, min_base_quality = min_base_quality, 
+        max_depth = max_depth, min_mapq = min_mapq)
+    
+    
+    
     message("Getting ref and alt Counts")
-
-    refAltReads <- get_mutations_read_counts(mutations = mutations, bam = bam, tag = tag,
-       min_base_quality = min_base_quality, max_depth = max_depth, min_mapq = min_mapq)
-
+    
+    refAltReads <- get_mutations_read_counts(mutations = mutations, bam = bam, tag = tag, 
+        min_base_quality = min_base_quality, max_depth = max_depth, min_mapq = min_mapq)
+    
     altReads <- refAltReads$alt
     
     refReads <- refAltReads$ref
-   
+    
     refAlt <- data.frame(Ref = refReads, Alt = altReads)
     
-
+    
     message("Running Monte Carlo simulations")
     
-    if(by_substitution){
-      
-      substitutions <- paste0(mutations$REF, mutations$ALT)
-     
-      posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
-        substitutions = substitutions, rate = bg, seed = seed, n_simulations = n_simulations)
-    
+    if (by_substitution) {
+        
+        substitutions <- paste0(mutations$REF, mutations$ALT)
+        
+        posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
+            substitutions = substitutions, rate = bg, seed = seed, n_simulations = n_simulations)
+        
     } else {
-    
-      posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
-        rate = bg, seed = seed, n_simulations = n_simulations)
-    
+        
+        posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
+            rate = bg, seed = seed, n_simulations = n_simulations)
+        
     }
     
     message(paste("Pvalue = ", posTest))
-
+    
     message(paste("Sample", sm, "is ctDNA", ifelse(posTest < 0.05, "positive", "negative")))
-
+    
     return(list(counts = refAlt, backgroundRate = bg, pvalue = posTest))
 }

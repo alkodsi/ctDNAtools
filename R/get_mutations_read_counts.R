@@ -11,18 +11,17 @@
 #'         alt, vector of read counts of the alternative allele
 
 get_mutations_read_counts <- function(mutations, bam, tag = "", min_base_quality = 20, 
-            max_depth = 1e+05, min_mapq = 30) {
-  
-  assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
-                          assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
-  
-  readcounts <- purrr::pmap_dfr(list(mutations$CHROM, mutations$POS, mutations$REF, mutations$ALT),
-           function(chr, pos, ref, alt) {
-              counts <- get_read_counts(chr = chr, pos = pos, bam = bam,
-                         tag = tag, min_base_quality = min_base_quality,
-                         min_mapq = min_mapq, max_depth = max_depth)
-              data.frame(ref = counts[[ref]], alt = counts[[alt]])
-            })
-  
- return(list(ref = readcounts$ref, alt = readcounts$alt))  
+    max_depth = 1e+05, min_mapq = 30) {
+    
+    assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
+        assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
+    
+    readcounts <- purrr::pmap_dfr(list(mutations$CHROM, mutations$POS, mutations$REF, 
+        mutations$ALT), function(chr, pos, ref, alt) {
+        counts <- get_read_counts(chr = chr, pos = pos, bam = bam, tag = tag, min_base_quality = min_base_quality, 
+            min_mapq = min_mapq, max_depth = max_depth)
+        data.frame(ref = counts[[ref]], alt = counts[[alt]])
+    })
+    
+    return(list(ref = readcounts$ref, alt = readcounts$alt))
 }

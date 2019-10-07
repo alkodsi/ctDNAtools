@@ -8,36 +8,36 @@
 #' @export 
 
 get_mutations_read_names <- function(bam, mutations, tag = "") {
-  
-    assertthat::assert_that(!missing(bam), is.character(bam), 
-      length(bam) == 1, file.exists(bam))
-
-    assertthat::assert_that(!missing(mutations), is.data.frame(mutations), assertthat::not_empty(mutations), 
-        assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
-
-    assertthat::assert_that(all(nchar(mutations$REF) == 1),
-        all(nchar(mutations$ALT) == 1),
-        msg = "Only SNVs are supported") 
     
-    assertthat::assert_that(is.character(mutations$REF), is.character(mutations$ALT),
-        all(mutations$REF %in% c("A", "C", "T", "G")), all(mutations$ALT %in% c("A", "C", "T", "G")),
+    assertthat::assert_that(!missing(bam), is.character(bam),
+     length(bam) == 1, file.exists(bam))
+    
+    assertthat::assert_that(!missing(mutations), 
+        is.data.frame(mutations), assertthat::not_empty(mutations), 
+        assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
+    
+    assertthat::assert_that(all(nchar(mutations$REF) == 1), 
+        all(nchar(mutations$ALT) == 1), msg = "Only SNVs are supported")
+    
+    assertthat::assert_that(is.character(mutations$REF), is.character(mutations$ALT), 
+        all(mutations$REF %in% c("A", "C", "T", "G")), 
+        all(mutations$ALT %in% c("A", "C", "T", "G")),
         msg = "REF and ALT in mutations should be characters having basepairs")
-
+    
     assertthat::assert_that(is.numeric(mutations$POS), all(mutations$POS > 0))
-
+    
     assertthat::assert_that(all(mutations$CHROM %in% get_bam_chr(bam)))
-
-    read_names <- purrr::pmap(list(mutations$CHROM, mutations$POS, mutations$ALT),
+    
+    read_names <- purrr::pmap(list(mutations$CHROM, mutations$POS, mutations$ALT), 
         function(chr, pos, alt) {
-            counts <- get_mutation_read_names(bam = bam, tag = tag,
-              chr = chr, pos = pos, alt = alt)
+            counts <- get_mutation_read_names(bam = bam, tag = tag, chr = chr, pos = pos, 
+                alt = alt)
         })
     
-    names(read_names) <- paste0(mutations$CHROM, ":", mutations$POS, "_", 
-        mutations$REF, "_", mutations$ALT)
+    names(read_names) <- paste0(mutations$CHROM, ":", mutations$POS, "_", mutations$REF, "_", mutations$ALT)
     
     return(read_names)
-
+    
 }
 
 
