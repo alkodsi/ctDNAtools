@@ -3,11 +3,13 @@
 #' Extract the names of the reads in a bam file that support the variant allele of a single mutation
 #' @param bam path to bam file
 #' @param mutations A data frame containing the mutations. Must have the columns CHROM, POS, REF, ALT.
+#' @param what Either Alt: names of the reads that exhibit variant alleles in mutations, 
+#' or Ref: names of the reads the exhibit reference alleles in mutations
 #' @param tag the RG tag if the bam has more than one samplee
 #' @return A list with length equal to the number of mutations. Each element is a character vector with the read names.
 #' @export 
 
-get_mutations_read_names <- function(bam, mutations, tag = "") {
+get_mutations_read_names <- function(bam, mutations, what = c("ALT","REF"), tag = "") {
     
     assertthat::assert_that(!missing(bam), is.character(bam),
      length(bam) == 1, file.exists(bam))
@@ -28,7 +30,9 @@ get_mutations_read_names <- function(bam, mutations, tag = "") {
     
     assertthat::assert_that(all(mutations$CHROM %in% get_bam_chr(bam)))
     
-    read_names <- purrr::pmap(list(mutations$CHROM, mutations$POS, mutations$ALT), 
+    what <- match.arg(what)
+
+    read_names <- purrr::pmap(list(mutations$CHROM, mutations$POS, mutations[,what]), 
         function(chr, pos, alt) {
             counts <- get_mutation_read_names(bam = bam, tag = tag, chr = chr, pos = pos, 
                 alt = alt)

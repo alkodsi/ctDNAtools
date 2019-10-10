@@ -4,12 +4,16 @@
 \alias{get_mutations_read_names}
 \title{Get names of the reads showing alternative allele of a mutation}
 \usage{
-get_mutations_read_names(bam, mutations, tag = "")
+get_mutations_read_names(bam, mutations, what = c("ALT", "REF"),
+  tag = "")
 }
 \arguments{
 \item{bam}{path to bam file}
 
 \item{mutations}{A data frame containing the mutations. Must have the columns CHROM, POS, REF, ALT.}
+
+\item{what}{Either Alt: names of the reads that exhibit variant alleles in mutations, 
+or Ref: names of the reads the exhibit reference alleles in mutations}
 
 \item{tag}{the RG tag if the bam has more than one samplee}
 }
