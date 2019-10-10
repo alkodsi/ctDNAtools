@@ -24,7 +24,10 @@ Imports:
     BSgenome,
     ggplot2,
     GenomicAlignments,
-    rlang
+    rlang,
+    Biostrings,
+    methods,
+    mclust
 Suggests:
     BSgenome.Hsapiens.UCSC.hg19
 Encoding: UTF-8
