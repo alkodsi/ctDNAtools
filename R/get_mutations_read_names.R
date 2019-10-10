@@ -9,7 +9,7 @@
 #' @return A list with length equal to the number of mutations. Each element is a character vector with the read names.
 #' @export 
 
-get_mutations_read_names <- function(bam, mutations, what = c("ALT","REF"), tag = "") {
+get_mutations_read_names <- function(bam, mutations, what = c("ALT","REF"), min_base_quality = 20, tag = "") {
     
     assertthat::assert_that(!missing(bam), is.character(bam),
      length(bam) == 1, file.exists(bam))
@@ -35,7 +35,7 @@ get_mutations_read_names <- function(bam, mutations, what = c("ALT","REF"), tag 
     read_names <- purrr::pmap(list(mutations$CHROM, mutations$POS, mutations[,what]), 
         function(chr, pos, alt) {
             counts <- get_mutation_read_names(bam = bam, tag = tag, chr = chr, pos = pos, 
-                alt = alt)
+                alt = alt, min_base_quality = min_base_quality)
         })
     
     names(read_names) <- paste0(mutations$CHROM, ":", mutations$POS, "_", mutations$REF, "_", mutations$ALT)

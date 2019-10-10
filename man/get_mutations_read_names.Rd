@@ -5,7 +5,7 @@
 \title{Get names of the reads showing alternative allele of a mutation}
 \usage{
 get_mutations_read_names(bam, mutations, what = c("ALT", "REF"),
-  tag = "")
+  min_base_quality = 20, tag = "")
 }
 \arguments{
 \item{bam}{path to bam file}
