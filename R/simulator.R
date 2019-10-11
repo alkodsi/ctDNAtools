@@ -8,10 +8,10 @@ compare_simulated_observed <- function(simulated, observed, depths) {
     #
     #out <- ifelse(sum(comparison) == length(comparison), 1, 0)
     
-    observed_vaf <- mean(observed/depths)
+    observed_vaf <- mean(observed/depths, na.rm = T)
     observed_nonzero <- sum(observed > 0)
 
-    simulated_vaf <- mean(simulated/depths)
+    simulated_vaf <- mean(simulated/depths, na.rm = T)
     simulated_nonzero <- sum(simulated > 0)
 
     out <- ifelse((simulated_vaf >= observed_vaf) & 
@@ -58,8 +58,9 @@ simulator <- function(depths, rate, altReads, substitutions = NULL, seed) {
         sim <- purrr::map(names(depths_list), ~rbinom(n = length(depths_list[[.x]]), 
             size = depths_list[[.x]], prob = rate[[.x]]))
         
-        comparison_by_sub <- purrr::map2_dbl(sim, altReads_list, ~compare_simulated_observed(simulated = .x, 
-            observed = .y))
+        comparison_by_sub <- purrr::pmap_dbl(list(sim, altReads_list, depths_list), 
+            function(x, y, z) compare_simulated_observed(simulated = .x, observed = .y, depths = z))
+
         out <- ifelse(sum(comparison_by_sub) == length(comparison_by_sub), 1, 0)
     
     }
