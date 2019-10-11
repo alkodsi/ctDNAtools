@@ -1,13 +1,21 @@
 # ` Helper function
 #'
 #' Compares simulated and observed
-compare_simulated_observed <- function(simulated, observed) {
+compare_simulated_observed <- function(simulated, observed, depths) {
     
-    comparison <- purrr::map_dbl(c(0:max(observed)),
-        ~ as.numeric(sum(simulated >= .x) >= sum(observed >= .x)))
+    #comparison <- purrr::map_dbl(c(0:max(observed)),
+    #    ~ as.numeric(sum(simulated >= .x) >= sum(observed >= .x)))
+    #
+    #out <- ifelse(sum(comparison) == length(comparison), 1, 0)
     
-    out <- ifelse(sum(comparison) == length(comparison), 1, 0)
-    
+    observed_vaf <- mean(observed/depths)
+    observed_nonzero <- sum(observed > 0)
+
+    simulated_vaf <- mean(simulated/depths)
+    simulated_nonzero <- sum(simulated > 0)
+
+    out <- ifelse((simulated_vaf >= observed_vaf) & 
+                  (simulated_nonzero >= observed_nonzero), 1, 0)
     return(out)
     
 }
@@ -38,7 +46,7 @@ simulator <- function(depths, rate, altReads, substitutions = NULL, seed) {
     if (is.null(substitutions)) {
         
         sim <- rbinom(n = n_variants, size = depths, prob = rate$rate/3)
-        out <- compare_simulated_observed(simulated = sim, observed = altReads)
+        out <- compare_simulated_observed(simulated = sim, observed = altReads, depths = depths)
         
     } else {
         
