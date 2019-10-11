@@ -4,7 +4,7 @@
 \alias{compare_simulated_observed}
 \title{Compares simulated and observed}
 \usage{
-compare_simulated_observed(simulated, observed)
+compare_simulated_observed(simulated, observed, depths)
 }
 \description{
 Compares simulated and observed

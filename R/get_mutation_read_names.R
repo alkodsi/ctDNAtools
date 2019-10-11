@@ -11,7 +11,7 @@
 #' @importFrom rlang .data
 #' @export 
 
-get_mutation_read_names <- function(bam, chr, pos, alt, tag = "", min_base_quality = 20) {
+get_mutation_read_names <- function(bam, chr, pos, ref, alt, tag = "", min_base_quality = 20) {
     
     assertthat::assert_that(!missing(bam), is.character(bam), length(bam) == 1, file.exists(bam))
     
@@ -21,8 +21,10 @@ get_mutation_read_names <- function(bam, chr, pos, alt, tag = "", min_base_quali
     
     assertthat::assert_that(is.character(chr), length(chr) == 1, chr %in% get_bam_chr(bam))
     
-    assertthat::assert_that(is.character(alt), length(alt) == 1, alt %in% c("C", "T", "G", "A"))
+    assertthat::assert_that(is.character(ref), length(ref) == 1, ref %in% c("C", "T", "G", "A"))
     
+    assertthat::assert_that(is.character(alt), length(alt) == 1, alt %in% c("C", "T", "G", "A"))
+
     gr <- GenomicRanges::GRanges(chr, IRanges::IRanges(pos, pos))
     
     if (tag == "") {
@@ -62,11 +64,13 @@ get_mutation_read_names <- function(bam, chr, pos, alt, tag = "", min_base_quali
             stringsAsFactors = F) %>%
             dplyr::filter(.data$qual >= min_base_quality)
         
-        return(unique(out[out$seq == alt, "ID"]))
+        alt <- unique(out[out$seq == alt, "ID"])
+        ref <- unique(out[out$seq == ref, "ID"])
+        return(list(ref = ref, alt = alt))
         
     } else {
         
-        return(character(0))
+        return(list(ref = character(0), alt = character(0)))
         
     }
 }

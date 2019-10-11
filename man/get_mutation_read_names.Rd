@@ -4,7 +4,7 @@
 \alias{get_mutation_read_names}
 \title{Get names of the reads showing alternative allele of a mutation}
 \usage{
-get_mutation_read_names(bam, chr, pos, alt, tag = "",
+get_mutation_read_names(bam, chr, pos, ref, alt, tag = "",
   min_base_quality = 20)
 }
 \arguments{
