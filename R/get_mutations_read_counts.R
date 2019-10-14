@@ -9,6 +9,7 @@
 #' @param min_mapq the minimum mapping quality for a read to be counted
 #' @return a named list contains: ref, vector of read counts of the reference alleles, and
 #'         alt, vector of read counts of the alternative allele
+#' @export
 
 get_mutations_read_counts <- function(mutations, bam, tag = "", min_base_quality = 20, 
     max_depth = 1e+05, min_mapq = 30) {

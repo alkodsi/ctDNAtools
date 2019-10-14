@@ -22,8 +22,8 @@
 #'         backgroundRate, a list of substituion-specific background rate, and pvalue, the p-value of the test
 #' @export
 
-test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_threshold = 0.1, 
-    min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, bam_list = character(), 
+test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column = NULL,
+    vaf_threshold = 0.1, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, bam_list = character(), 
     bam_list_tags = rep("", length(bam_list)), min_alt_reads = 1, min_samples = 1, 
     by_substitution = F, n_simulations = 10000, seed = 123) {
     
@@ -140,8 +140,20 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
     
     message("Getting ref and alt Counts")
     
-    refAltReads <- get_mutations_read_counts(mutations = mutations, bam = bam, tag = tag, 
-        min_base_quality = min_base_quality, max_depth = max_depth, min_mapq = min_mapq)
+    if(!is.null(ID_column)){
+        
+        message("merging mutations in phase ...")
+
+        refAltReads <- merge_mutations_in_phase(mutations = mutations, bam = bam,
+            tag = tag, min_base_quality = min_base_quality, ID_column = ID_column)
+
+    } else {
+       
+        refAltReads <- get_mutations_read_counts(mutations = mutations, bam = bam, tag = tag, 
+             min_base_quality = min_base_quality, max_depth = max_depth, min_mapq = min_mapq)
+
+    }
+
     
     altReads <- refAltReads$alt
     
@@ -152,7 +164,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
     
     message("Running Monte Carlo simulations")
     
-    if (by_substitution) {
+    if (by_substitution && is.null(ID_column)) {
         
         substitutions <- paste0(mutations$REF, mutations$ALT)
         
