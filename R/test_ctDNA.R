@@ -8,6 +8,8 @@
 #' @param reference the reference genome in BSgenome format
 #' @param vaf_threshold the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)
 #' @param tag the RG tag if the bam has more than one sample
+#' @param ID_column The name of the column that contains the ID of mutations in phase. All mutations in Phase should have the same ID in that column. 
+#' Will lead to considerable slow down when provided.
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param max_depth maximum depth above which sampling will happen
 #' @param min_mapq the minimum mapping quality for a read to be counted
@@ -87,6 +89,14 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
     
     }
     
+     if (!is.null(ID_column)) {
+        
+        assertthat::assert_that(assertthat::has_name(mutations, ID_column))
+        
+        assertthat::assert_that(is.character(mutations[,ID_column]))
+    
+    }
+
     if (length(bam_list) > 0) {
         
         assertthat::assert_that(is.numeric(min_alt_reads), length(min_alt_reads) == 1,
@@ -119,7 +129,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
     
     sm <- get_bam_SM(bam = bam, tag = tag)
     
-    message(paste("Analyzing Sample", sm))
+    message(paste("Analyzing Sample", sm, "..."))
     
     if (length(bam_list) > 0) {
         
@@ -138,7 +148,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
     
     
     
-    message("Getting ref and alt Counts")
+    message("Getting ref and alt Counts ...")
     
     if(!is.null(ID_column)){
         
@@ -146,6 +156,10 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
 
         refAltReads <- merge_mutations_in_phase(mutations = mutations, bam = bam,
             tag = tag, min_base_quality = min_base_quality, ID_column = ID_column)
+
+        prob_purification <- sum(refAltReads$n_reads_multi_mutation)/sum(refAltReads$all_reads)
+
+        bg$rate <- bg$rate * (1 - prob_purification)
 
     } else {
        

@@ -1,5 +1,5 @@
-
 #' @export
+
 merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phasingID", min_base_quality = 20) {
 	
 	assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
@@ -22,6 +22,10 @@ merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phas
     	alt <- unlist(purrr::map(read_names_to_merge, "alt"))	
     	ref <- unlist(purrr::map(read_names_to_merge, "ref"))
     	
+        ## number of reads that map to more than one mutation
+        all_reads <- c(ref, alt)
+        n_reads_multi_mutation <- length(unique(all_reads[duplicated(all_reads)]))
+
         ## purify mismatches mapping only to one of the mutations in phase
     	alt <- alt[! alt %in% ref ]
 
@@ -31,6 +35,8 @@ merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phas
         ## put the counts together
     	data.frame(ref = length(unique(ref)),
     		alt = length(unique(alt)),
+            n_reads_multi_mutation = n_reads_multi_mutation,
+            all_reads = length(unique(all_reads)),
     		multi_support = multi_support)
     	})
 
