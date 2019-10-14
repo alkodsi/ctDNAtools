@@ -59,7 +59,7 @@ simulator <- function(depths, rate, altReads, substitutions = NULL, seed) {
             size = depths_list[[.x]], prob = rate[[.x]]))
         
         comparison_by_sub <- purrr::pmap_dbl(list(sim, altReads_list, depths_list), 
-            function(x, y, z) compare_simulated_observed(simulated = .x, observed = .y, depths = z))
+            function(x, y, z) compare_simulated_observed(simulated = x, observed = y, depths = z))
 
         out <- ifelse(sum(comparison_by_sub) == length(comparison_by_sub), 1, 0)
     
