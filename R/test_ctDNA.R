@@ -47,8 +47,8 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", vaf_thresho
     
     assertthat::assert_that(is.numeric(mutations$POS), all(mutations$POS > 0))
     
-    assertthat::assert_that(is.numeric(targets$start), all(mutations$start > 0), 
-        is.numeric(targets$end), all(mutations$end > 0))
+    assertthat::assert_that(is.numeric(targets$start), all(targets$start > 0), 
+        is.numeric(targets$end), all(targets$end > 0))
     
     assertthat::assert_that(all(mutations$CHROM %in% GenomeInfoDb::seqnames(reference)), 
         all(targets$chr %in% GenomeInfoDb::seqnames(reference)), 
