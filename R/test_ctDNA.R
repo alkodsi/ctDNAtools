@@ -24,7 +24,7 @@
 #'         backgroundRate, a list of substituion-specific background rate, and pvalue, the p-value of the test
 #' @export
 
-test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column = NULL,
+test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column = NULL, use_unique_molecules = T,
     vaf_threshold = 0.1, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, bam_list = character(), 
     bam_list_tags = rep("", length(bam_list)), min_alt_reads = 1, min_samples = 1, 
     by_substitution = F, n_simulations = 10000, seed = 123) {
@@ -155,7 +155,8 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
         message("merging mutations in phase ...")
 
         refAltReads <- merge_mutations_in_phase(mutations = mutations, bam = bam,
-            tag = tag, min_base_quality = min_base_quality, ID_column = ID_column)
+            tag = tag, min_base_quality = min_base_quality, ID_column = ID_column, 
+            use_unique_molecules = use_unique_molecules)
 
         prob_purification <- sum(refAltReads$n_reads_multi_mutation)/sum(refAltReads$all_reads)
 
