@@ -18,7 +18,7 @@
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 
-merge_mutations_in_phase1 <- function(mutations, bam, tag = "", ID_column = "phasingID", min_base_quality = 20, use_unique_molecules = T) {
+merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phasingID", min_base_quality = 20, use_unique_molecules = T) {
 	
 	assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
        assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT", ID_column)))
@@ -72,20 +72,35 @@ merge_mutations_in_phase1 <- function(mutations, bam, tag = "", ID_column = "pha
         alt <- purrr::map(out, "alt")
         names(alt) <- unique(IDs$phasing_id)
 
-        ref_alt <- map2(ref, alt, ~c(.x, .y))
+        ref_alt <- purrr::map2(ref, alt, ~c(.x, .y))
+
+        
 
         IDs_toMerge <- ref_alt %>% 
             purrr::map(~purrr::map_lgl(ref_alt, purrr::compose(any, `%in%`), .x)) %>% 
-            purrr::map(which) %>%
-            purrr::map(~unique(IDs$phasing_id)[.x],collapse=",") %>%
-            unique()
+            purrr::map(which)
+
+        
+        for(i in 1:length(IDs_toMerge)){
+            for(j in 1:length(IDs_toMerge)){
+           	    if(length(intersect(IDs_toMerge[[i]],IDs_toMerge[[j]]))>0){
+           		    
+           		    IDs_toMerge[[i]] <- sort(union(IDs_toMerge[[i]], IDs_toMerge[[j]]))
+           	    
+           	    }
+            }
+        }
+
+        IDs_toMerge <- IDs_toMerge %>%
+            unique() %>%    
+            purrr::map(~unique(IDs$phasing_id)[.x])
 
         newIDs <- purrr::map_chr(IDs_toMerge, ~paste(.x,collapse=","))
         
         merged_reads <- purrr::map_dfr(IDs_toMerge, function(.x){
         	data.frame(
-        	  ref_count <- length(unique(unlist(ref[.x]))),
-        	  alt_count <- length(unique(unlist(alt[.x])))
+        	  ref_count = length(unique(unlist(ref[.x]))),
+        	  alt_count = length(unique(unlist(alt[.x])))
         	  )
         	})
        
@@ -93,6 +108,7 @@ merge_mutations_in_phase1 <- function(mutations, bam, tag = "", ID_column = "pha
             dplyr::mutate(ref = merged_reads$ref_count, alt = merged_reads$alt_count)
         
         return(list(out = out, purification_prob = purification_prob))
+    
     } else {
     
         out <- data.frame(Phasing_id = unique(IDs$phasing_id),
