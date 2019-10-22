@@ -1,6 +1,24 @@
+#' Collapses mutations in phase into one event
+#'
+#' Given a mutations data frame and a bam file, this function collapses mutations in phase identified by the ID_column into one event.
+#' While doing that, it ignores the reads that support both the reference and alternative alleles for different mutations in phase.
+#' When use_unique_molecules is TRUE, it counts the unique molecules only once, i.e. if two mutations are close to each others, the
+#' counts for the second mutation include only the reads that do not map to the first one.
+#' @param mutations A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.
+#' @param bam path to bam file
+#' @param tag the RG tag if the bam has more than one sample
+#' @param ID_column The name of the column in mutations data.frame that has the IDs for mutations in phase.
+#' NA values will be filled automatically by unique mutation identifiers.
+#' @param min_base_quality minimum base quality for a read to be counted
+#' @param use_unique_molecules A logical. If true, reads mapping to multiple mutations will 
+#' be counted only once for the mutation that appears first in mutations data frame.
+#' @return A data frame that has the ref and alt counts for the mutations/events, as well as, 
+#' the count of reads that support multiple mutations in phase, and the total number of reads.
 #' @export
+#' @importFrom rlang .data
+#' @importFrom magrittr %>%
 
-merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phasingID", min_base_quality = 20, use_unique_molecules = T) {
+merge_mutations_in_phase1 <- function(mutations, bam, tag = "", ID_column = "phasingID", min_base_quality = 20, use_unique_molecules = T) {
 	
 	assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
        assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT", ID_column)))
@@ -14,7 +32,7 @@ merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phas
     read_names <- get_mutations_read_names(mutations = mutations, bam = bam,
         tag = tag, min_base_quality = min_base_quality)
 
-    out <- purrr::map(IDs_list, function(.x){
+    out <- purrr::map(IDs_list, function(.x) {
     	## extract mutations belonging to the phase ID
     	read_names_to_merge <- read_names[.x]  
 
@@ -45,28 +63,42 @@ merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phas
    
     df <- purrr::map_dfr(out,"df")
 
+    purification_prob <- sum(df$n_reads_multi_mutation)/sum(df$all_reads)
+
     if(use_unique_molecules) {
         ref <- purrr::map(out, "ref")
-    
+        names(ref) <- unique(IDs$phasing_id)
+
         alt <- purrr::map(out, "alt")
+        names(alt) <- unique(IDs$phasing_id)
+
+        ref_alt <- map2(ref, alt, ~c(.x, .y))
+
+        IDs_toMerge <- ref_alt %>% 
+            purrr::map(~purrr::map_lgl(ref_alt, purrr::compose(any, `%in%`), .x)) %>% 
+            purrr::map(which) %>%
+            purrr::map(~unique(IDs$phasing_id)[.x],collapse=",") %>%
+            unique()
+
+        newIDs <- purrr::map_chr(IDs_toMerge, ~paste(.x,collapse=","))
+        
+        merged_reads <- purrr::map_dfr(IDs_toMerge, function(.x){
+        	data.frame(
+        	  ref_count <- length(unique(unlist(ref[.x]))),
+        	  alt_count <- length(unique(unlist(alt[.x])))
+        	  )
+        	})
        
-        ref_df <- data.frame(ID = factor(unlist(map2(unique(IDs$phasing_id),ref,
-    	    ~rep(.x, each = length(.y)))), levels = unique(IDs$phasing_id)) , ref = unlist(ref)) %>%
-            dplyr::filter(!duplicated(.data$ref)) %>%
-            dplyr::count(.data$ID, .drop = F)
-
-        alt_df <- data.frame(ID = factor(unlist(map2(unique(IDs$phasing_id),alt,
-    	    ~rep(.x, each = length(.y)))), levels = unique(IDs$phasing_id)) , alt = unlist(alt)) %>%
-            dplyr::filter(!duplicated(.data$alt)) %>%
-            dplyr::count(.data$ID, .drop = F)
-
-        df <- df %>%
-            dplyr::mutate(ref = ref_df$n, alt = alt_df$n)
-    }
+        out <- data.frame(Phasing_id = newIDs, stringsAsFactors = F) %>%
+            dplyr::mutate(ref = merged_reads$ref_count, alt = merged_reads$alt_count)
+        
+        return(list(out = out, purification_prob = purification_prob))
+    } else {
     
-    out <- data.frame(Phasing_id = unique(IDs$phasing_id),
-  	    df, stringsAsFactors = F)
+        out <- data.frame(Phasing_id = unique(IDs$phasing_id),
+  	        df, stringsAsFactors = F)
 
-    return(out)
+        return(list(out = out, purification_prob = purification_prob))
+    }
 
 }
