@@ -10,8 +10,6 @@
 #' @param ID_column The name of the column in mutations data.frame that has the IDs for mutations in phase.
 #' NA values will be filled automatically by unique mutation identifiers.
 #' @param min_base_quality minimum base quality for a read to be counted
-#' @param use_unique_molecules A logical. If true, reads mapping to multiple mutations will 
-#' be counted only once for the mutation that appears first in mutations data frame.
 #' @return A data frame that has the ref and alt counts for the mutations/events, as well as, 
 #' the count of reads that support multiple mutations in phase, and the total number of reads.
 #' @export
@@ -63,58 +61,11 @@ merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phas
    
     df <- purrr::map_dfr(out,"df")
 
-    purification_prob <- sum(df$n_reads_multi_mutation)/sum(df$all_reads)
-
-    if(use_unique_molecules) {
-        ref <- purrr::map(out, "ref")
-        names(ref) <- unique(IDs$phasing_id)
-
-        alt <- purrr::map(out, "alt")
-        names(alt) <- unique(IDs$phasing_id)
-
-        ref_alt <- purrr::map2(ref, alt, ~c(.x, .y))
-
-        
-
-        IDs_toMerge <- ref_alt %>% 
-            purrr::map(~purrr::map_lgl(ref_alt, purrr::compose(any, `%in%`), .x)) %>% 
-            purrr::map(which)
-
-        
-        for(i in 1:length(IDs_toMerge)){
-            for(j in 1:length(IDs_toMerge)){
-           	    if(length(intersect(IDs_toMerge[[i]],IDs_toMerge[[j]]))>0){
-           		    
-           		    IDs_toMerge[[i]] <- sort(union(IDs_toMerge[[i]], IDs_toMerge[[j]]))
-           	    
-           	    }
-            }
-        }
-
-        IDs_toMerge <- IDs_toMerge %>%
-            unique() %>%    
-            purrr::map(~unique(IDs$phasing_id)[.x])
-
-        newIDs <- purrr::map_chr(IDs_toMerge, ~paste(.x,collapse=","))
-        
-        merged_reads <- purrr::map_dfr(IDs_toMerge, function(.x){
-        	data.frame(
-        	  ref_count = length(unique(unlist(ref[.x]))),
-        	  alt_count = length(unique(unlist(alt[.x])))
-        	  )
-        	})
-       
-        out <- data.frame(Phasing_id = newIDs, stringsAsFactors = F) %>%
-            dplyr::mutate(ref = merged_reads$ref_count, alt = merged_reads$alt_count)
-        
-        return(list(out = out, purification_prob = purification_prob))
+    purification_prob <- sum(df$n_reads_multi_mutation)/sum(df$all_reads) 
     
-    } else {
-    
-        out <- data.frame(Phasing_id = unique(IDs$phasing_id),
-  	        df, stringsAsFactors = F)
+    out <- data.frame(Phasing_id = unique(IDs$phasing_id),
+  	    df, stringsAsFactors = F)
 
-        return(list(out = out, purification_prob = purification_prob))
-    }
+    return(list(out = out, purification_prob = purification_prob))
 
 }

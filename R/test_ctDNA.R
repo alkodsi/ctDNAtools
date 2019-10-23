@@ -10,8 +10,6 @@
 #' @param tag the RG tag if the bam has more than one sample
 #' @param ID_column The name of the column that contains the ID of mutations in phase. All mutations in Phase should have the same ID in that column. 
 #' Will lead to considerable slow down when provided.
-#' @param use_unique_molecules A logical. If true, reads mapping to multiple mutations will 
-#' be counted only once for the mutation that appears first in mutations data frame.
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param max_depth maximum depth above which sampling will happen
 #' @param min_mapq the minimum mapping quality for a read to be counted
@@ -157,8 +155,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
         message("merging mutations in phase ...")
 
         refAltReads <- merge_mutations_in_phase(mutations = mutations, bam = bam,
-            tag = tag, min_base_quality = min_base_quality, ID_column = ID_column, 
-            use_unique_molecules = use_unique_molecules)
+            tag = tag, min_base_quality = min_base_quality, ID_column = ID_column)
 
         prob_purification <- refAltReads$purification_prob
         
