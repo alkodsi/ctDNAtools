@@ -1,11 +1,9 @@
 
 #' @export
-estimate_ctDNA_level <- function(mutations, cfDNA_conc = NA, bam, reference, targets, tag = "", vaf_column = "vaf", 
+estimate_ctDNA_level1 <- function(mutations, cfDNA_conc = NA, bam, reference, targets, tag = "", vaf_column = "vaf", 
 	ref_reads_column = "RefReads", alt_reads_column = "AltReads", background_rate = NA, remove_traces = T, 
 	fdr_thr = 0.05, only_SNVs = F, use_clustering = T, override_selected_cluster = NA, ...) {
-    
-    assertthat::assert_that(!missing(mutations),"mutations is required input")
-    
+       
     assertthat::assert_that(is.character(ref_reads_column), is.character(alt_reads_column), 
     	is.character(vaf_column), length(ref_reads_column) == 1, length(alt_reads_column) == 1,
     	length(vaf_column) == 1)
@@ -25,7 +23,7 @@ estimate_ctDNA_level <- function(mutations, cfDNA_conc = NA, bam, reference, tar
     	length(only_SNVs) == 1, length(override_selected_cluster) == 1)
     
     assertthat::assert_that(is.numeric(mutations[,vaf_column]), 
-    	all(mutations[,vaf_column] < 1), all(mutations[,vaf_column] > 0))
+    	all(mutations[,vaf_column] < 1), all(mutations[,vaf_column] >= 0))
     
     assertthat::assert_that(is.numeric(mutations[,ref_reads_column]), 
     	all(mutations[,ref_reads_column] %% 1 == 0), all(mutations[,ref_reads_column] %% 1 == 0),
@@ -69,12 +67,12 @@ estimate_ctDNA_level <- function(mutations, cfDNA_conc = NA, bam, reference, tar
 
     if(remove_traces) {
        
-        if(!is.na(backround_rate)){
+        if(!is.na(background_rate)){
 
        	    assertthat::assert_that(is.numeric(background_rate), length(background_rate) == 1, 
        	    	background_rate < 1, background_rate > 0)
        	   
-       	    bg <- backround_rate
+       	    bg <- background_rate
        
         } else {
        
