@@ -1,6 +1,8 @@
 
 #' @export
-estimate_ctDNA_level1 <- function(mutations, cfDNA_conc = NA, bam, reference, targets, tag = "", vaf_column = "vaf", 
+#' @importFrom mclust mclustBIC
+
+estimate_ctDNA_level <- function(mutations, cfDNA_conc = NA, bam, reference, targets, tag = "", vaf_column = "vaf", 
 	ref_reads_column = "RefReads", alt_reads_column = "AltReads", background_rate = NA, remove_traces = T, 
 	fdr_thr = 0.05, only_SNVs = F, use_clustering = T, override_selected_cluster = NA, ...) {
        
