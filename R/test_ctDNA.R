@@ -137,6 +137,14 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
             min_alt_reads = min_alt_reads, min_samples = min_samples, min_base_quality = min_base_quality, 
             max_depth = max_depth, min_mapq = min_mapq)
         
+        if(nrow(mutations) == 0 ){
+            
+            warning(sprintf("In Sample %s, all present mutations were filtered", sm), immediate.= T)
+            
+            return(list(counts = data.frame(ref = c(), alt = c()), 
+                backgroundRate = list(rate = NA, CA = NA, CG = NA, CT = NA, TA = NA, TC = NA, TG = NA),
+                pvalue = 1))
+        }
     }
     
     
