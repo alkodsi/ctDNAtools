@@ -1,20 +1,3 @@
-#' Helper function to sample proportion of a variable
-
-#' @param x the variable to sample from.
-#' @param proportion the fraction of the variable to be randomly sample.
-#' @param seed the random seed.
-#' @return a vector having randomly sampled proportion of the input variable.
-
-sample_proportion <- function(x, proportion = 0.5, seed = 42) {
-    
-    sample.size <- round(length(x) * proportion)
-    
-    set.seed(seed)
-    
-    return(sample(x, size = sample.size))
-    
-}
-
 
 #' Get histogram of fragment lengths from a bam file
 #'
@@ -28,10 +11,6 @@ sample_proportion <- function(x, proportion = 0.5, seed = 42) {
 #' @param bin_size the width of the bin (breaks) of the histogram.
 #' @param mutated_only A logical, whether to return the counts for only mutated reads. The 'mutations' input should be given when TRUE.
 #' @param normalized A logical, whether to normalize the counts to the total number of reads.
-#' @param augmented A logical, whether to create additional samples by sampling proportion of the reads.
-#' @param n_augmentation Number of pseudo-samples to create.
-#' @param augment_proportion the fraction of the reads to sample in each augmented sample.
-#' @param seed The random seed to use when creating augmented samples.
 #' @param isProperPair a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).
 #' @param min_size Integer with the lowest fragment length.
 #' @param max_size Integer with the highest fragment length.
@@ -45,8 +24,7 @@ sample_proportion <- function(x, proportion = 0.5, seed = 42) {
 #' @export
 
 bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, mutated_only = F, 
-    normalized = F, augmented = F, n_augmentation = 10, augment_proportion = 0.5, 
-    seed = 123, isProperPair = NA, min_size = 1, max_size = 400, ignore_trimmed = T, 
+    normalized = F, isProperPair = NA, min_size = 1, max_size = 400, ignore_trimmed = T, 
     different_strands = T, simple_cigar = F) {
     
     assertthat::assert_that(is.logical(mutated_only), is.logical(augmented), 
@@ -88,22 +66,6 @@ bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, mut
         by = bin_size, normalized = normalized))
     
     colnames(out) <- frag_length$Sample[1]
-    
-    if (augmented) {
-        
-        set.seed(seed)
-        
-        seeds <- round(runif(n = n_augmentation, min = 0, max = 1e+08))
-        
-        augs <- purrr::map_dfc(seeds, ~get_hist_bins(sample_proportion(frag_length$size, 
-            proportion = augment_proportion, seed = .x), from = min_size, to = max_size, 
-            by = bin_size, normalized = normalized)) %>% as.data.frame()
-        
-        colnames(augs) <- paste0(frag_length$Sample[1], "_resample", c(1:ncol(augs)))
-        
-        out <- dplyr::bind_cols(out, augs) %>% as.data.frame()
-        
-    }
     
     return(out)
     

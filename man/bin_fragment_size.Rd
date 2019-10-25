@@ -5,10 +5,9 @@
 \title{Get histogram of fragment lengths from a bam file}
 \usage{
 bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
-  mutated_only = F, normalized = F, augmented = F,
-  n_augmentation = 10, augment_proportion = 0.5, seed = 123,
-  isProperPair = NA, min_size = 1, max_size = 400,
-  ignore_trimmed = T, different_strands = T, simple_cigar = F)
+  mutated_only = F, normalized = F, isProperPair = NA,
+  min_size = 1, max_size = 400, ignore_trimmed = T,
+  different_strands = T, simple_cigar = F)
 }
 \arguments{
 \item{bam}{path to bam file.}
@@ -22,14 +21,6 @@ bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
 \item{mutated_only}{A logical, whether to return the counts for only mutated reads. The 'mutations' input should be given when TRUE.}
 
 \item{normalized}{A logical, whether to normalize the counts to the total number of reads.}
-
-\item{augmented}{A logical, whether to create additional samples by sampling proportion of the reads.}
-
-\item{n_augmentation}{Number of pseudo-samples to create.}
-
-\item{augment_proportion}{the fraction of the reads to sample in each augmented sample.}
-
-\item{seed}{The random seed to use when creating augmented samples.}
 
 \item{isProperPair}{a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).}
 
