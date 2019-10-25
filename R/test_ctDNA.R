@@ -26,13 +26,13 @@
 
 test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column = NULL, use_unique_molecules = T,
     vaf_threshold = 0.1, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, bam_list = character(), 
-    bam_list_tags = rep("", length(bam_list)), min_alt_reads = 1, min_samples = 1, 
+    bam_list_tags = rep("", length(bam_list)), min_alt_reads = 1, min_samples = ceiling(length(bam_list)/10), 
     by_substitution = F, n_simulations = 10000, seed = 123) {
     
     assertthat::assert_that(!missing(mutations), !missing(bam), !missing(targets), 
         !missing(reference), msg = "mutations, bam, targets and reference are all required")
     
-    assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
+    assertthat::assert_that(is.data.frame(mutations), 
         assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
     
     assertthat::assert_that(is.data.frame(targets), assertthat::not_empty(targets), 
@@ -131,6 +131,16 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
     
     message(paste("Analyzing Sample", sm, "..."))
     
+    if(nrow(mutations) == 0 ){
+            
+        warning(sprintf("In Sample %s, no mutations in input", sm), immediate.= T)
+            
+        return(list(counts = data.frame(ref = c(), alt = c()), 
+            backgroundRate = list(rate = NA, CA = NA, CG = NA, CT = NA, TA = NA, TC = NA, TG = NA),
+            pvalue = 1))
+    
+    }
+
     if (length(bam_list) > 0) {
         
         mutations <- filter_mutations(mutations = mutations, bams = bam_list, tags = bam_list_tags, 
