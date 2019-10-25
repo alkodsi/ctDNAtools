@@ -24,8 +24,10 @@ estimate_ctDNA_level <- function(mutations, cfDNA_conc = NA, bam, reference, tar
     	is.logical(remove_traces), length(use_clustering) == 1,  length(remove_traces) == 1,
     	length(only_SNVs) == 1, length(override_selected_cluster) == 1)
     
+    mutations <- mutations[!is.na(mutations[,vaf_column]),]
+
     assertthat::assert_that(is.numeric(mutations[,vaf_column]), 
-    	all(mutations[,vaf_column] < 1), all(mutations[,vaf_column] >= 0))
+    	all(mutations[,vaf_column] <= 1), all(mutations[,vaf_column] >= 0))
     
     assertthat::assert_that(is.numeric(mutations[,ref_reads_column]), 
     	all(mutations[,ref_reads_column] %% 1 == 0), all(mutations[,ref_reads_column] %% 1 == 0),
