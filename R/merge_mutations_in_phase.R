@@ -2,21 +2,21 @@
 #'
 #' Given a mutations data frame and a bam file, this function collapses mutations in phase identified by the ID_column into one event.
 #' While doing that, it ignores the reads that support both the reference and alternative alleles for different mutations in phase.
-#' When use_unique_molecules is TRUE, it counts the unique molecules only once, i.e. if two mutations are close to each others, the
-#' counts for the second mutation include only the reads that do not map to the first one.
+
 #' @param mutations A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.
 #' @param bam path to bam file
 #' @param tag the RG tag if the bam has more than one sample
 #' @param ID_column The name of the column in mutations data.frame that has the IDs for mutations in phase.
 #' NA values will be filled automatically by unique mutation identifiers.
 #' @param min_base_quality minimum base quality for a read to be counted
+#' @param min_mapq integer specifying the minimum mapping quality for reads to be included.
 #' @return A data frame that has the ref and alt counts for the mutations/events, as well as, 
 #' the count of reads that support multiple mutations in phase, and the total number of reads.
 #' @export
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 
-merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phasingID", min_base_quality = 20, use_unique_molecules = T) {
+merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phasingID", min_base_quality = 20, min_mapq = 30) {
 	
 	assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
        assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT", ID_column)))
@@ -28,7 +28,7 @@ merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phas
     IDs_list <- purrr::map(unique(IDs$phasing_id), ~ IDs[IDs$phasing_id == .x, "mutations_id"])
 
     read_names <- get_mutations_read_names(mutations = mutations, bam = bam,
-        tag = tag, min_base_quality = min_base_quality)
+        tag = tag, min_base_quality = min_base_quality, min_mapq = min_mapq)
 
     out <- purrr::map(IDs_list, function(.x) {
     	## extract mutations belonging to the phase ID

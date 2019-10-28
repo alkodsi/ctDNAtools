@@ -5,8 +5,7 @@
 \title{Collapses mutations in phase into one event}
 \usage{
 merge_mutations_in_phase(mutations, bam, tag = "",
-  ID_column = "phasingID", min_base_quality = 20,
-  use_unique_molecules = T)
+  ID_column = "phasingID", min_base_quality = 20, min_mapq = 30)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}
@@ -19,6 +18,8 @@ merge_mutations_in_phase(mutations, bam, tag = "",
 NA values will be filled automatically by unique mutation identifiers.}
 
 \item{min_base_quality}{minimum base quality for a read to be counted}
+
+\item{min_mapq}{integer specifying the minimum mapping quality for reads to be included.}
 }
 \value{
 A data frame that has the ref and alt counts for the mutations/events, as well as, 
@@ -27,6 +28,4 @@ the count of reads that support multiple mutations in phase, and the total numbe
 \description{
 Given a mutations data frame and a bam file, this function collapses mutations in phase identified by the ID_column into one event.
 While doing that, it ignores the reads that support both the reference and alternative alleles for different mutations in phase.
-When use_unique_molecules is TRUE, it counts the unique molecules only once, i.e. if two mutations are close to each others, the
-counts for the second mutation include only the reads that do not map to the first one.
 }

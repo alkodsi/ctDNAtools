@@ -7,11 +7,13 @@
 #' @param pos Chromosome position for the mutation
 #' @param alt The alternative allele of the mutation
 #' @param tag the RG tag if the bam has more than one samplee
+#' @param min_base_quality integer specifying the minimum base quality for reads to be included.
+#' @param min_mapq integer specifying the minimum mapping quality for reads to be included.
 #' @return A character vector having the read names
 #' @importFrom rlang .data
 #' @export 
 
-get_mutation_read_names <- function(bam, chr, pos, ref, alt, tag = "", min_base_quality = 20) {
+get_mutation_read_names <- function(bam, chr, pos, ref, alt, tag = "", min_base_quality = 20, min_mapq = 30) {
     
     assertthat::assert_that(!missing(bam), is.character(bam), length(bam) == 1, file.exists(bam))
     
@@ -31,7 +33,7 @@ get_mutation_read_names <- function(bam, chr, pos, ref, alt, tag = "", min_base_
         
         sbp <- Rsamtools::ScanBamParam(flag = Rsamtools::scanBamFlag(isUnmappedQuery = F, 
             isSecondaryAlignment = F, isNotPassingQualityControls = F, isDuplicate = F),
-            which = gr)
+            which = gr, mapqFilter = min_mapq)
 
         stackedStrings <- GenomicAlignments::stackStringsFromBam(bam, use.names = T, 
             param = sbp)
@@ -45,7 +47,7 @@ get_mutation_read_names <- function(bam, chr, pos, ref, alt, tag = "", min_base_
         
         sbp <- Rsamtools::ScanBamParam(flag = Rsamtools::scanBamFlag(isUnmappedQuery = F, 
             isSecondaryAlignment = F, isNotPassingQualityControls = F, isDuplicate = F),
-            which = gr, tagFilter = list(RG = tag))
+            which = gr, tagFilter = list(RG = tag), mapqFilter = min_mapq)
 
         stackedStrings <- GenomicAlignments::stackStringsFromBam(bam, use.names = T, 
             param = sbp)

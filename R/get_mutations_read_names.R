@@ -6,10 +6,12 @@
 #' @param what Either Alt: names of the reads that exhibit variant alleles in mutations, 
 #' or Ref: names of the reads the exhibit reference alleles in mutations
 #' @param tag the RG tag if the bam has more than one samplee
+#' @param min_base_quality integer specifying the minimum base quality for reads to be included.
+#' @param min_mapq integer specifying the minimum mapping quality for reads to be included
 #' @return A list with length equal to the number of mutations. Each element is a character vector with the read names.
 #' @export 
 
-get_mutations_read_names <- function(bam, mutations, min_base_quality = 20, tag = "") {
+get_mutations_read_names <- function(bam, mutations, min_base_quality = 20, tag = "", min_mapq = 30) {
     
     assertthat::assert_that(!missing(bam), is.character(bam),
      length(bam) == 1, file.exists(bam))
@@ -33,7 +35,7 @@ get_mutations_read_names <- function(bam, mutations, min_base_quality = 20, tag 
     read_names <- purrr::pmap(list(mutations$CHROM, mutations$POS, mutations$REF, mutations$ALT), 
         function(chr, pos, ref, alt) {
             counts <- get_mutation_read_names(bam = bam, tag = tag, chr = chr, pos = pos, 
-                ref = ref, alt = alt, min_base_quality = min_base_quality)
+                ref = ref, alt = alt, min_base_quality = min_base_quality, min_mapq = min_mapq)
         })
     
     names(read_names) <- paste0(mutations$CHROM, ":", mutations$POS, "_", mutations$REF, "_", mutations$ALT)

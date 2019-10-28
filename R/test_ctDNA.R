@@ -173,7 +173,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
         message("merging mutations in phase ...")
 
         refAltReads <- merge_mutations_in_phase(mutations = mutations, bam = bam,
-            tag = tag, min_base_quality = min_base_quality, ID_column = ID_column)
+            tag = tag, min_base_quality = min_base_quality, min_mapq = min_mapq, ID_column = ID_column)
 
         prob_purification <- refAltReads$purification_prob
         

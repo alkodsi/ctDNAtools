@@ -5,14 +5,18 @@
 \title{Get names of the reads showing alternative allele of a mutation}
 \usage{
 get_mutations_read_names(bam, mutations, min_base_quality = 20,
-  tag = "")
+  tag = "", min_mapq = 30)
 }
 \arguments{
 \item{bam}{path to bam file}
 
 \item{mutations}{A data frame containing the mutations. Must have the columns CHROM, POS, REF, ALT.}
 
+\item{min_base_quality}{integer specifying the minimum base quality for reads to be included.}
+
 \item{tag}{the RG tag if the bam has more than one samplee}
+
+\item{min_mapq}{integer specifying the minimum mapping quality for reads to be included}
 
 \item{what}{Either Alt: names of the reads that exhibit variant alleles in mutations, 
 or Ref: names of the reads the exhibit reference alleles in mutations}
