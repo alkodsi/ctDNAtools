@@ -2,6 +2,7 @@
 
 export(bin_fragment_size)
 export(estimate_ctDNA_level)
+export(extract_trinucleotide_context)
 export(filter_mutations)
 export(get_background_rate)
 export(get_fragment_size)
