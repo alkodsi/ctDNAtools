@@ -18,16 +18,19 @@
 #' @param min_alt_reads When bam_list is provided, this sets the minimum number of alternative allele reads for a sample to be counted.
 #' @param min_samples When number of samples having more than min_alt_reads exceeds this number, the mutation will be filtered.
 #' @param by_substitution boolean whether to run the test according to substitution-specific background rate
-#' @param n_simulations the number of simulations
-#' @param seed the random seed
+#' @param n_simulations the number of simulations.
+#' @param pvalue_threshold the p-value threshold used to decide positivity or negativity.
+#' @param seed the random seed.
+#' @param informative_reads_threshold the number of informative reads (unique reads mapping to specified mutations) under which the test will be undetermined.
 #' @return a named list contains: counts, a data frame of read counts of reference and variant alleles for the reporter mutations in the tested sample,
 #'         backgroundRate, a list of substituion-specific background rate, and pvalue, the p-value of the test
 #' @export
 
-test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column = NULL, use_unique_molecules = T,
-    vaf_threshold = 0.1, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, bam_list = character(), 
+test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column = NULL, 
+    vaf_threshold = 0.1, min_base_quality = 30, max_depth = 1e+05, min_mapq = 40, bam_list = character(), 
     bam_list_tags = rep("", length(bam_list)), min_alt_reads = 1, min_samples = ceiling(length(bam_list)/10), 
-    by_substitution = F, n_simulations = 10000, seed = 123) {
+    by_substitution = F, n_simulations = 10000, pvalue_threshold = 0.05, seed = 123,
+    informative_reads_threshold = 10000) {
     
     assertthat::assert_that(!missing(mutations), !missing(bam), !missing(targets), 
         !missing(reference), msg = "mutations, bam, targets and reference are all required")
@@ -135,37 +138,60 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
             
         warning(sprintf("In Sample %s, no mutations in input", sm), immediate.= T)
             
-        return(list(counts = data.frame(ref = c(), alt = c()), 
-            backgroundRate = list(rate = NA, CA = NA, CG = NA, CT = NA, TA = NA, TC = NA, TG = NA),
-            pvalue = 1))
+        out <- data.frame(
+            sample = sm,
+            n_mutations = nrow(mutations),
+            n_nonzero_alt = NA,
+            total_alt_reads = NA,
+            mutations_filtered = NA,
+            background_rate = NA,
+            informative_reads = NA,
+            multi_support_reads = NA,
+            pvalue = NA,
+            decision = factor("undetermined", levels = c("positive","negative","undetermined")))
+        
+        return(out)
     
     }
 
+    n_filtered <- 0
+
     if (length(bam_list) > 0) {
         
+        original_n <- nrow(mutations)
+
         mutations <- filter_mutations(mutations = mutations, bams = bam_list, tags = bam_list_tags, 
             min_alt_reads = min_alt_reads, min_samples = min_samples, min_base_quality = min_base_quality, 
             max_depth = max_depth, min_mapq = min_mapq)
         
+        n_filtered <- original_n - nrow(mutations)
+
         if(nrow(mutations) == 0 ){
             
             warning(sprintf("In Sample %s, all present mutations were filtered", sm), immediate.= T)
             
-            return(list(counts = data.frame(ref = c(), alt = c()), 
-                backgroundRate = list(rate = NA, CA = NA, CG = NA, CT = NA, TA = NA, TC = NA, TG = NA),
-                pvalue = 1))
+            out <- data.frame(
+                sample = sm,
+                n_mutations = nrow(mutations),
+                n_nonzero_alt = NA,
+                total_alt_reads = NA,
+                mutations_filtered = n_filtered,
+                background_rate = NA,
+                informative_reads = NA,
+                multi_support_reads = NA,
+                pvalue = NA,
+                decision = factor("undetermined", levels = c("positive","negative","undetermined")))
+        
+            return(out)
         }
     }
-    
     
     message("Estimating background rate ...")
     
     bg <- get_background_rate(bam = bam, targets = targets, reference = reference, 
         tag = tag, vaf_threshold = vaf_threshold, min_base_quality = min_base_quality, 
         max_depth = max_depth, min_mapq = min_mapq)
-    
-    
-    
+      
     message("Getting ref and alt Counts ...")
     
     if(!is.null(ID_column)){
@@ -177,6 +203,10 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
 
         prob_purification <- refAltReads$purification_prob
         
+        informative_reads <- refAltReads$informative_reads
+
+        multi_support_reads <- refAltReads$multi_support
+
         refAltReads <- refAltReads$out
          
         bg$rate <- bg$rate * (1 - prob_purification)
@@ -184,18 +214,23 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
     } else {
        
         refAltReads <- get_mutations_read_counts(mutations = mutations, bam = bam, tag = tag, 
-             min_base_quality = min_base_quality, max_depth = max_depth, min_mapq = min_mapq)
+            min_base_quality = min_base_quality, max_depth = max_depth, min_mapq = min_mapq)
+        
+        read_names <- get_mutations_read_names(mutations = mutations, bam = bam,
+             tag = tag, min_base_quality = min_base_quality, min_mapq = min_mapq)
 
+        informative_reads <- length(unique(c(unlist(purrr::map(read_names, "ref")), 
+            unlist(purrr::map(read_names, "alt")))))
+        
+        multi_support_reads <- NA
     }
 
-    
     altReads <- refAltReads$alt
     
     refReads <- refAltReads$ref
     
     refAlt <- data.frame(Ref = refReads, Alt = altReads)
-    
-    
+      
     message("Running Monte Carlo simulations")
     
     if (by_substitution && is.null(ID_column)) {
@@ -214,7 +249,23 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
     
     message(paste("Pvalue = ", posTest))
     
-    message(paste("Sample", sm, "is ctDNA", ifelse(posTest < 0.05, "positive", "negative")))
+    decision <- ifelse(posTest < pvalue_threshold, "positive", "negative")
     
-    return(list(counts = refAlt, backgroundRate = bg, pvalue = posTest))
+    decision <- ifelse(informative_reads < informative_reads_threshold, "undetermined", decision)
+
+    message(paste("Sample", sm, "is", decision))
+    
+    out <- data.frame(
+        sample = sm,
+        n_mutations = nrow(mutations),
+        n_nonzero_alt = sum(altReads > 0),
+        total_alt_reads = sum(altReads),
+        mutations_filtered = n_filtered,
+        background_rate = bg$rate,
+        informative_reads = informative_reads,
+        multi_support_reads = multi_support_reads,
+        pvalue = posTest,
+        decision = factor(decision, levels = c("positive","negative","undetermined")))
+
+    return(out)
 }

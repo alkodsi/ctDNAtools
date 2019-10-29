@@ -58,7 +58,10 @@ merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phas
     	alt <- unique(alt)
         list(df = df, ref = ref, alt = alt)    
     })
-   
+    
+    informative_reads <- length(unique(c(unlist(purrr::map(read_names, "ref")), 
+    	unlist(purrr::map(read_names, "alt")))))
+
     df <- purrr::map_dfr(out,"df")
 
     purification_prob <- sum(df$n_reads_multi_mutation)/sum(df$all_reads) 
@@ -66,6 +69,7 @@ merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phas
     out <- data.frame(Phasing_id = unique(IDs$phasing_id),
   	    df, stringsAsFactors = F)
 
-    return(list(out = out, purification_prob = purification_prob))
+    return(list(out = out, purification_prob = purification_prob, multi_support = sum(df$multi_support),
+    	informative_reads = informative_reads))
 
 }

@@ -8,13 +8,13 @@
 
 extract_trinucleotide_context <- function(mutations, reference, destrand = T){
 	
-	assertthat::assert_that(is.data.frame(mutations), 
+    assertthat::assert_that(is.data.frame(mutations), 
         assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
 
     assertthat::assert_that(all(mutations$CHROM %in% GenomeInfoDb::seqnames(reference)), 
         msg = "Chromosomes in mutations and/or targets don't match the specified reference")
 
-	assertthat::assert_that(class(reference) == "BSgenome")
+    assertthat::assert_that(class(reference) == "BSgenome")
     
     assertthat::assert_that(all(nchar(mutations$REF) == 1), all(nchar(mutations$ALT) == 1),
         msg = "Only SNVs are supported")
@@ -27,9 +27,9 @@ extract_trinucleotide_context <- function(mutations, reference, destrand = T){
     
     assertthat::assert_that(is.logical(destrand), length(destrand) == 1)
 
-	context <- BSgenome::getSeq(reference, 
-            GenomicRanges::GRanges(mutations$CHROM, 
-            	IRanges::IRanges(mutations$POS - 1, mutations$POS + 1)))
+    context <- BSgenome::getSeq(reference, 
+        GenomicRanges::GRanges(mutations$CHROM, 
+        IRanges::IRanges(mutations$POS - 1, mutations$POS + 1)))
 
    
     if(destrand){
@@ -45,7 +45,6 @@ extract_trinucleotide_context <- function(mutations, reference, destrand = T){
         alt <- ifelse(mutations$REF %in% c("C","T"), alt, Biostrings::reverseComplement(alt))
 
         substitutions <- factor(paste0(ref, alt), levels = c("CA", "CG", "CT", "TA", "TC", "TG"))
-
 
     } else {
 

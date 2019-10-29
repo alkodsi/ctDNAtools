@@ -5,11 +5,12 @@
 \title{Tests the ctDNA positivity of a sample}
 \usage{
 test_ctDNA(mutations, bam, targets, reference, tag = "",
-  ID_column = NULL, use_unique_molecules = T, vaf_threshold = 0.1,
-  min_base_quality = 20, max_depth = 1e+05, min_mapq = 30,
-  bam_list = character(), bam_list_tags = rep("", length(bam_list)),
-  min_alt_reads = 1, min_samples = ceiling(length(bam_list)/10),
-  by_substitution = F, n_simulations = 10000, seed = 123)
+  ID_column = NULL, vaf_threshold = 0.1, min_base_quality = 30,
+  max_depth = 1e+05, min_mapq = 40, bam_list = character(),
+  bam_list_tags = rep("", length(bam_list)), min_alt_reads = 1,
+  min_samples = ceiling(length(bam_list)/10), by_substitution = F,
+  n_simulations = 10000, pvalue_threshold = 0.05, seed = 123,
+  informative_reads_threshold = 20000)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}
@@ -43,9 +44,13 @@ Will lead to considerable slow down when provided.}
 
 \item{by_substitution}{boolean whether to run the test according to substitution-specific background rate}
 
-\item{n_simulations}{the number of simulations}
+\item{n_simulations}{the number of simulations.}
 
-\item{seed}{the random seed}
+\item{pvalue_threshold}{the p-value threshold used to decide positivity or negativity.}
+
+\item{seed}{the random seed.}
+
+\item{informative_reads_threshold}{the number of informative reads (unique reads mapping to specified mutations) under which the test will be undetermined.}
 }
 \value{
 a named list contains: counts, a data frame of read counts of reference and variant alleles for the reporter mutations in the tested sample,
