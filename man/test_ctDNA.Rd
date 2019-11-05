@@ -10,7 +10,7 @@ test_ctDNA(mutations, bam, targets, reference, tag = "",
   bam_list_tags = rep("", length(bam_list)), min_alt_reads = 1,
   min_samples = ceiling(length(bam_list)/10), by_substitution = F,
   n_simulations = 10000, pvalue_threshold = 0.05, seed = 123,
-  informative_reads_threshold = 20000)
+  informative_reads_threshold = 10000)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}

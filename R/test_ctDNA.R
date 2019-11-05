@@ -148,7 +148,8 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
             informative_reads = NA,
             multi_support_reads = NA,
             pvalue = NA,
-            decision = factor("undetermined", levels = c("positive","negative","undetermined")))
+            decision = factor("undetermined", levels = c("positive","negative","undetermined")),
+            stringsAsFactors = F)
         
         return(out)
     
@@ -180,7 +181,8 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
                 informative_reads = NA,
                 multi_support_reads = NA,
                 pvalue = NA,
-                decision = factor("undetermined", levels = c("positive","negative","undetermined")))
+                decision = factor("undetermined", levels = c("positive","negative","undetermined")),
+                stringsAsFactors = F)
         
             return(out)
         }
@@ -265,7 +267,8 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
         informative_reads = informative_reads,
         multi_support_reads = multi_support_reads,
         pvalue = posTest,
-        decision = factor(decision, levels = c("positive","negative","undetermined")))
+        decision = factor(decision, levels = c("positive","negative","undetermined")),
+        stringsAsFactors = F)
 
     return(out)
 }
