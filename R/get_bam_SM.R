@@ -12,6 +12,12 @@ get_bam_SM <- function(bam, tag = "") {
         rg <- rg[[which(grepl(tag, purrr::map_chr(rg, 1)))]]
         sm <- gsub("SM:", "", rg[grepl("SM", rg)])
     }
+    if( is.null(rg) ) {
+
+        sm <- basename(bam)
+    
+    }
+
     return(sm)
     
 }
