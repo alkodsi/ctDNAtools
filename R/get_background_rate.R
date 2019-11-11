@@ -18,7 +18,7 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
     min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
     
     
-    gr <- GenomicRanges::GRanges(targets$chr, IRanges::IRanges(targets$start, targets$end))
+    gr <- GenomicRanges::reduce(GenomicRanges::GRanges(targets$chr, IRanges::IRanges(targets$start, targets$end)))
     
     assertthat::assert_that(class(reference) == "BSgenome")
     assertthat::assert_that(is.data.frame(targets), assertthat::not_empty(targets), 
