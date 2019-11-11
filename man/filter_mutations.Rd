@@ -4,14 +4,17 @@
 \alias{filter_mutations}
 \title{Filter a set of mutations}
 \usage{
-filter_mutations(mutations, bams, tags = rep("", length(bams)),
-  min_alt_reads = 2, min_samples = 2, min_base_quality = 20,
-  max_depth = 1e+05, min_mapq = 30)
+filter_mutations(mutations, bams = NULL, black_list = NULL,
+  tags = rep("", length(bams)), min_alt_reads = 2, min_samples = 2,
+  min_base_quality = 20, max_depth = 1e+05, min_mapq = 30)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}
 
 \item{bams}{a vector of paths to bam files}
+
+\item{black_list}{a character vector of genomic loci of format chr_pos to filter. If not given, the bams
+will be scanned for mismatches in the mutations loci and the specified thresholds will be applied for filtering.}
 
 \item{tags}{a vector of the RG tags if the bam has more than one sample}
 
@@ -30,6 +33,6 @@ a named list contains: ref, vector of read counts of the reference alleles, and
         alt, vector of read counts of the alternative allele
 }
 \description{
-Filter a set of mutations given the prevalence of their mismatches in a set of bam files. Mutations that 
-have more than min_alt_reads in more than min_samples will be removed.
+Filter a set of mutations given the input black list or the prevalence of their mismatches in a set of bam files. Mutations that 
+have more than min_alt_reads in more than min_samples will be removed when no black list is given.
 }
