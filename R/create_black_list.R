@@ -1,15 +1,45 @@
 
 #' @export
-create_black_list <- function(bam_list, targets, reference, vaf_threshold = 0.1, bam_list_tags = rep("",length(bam_list)), 
-    min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, mean_vaf_quantile = 0.95, 
-    min_samples_one_read = max(2, ceiling(length(bam_list) * 0.3)), 
-    min_samples_two_reads = max(2, ceiling(length(bam_list) * 0.05))) {
+create_black_list <- function(background_panel, mean_vaf_quantile = 0.95, 
+    min_samples_one_read = max(2, ceiling(ncol(background_panel$vaf) * 0.75)), 
+    min_samples_two_reads = max(2, ceiling(ncol(background_panel$vaf) * 0.2))) {
+
+    assertthat::assert_that(is.list(background_panel), 
+        assertthat::has_name(background_panel, c("depth","alt","vaf")),
+        msg = "background_panel should be a list as produced by create_background_panel")
+    
+    mean_vaf <- rowMeans(background_panel$vaf[, -1, drop = F], na.rm = T)
+    mean_vaf_idx <- which(mean_vaf >= quantile(mean_vaf, mean_vaf_quantile, na.rm = T))
+    message(sprintf("%s loci added satisfying Mean VAF condition", length(mean_vaf_idx)))
+
+    samples_one_read <- rowSums(background_panel$alt[, -1, drop = F] >= 1, na.rm =T)
+    samples_one_read_idx <- which(samples_one_read >= min_samples_one_read)
+    message(sprintf("%s loci added satisfying one read condition", length(samples_one_read_idx)))
+
+    samples_two_reads <- rowSums(background_panel$alt[, -1, drop = F] >=2, na.rm = T)
+    samples_two_reads_idx <- which(samples_two_reads >= min_samples_two_reads)
+    message(sprintf("%s loci added satisfying two reads condition", length(samples_two_reads_idx)))
+
+    idx <- unique(c(mean_vaf_idx, samples_one_read_idx, samples_two_reads_idx))
+    message(sprintf("Black list has %s loci", length(idx)))
+
+    black_list <- background_panel$depth$Locus[idx]
+    
+    return(black_list)
+}
+
+#' @export
+create_background_panel <- function(bam_list, targets, reference, vaf_threshold = 0.05, bam_list_tags = rep("",length(bam_list)), 
+    min_base_quality = 10, max_depth = 1e+05, min_mapq = 20) {
     
     assertthat::assert_that(class(reference) == "BSgenome")
     assertthat::assert_that(is.data.frame(targets), assertthat::not_empty(targets), 
         assertthat::has_name(targets, c("chr", "start", "end")))
         
     assertthat::assert_that(is.character(bam_list), all(file.exists(bam_list)))
+
+    assertthat::assert_that(length(bam_list) > 1,
+        msg = "At least two bam files should be provided")
         
     bam_list_chr <- purrr::map(bam_list, get_bam_chr)
         
@@ -29,10 +59,10 @@ create_black_list <- function(bam_list, targets, reference, vaf_threshold = 0.1,
            "is not correct"))    
     }
 
-    background_panel <- purrr::map2(bam_list, bam_list_tags,
-   	  ~ create_black_list_instance(bam = .x, tag = .y, targets = targets, reference = reference,
+    background_panel <- furrr::future_map2(bam_list, bam_list_tags,
+   	  ~ create_background_panel_instance(bam = .x, tag = .y, targets = targets, reference = reference,
    	  	   vaf_threshold = vaf_threshold, min_base_quality = min_base_quality, min_mapq = min_mapq,
-   	  	   max_depth = max_depth))
+   	  	   max_depth = max_depth), .progress = T)
     
     sm <- make.unique(purrr::map_chr(bam_list, get_bam_SM))
 
@@ -45,24 +75,11 @@ create_black_list <- function(bam_list, targets, reference, vaf_threshold = 0.1,
     vaf <- purrr::reduce(purrr::map(background_panel, "vaf"), dplyr::full_join, by = "Locus") %>%
         rlang::set_names(c("Locus", sm))
     
-    mean_vaf <- rowMeans(vaf[, -1, drop = F], na.rm = T)
-    mean_vaf_idx <- which(mean_vaf >= quantile(mean_vaf, mean_vaf_quantile, na.rm = T))
-
-    samples_one_read <- rowSums(alt[, -1, drop = F] >= 1, na.rm =T)
-    samples_one_read_idx <- which(samples_one_read >= min_samples_one_read)
-
-    samples_two_reads <- rowSums(alt[, -1, drop = F] >=2, na.rm = T)
-    samples_two_reads_idx <- which(samples_two_reads >= min_samples_two_reads)
-    
-    idx <- unique(c(mean_vaf_idx, samples_one_read_idx, samples_two_reads_idx))
-
-    black_list <- depth$Locus[idx]
-
-    return(list(black_list = black_list, depth = depth, alt = alt, vaf = vaf))
+    return(list(depth = depth, alt = alt, vaf = vaf))
 }
 
 
-create_black_list_instance <- function(bam, targets, reference, vaf_threshold = 0.1, tag = "", 
+create_background_panel_instance <- function(bam, targets, reference, vaf_threshold = 0.05, tag = "", 
     min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
 
     gr <- GenomicRanges::reduce(GenomicRanges::GRanges(targets$chr, IRanges::IRanges(targets$start, targets$end)))

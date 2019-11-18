@@ -28,12 +28,17 @@ filter_mutations <- function(mutations, bams = NULL, black_list = NULL,
         
         assertthat::assert_that(is.character(black_list))
         
+        assertthat::assert_that(all(purrr::map_dbl(strsplit(black_list, "_"),length) == 2),
+            msg = "black_list should have characters in the format chr_pos")
+
         idx <- paste(mutations$CHROM, mutations$POS, sep = "_") %in% black_list
 
     } else {
 
         assertthat::assert_that(is.character(bams))
+
         assertthat::assert_that(length(bams) >= min_samples)
+        
         assertthat::assert_that(length(bams) == length(tags))
     
     

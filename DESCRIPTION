@@ -27,7 +27,8 @@ Imports:
     rlang,
     Biostrings,
     methods,
-    mclust
+    mclust,
+    furrr
 Suggests:
     BSgenome.Hsapiens.UCSC.hg19
 Encoding: UTF-8

@@ -6,6 +6,8 @@
 #' @param reference the reference genome in BSgenome format
 #' @param vaf_threshold the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)
 #' @param tag the RG tag if the bam has more than one sample
+#' @param black_list a character vector of genomic loci of format chr_pos. 
+#' The background will be computed on the target regions after excluding black_list loci.
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param max_depth maximum depth above which sampling will happen
 #' @param min_mapq the minimum mapping quality for a read to be counted
@@ -15,27 +17,43 @@
 #' @importFrom rlang .data
 
 get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, tag = "", 
-    min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
+    black_list = NULL, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
     
     
     gr <- GenomicRanges::reduce(GenomicRanges::GRanges(targets$chr, IRanges::IRanges(targets$start, targets$end)))
     
     assertthat::assert_that(class(reference) == "BSgenome")
+
     assertthat::assert_that(is.data.frame(targets), assertthat::not_empty(targets), 
         assertthat::has_name(targets, c("chr", "start", "end")))
     
+     if(!is.null(black_list)) {
+
+        assertthat::assert_that(is.character(black_list))
+        
+        assertthat::assert_that(all(purrr::map_dbl(strsplit(black_list, "_"),length) == 2),
+            msg = "black_list should have characters in the format chr_pos")
+
+        assertthat::assert_that(all(purrr::map_chr(strsplit(black_list, "_"), 1) %in%  GenomeInfoDb::seqnames(reference)),
+            msg = "Chromosomes of black_list are not in rerference")
+    
+    }
+
     if (tag == "") {
+
         sbp <- Rsamtools::ScanBamParam(which = gr)
+    
     } else {
+    
         sbp <- Rsamtools::ScanBamParam(which = gr, tagFilter = list(RG = tag))
+    
     }
     
     pileupParam <- Rsamtools::PileupParam(max_depth = max_depth, min_base_quality = min_base_quality, 
         min_mapq = min_mapq, distinguish_strands = F, include_deletions = F, include_insertions = F)
     
     p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam) %>% 
-        
-    tidyr::pivot_wider(names_from = .data$nucleotide, values_from = .data$count, 
+        tidyr::pivot_wider(names_from = .data$nucleotide, values_from = .data$count, 
           values_fill = list(count = 0)) %>% 
         as.data.frame() %>% 
         dplyr::mutate(ref = as.character(BSgenome::getSeq(reference, 
@@ -46,6 +64,13 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
         nonRefCount = .data$depth - .data$refCount) %>% 
         dplyr::filter((.data$nonRefCount/.data$depth) < vaf_threshold)
     
+    if(!is.null(black_list)){
+
+      pAnn <- pAnn %>% 
+        dplyr::filter(!paste(.data$seqnames, .data$pos, sep = "_") %in% black_list)
+
+    }
+
     rate_by_sub <- pAnn %>% dplyr::group_by(.data$ref) %>%
         dplyr::summarize(depth = sum(as.numeric(.data$depth)), 
              A = sum(as.numeric(.data$A)), C = sum(as.numeric(.data$C)), G = sum(as.numeric(.data$G)), 

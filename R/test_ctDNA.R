@@ -10,6 +10,7 @@
 #' @param tag the RG tag if the bam has more than one sample
 #' @param ID_column The name of the column that contains the ID of mutations in phase. All mutations in Phase should have the same ID in that column. 
 #' Will lead to considerable slow down when provided.
+#' @param black_list a character vector of genomic loci of format chr_pos to filter. If given, will override bam_list.
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param max_depth maximum depth above which sampling will happen
 #' @param min_mapq the minimum mapping quality for a read to be counted
@@ -26,8 +27,8 @@
 #'         backgroundRate, a list of substituion-specific background rate, and pvalue, the p-value of the test
 #' @export
 
-test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column = NULL, 
-    vaf_threshold = 0.1, min_base_quality = 30, max_depth = 1e+05, min_mapq = 40, bam_list = character(), 
+test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column = NULL, black_list = NULL,
+    vaf_threshold = 0.1, min_base_quality = 30, max_depth = 1e+05, min_mapq = 40, bam_list = NULL, 
     bam_list_tags = rep("", length(bam_list)), min_alt_reads = 1, min_samples = ceiling(length(bam_list)/10), 
     by_substitution = F, n_simulations = 10000, pvalue_threshold = 0.05, seed = 123,
     informative_reads_threshold = 10000) {
@@ -100,7 +101,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
     
     }
 
-    if (length(bam_list) > 0) {
+    if (!is.null(bam_list)) {
         
         assertthat::assert_that(is.numeric(min_alt_reads), length(min_alt_reads) == 1,
             min_alt_reads%%1 == 0, min_alt_reads >= 0)
@@ -128,6 +129,18 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
                 "is not correct"))
         
         }
+    }
+
+    if(!is.null(black_list)) {
+
+        assertthat::assert_that(is.character(black_list))
+        
+        assertthat::assert_that(all(purrr::map_dbl(strsplit(black_list, "_"),length) == 2),
+            msg = "black_list should have characters in the format chr_pos")
+
+        assertthat::assert_that(all(purrr::map_chr(strsplit(black_list, "_"), 1) %in%  GenomeInfoDb::seqnames(reference)),
+            msg = "Chromosomes of black_list are not in reference")
+    
     }
     
     sm <- get_bam_SM(bam = bam, tag = tag)
@@ -157,11 +170,11 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
 
     n_filtered <- 0
 
-    if (length(bam_list) > 0) {
+    if (!is.null(bam_list) || !is.null(black_list)) {
         
         original_n <- nrow(mutations)
 
-        mutations <- filter_mutations(mutations = mutations, bams = bam_list, tags = bam_list_tags, 
+        mutations <- filter_mutations(mutations = mutations, bams = bam_list, black_list = black_list, tags = bam_list_tags, 
             min_alt_reads = min_alt_reads, min_samples = min_samples, min_base_quality = min_base_quality, 
             max_depth = max_depth, min_mapq = min_mapq)
         
@@ -192,7 +205,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
     
     bg <- get_background_rate(bam = bam, targets = targets, reference = reference, 
         tag = tag, vaf_threshold = vaf_threshold, min_base_quality = min_base_quality, 
-        max_depth = max_depth, min_mapq = min_mapq)
+        black_list = black_list, max_depth = max_depth, min_mapq = min_mapq)
       
     message("Getting ref and alt Counts ...")
     
