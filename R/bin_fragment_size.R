@@ -27,20 +27,12 @@ bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, mut
     normalized = F, isProperPair = NA, min_size = 1, max_size = 400, ignore_trimmed = T, 
     different_strands = T, simple_cigar = F) {
     
-    assertthat::assert_that(is.logical(mutated_only), is.logical(augmented), 
+    assertthat::assert_that(is.logical(mutated_only),  
         is.logical(normalized), length(mutated_only) == 1, 
-        length(augmented) == 1, length(normalized) == 1)
+        length(normalized) == 1)
     
     assertthat::assert_that(is.numeric(bin_size), bin_size%%1 == 0, 
         length(bin_size) == 1, bin_size > 0)
-    
-    assertthat::assert_that(is.numeric(n_augmentation), n_augmentation%%1 == 0,
-     length(n_augmentation) == 1)
-    
-    assertthat::assert_that(is.numeric(augment_proportion), augment_proportion < 1,
-     augment_proportion > 0, length(augment_proportion) == 1)
-    
-    assertthat::assert_that(is.numeric(seed), seed%%1 == 0, length(seed) == 1)
     
     if (mutated_only) {
         
