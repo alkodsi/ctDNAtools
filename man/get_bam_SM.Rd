@@ -6,6 +6,11 @@
 \usage{
 get_bam_SM(bam, tag = "")
 }
+\arguments{
+\item{bam}{Path to the bam file}
+
+\item{tag}{The RG tag for the bam file}
+}
 \description{
 Helper function to extract SM from a bam file
 }

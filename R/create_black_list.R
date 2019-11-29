@@ -1,5 +1,16 @@
 
+#' A function to create a black list of genomic loci based on a background panel created from a list of bam files (e.g. healthy samples)
+#'
+#' The function applies criteria on the background panel to extract the noisy genomic loci. Criteria include minimum number of samples having
+#' at least one and at least two non-reference allele. Additionally the quantile of mean VAF above which the loci are considered noisy
+
+#' @param background_panel A list produced by create_background panel function
+#' @param mean_vaf_quantile The quantile of mean VAF above which the loci are considered noisy
+#' @param min_samples_one_read Loci that at least this number of samples exhibit at least one non-reference reads are considered noisy.
+#' @param min_samples_two_reads Loci that at least this number of samples exhibit at least two non-reference reads are considered noisy.
+
 #' @export
+
 create_black_list <- function(background_panel, mean_vaf_quantile = 0.95, 
     min_samples_one_read = max(2, ceiling(ncol(background_panel$vaf) * 0.75)), 
     min_samples_two_reads = max(2, ceiling(ncol(background_panel$vaf) * 0.2))) {
@@ -26,95 +37,4 @@ create_black_list <- function(background_panel, mean_vaf_quantile = 0.95,
     black_list <- background_panel$depth$Locus[idx]
     
     return(black_list)
-}
-
-#' @export
-create_background_panel <- function(bam_list, targets, reference, vaf_threshold = 0.05, bam_list_tags = rep("",length(bam_list)), 
-    min_base_quality = 10, max_depth = 1e+05, min_mapq = 20) {
-    
-    assertthat::assert_that(class(reference) == "BSgenome")
-    assertthat::assert_that(is.data.frame(targets), assertthat::not_empty(targets), 
-        assertthat::has_name(targets, c("chr", "start", "end")))
-        
-    assertthat::assert_that(is.character(bam_list), all(file.exists(bam_list)))
-
-    assertthat::assert_that(length(bam_list) > 1,
-        msg = "At least two bam files should be provided")
-        
-    bam_list_chr <- purrr::map(bam_list, get_bam_chr)
-        
-    assertthat::assert_that(all(purrr::map_lgl(bam_list_chr, ~ all(.x %in% GenomeInfoDb::seqnames(reference)))), 
-        msg = "The chromosomes in at least one of the specified bams in bam_list don't match the reference")
-        
-    assertthat::assert_that(is.character(bam_list_tags), 
-        length(bam_list_tags) == length(bam_list))
-        
-    if (any(bam_list_tags != "")) {
-            
-        tag_verification <- purrr::map2_lgl(bam_list[bam_list_tags != ""],
-            bam_list_tags[bam_list_tags != ""], verify_tag)
-            
-        assertthat::assert_that(all(tag_verification), 
-            msg = paste("specified tag for", paste(bam_list[bam_list_tags != ""][!tag_verification], collapse = " , "), 
-           "is not correct"))    
-    }
-
-    background_panel <- furrr::future_map2(bam_list, bam_list_tags,
-   	  ~ create_background_panel_instance(bam = .x, tag = .y, targets = targets, reference = reference,
-   	  	   vaf_threshold = vaf_threshold, min_base_quality = min_base_quality, min_mapq = min_mapq,
-   	  	   max_depth = max_depth), .progress = T)
-    
-    sm <- make.unique(purrr::map_chr(bam_list, get_bam_SM))
-
-    depth <- purrr::reduce(purrr::map(background_panel, "depth"), dplyr::full_join, by = "Locus") %>%
-        rlang::set_names(c("Locus", sm))
-
-    alt <- purrr::reduce(purrr::map(background_panel, "alt"), dplyr::full_join, by = "Locus") %>%
-        rlang::set_names(c("Locus", sm))
-    
-    vaf <- purrr::reduce(purrr::map(background_panel, "vaf"), dplyr::full_join, by = "Locus") %>%
-        rlang::set_names(c("Locus", sm))
-    
-    return(list(depth = depth, alt = alt, vaf = vaf))
-}
-
-
-create_background_panel_instance <- function(bam, targets, reference, vaf_threshold = 0.05, tag = "", 
-    min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
-
-    gr <- GenomicRanges::reduce(GenomicRanges::GRanges(targets$chr, IRanges::IRanges(targets$start, targets$end)))
-
-    if (tag == "") {
-    
-        sbp <- Rsamtools::ScanBamParam(which = gr)
-    
-    } else {
-    
-        sbp <- Rsamtools::ScanBamParam(which = gr, tagFilter = list(RG = tag))
-    
-    }
-
-    pileupParam <- Rsamtools::PileupParam(max_depth = max_depth, min_base_quality = min_base_quality, 
-        min_mapq = min_mapq, distinguish_strands = F, include_deletions = F, include_insertions = F)
-
-    p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam) %>% 
-        tidyr::pivot_wider(names_from = .data$nucleotide, values_from = .data$count, 
-          values_fill = list(count = 0)) %>% 
-        as.data.frame() %>% 
-        dplyr::mutate(ref = as.character(BSgenome::getSeq(reference, 
-            GenomicRanges::GRanges(.data$seqnames, IRanges::IRanges(.data$pos, .data$pos))))) %>% 
-        dplyr::mutate(depth = .data$A + .data$C + .data$G + .data$T)
-    
-    pAnn <- dplyr::mutate(p, refCount = purrr::map2_dbl(c(1:nrow(p)), p$ref, ~p[.x, .y]),
-        nonRefCount = .data$depth - .data$refCount, vaf = .data$nonRefCount/.data$depth) %>% 
-        dplyr::mutate(nonRefCount = ifelse(vaf >= vaf_threshold, NA, nonRefCount),
-        	depth = ifelse(vaf >= vaf_threshold, NA, depth),
-            vaf = ifelse(vaf >= vaf_threshold, NA, vaf), 
-            Locus = paste(.data$seqnames, .data$pos, sep = "_")) %>%
-        dplyr::select(.data$Locus, .data$depth, .data$nonRefCount, .data$vaf)
-
-    out <- list(depth = data.frame(Locus = pAnn$Locus, depth = pAnn$depth, stringsAsFactors = F),
-                alt = data.frame(Locus = pAnn$Locus, alt = pAnn$nonRefCount, stringsAsFactors = F),
-                vaf = data.frame(Locus = pAnn$Locus, vaf = pAnn$vaf, stringsAsFactors = F))
-    return(out)
 }

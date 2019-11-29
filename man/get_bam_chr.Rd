@@ -6,6 +6,9 @@
 \usage{
 get_bam_chr(bam)
 }
+\arguments{
+\item{bam}{the path to bam file}
+}
 \description{
 Helper function to extract chromosome names from a bam file
 }
