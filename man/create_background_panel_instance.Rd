@@ -27,6 +27,9 @@ create_background_panel_instance(bam, targets, reference,
 
 \item{bam_list_tags}{RG tags for the list of bam files. By default, the whole bam file will be used.}
 }
+\value{
+A named list having depth, alt and vaf data frames. Each has the same order of loci in rows and the input sample in columns.
+}
 \description{
 This function scans the targets regions in one bam file, and reports the number of reference, non-reference reads for each loci
 in addition to the non-reference (VAF) allele frequency. Loci with VAF higher than vaf_threshold are masked with NA. This function is 

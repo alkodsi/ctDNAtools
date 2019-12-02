@@ -28,6 +28,9 @@ create_background_panel(bam_list, targets, reference,
 
 \item{substitution_specific}{logical, whether to have the loci by substitutions.}
 }
+\value{
+A named list having depth, alt and vaf data frames. Each has the same order of loci in rows and the input samples in columns.
+}
 \description{
 This function scans the targets regions in the list of bam files, and reports the number of reference, non-reference reads for each loci
 in addition to the non-reference (VAF) allele frequency. Loci with VAF higher than vaf_threshold are masked with NA.

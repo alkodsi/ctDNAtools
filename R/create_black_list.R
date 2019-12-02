@@ -8,6 +8,7 @@
 #' @param mean_vaf_quantile The quantile of mean VAF above which the loci are considered noisy
 #' @param min_samples_one_read Loci that at least this number of samples exhibit at least one non-reference reads are considered noisy.
 #' @param min_samples_two_reads Loci that at least this number of samples exhibit at least two non-reference reads are considered noisy.
+#' @return a character vector of the loci in the black list
 
 #' @export
 
