@@ -5,12 +5,12 @@
 \title{Tests the ctDNA positivity of a sample}
 \usage{
 test_ctDNA(mutations, bam, targets, reference, tag = "",
-  ID_column = NULL, black_list = NULL, vaf_threshold = 0.1,
-  min_base_quality = 30, max_depth = 1e+05, min_mapq = 40,
-  bam_list = NULL, bam_list_tags = rep("", length(bam_list)),
-  min_alt_reads = 1, min_samples = ceiling(length(bam_list)/10),
-  by_substitution = F, n_simulations = 10000,
-  pvalue_threshold = 0.05, seed = 123,
+  ID_column = NULL, black_list = NULL, substitution_specific = T,
+  vaf_threshold = 0.1, min_base_quality = 30, max_depth = 1e+05,
+  min_mapq = 40, bam_list = NULL, bam_list_tags = rep("",
+  length(bam_list)), min_alt_reads = 1,
+  min_samples = ceiling(length(bam_list)/10), by_substitution = F,
+  n_simulations = 10000, pvalue_threshold = 0.05, seed = 123,
   informative_reads_threshold = 10000)
 }
 \arguments{
@@ -27,7 +27,10 @@ test_ctDNA(mutations, bam, targets, reference, tag = "",
 \item{ID_column}{The name of the column that contains the ID of mutations in phase. All mutations in Phase should have the same ID in that column. 
 Will lead to considerable slow down when provided.}
 
-\item{black_list}{a character vector of genomic loci of format chr_pos to filter. If given, will override bam_list.}
+\item{black_list}{a character vector of genomic loci to filter. The format is chr_pos if substitution_specific is false or
+chr_pos_ref_alt if substitution_specific is true. If given, will override bam_list.}
+
+\item{substitution_specific}{logical, whether to have the loci of black_list by substitutions.}
 
 \item{vaf_threshold}{the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)}
 

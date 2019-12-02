@@ -12,13 +12,15 @@
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param max_depth maximum depth above which sampling will happen
 #' @param min_mapq the minimum mapping quality for a read to be counted
+#' @param substitution_specific logical, whether to have the loci of black_list by substitutions.
+
 #' @return a named list contains: ref, vector of read counts of the reference alleles, and
 #'         alt, vector of read counts of the alternative allele
 #' @export
 
 filter_mutations <- function(mutations, bams = NULL, black_list = NULL, 
     tags = rep("", length(bams)), min_alt_reads = 2, 
-    min_samples = 2, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
+    min_samples = 2, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, substitution_specific = T) {
     
     assertthat::assert_that(!is.null(bams) || !is.null(black_list))
 
@@ -28,10 +30,24 @@ filter_mutations <- function(mutations, bams = NULL, black_list = NULL,
         
         assertthat::assert_that(is.character(black_list))
         
-        assertthat::assert_that(all(purrr::map_dbl(strsplit(black_list, "_"),length) == 2),
-            msg = "black_list should have characters in the format chr_pos")
+        if(substitution_specific) {
+            
+            assertthat::assert_that(all(purrr::map_dbl(strsplit(black_list, "_"),length) == 4),
+               all(purrr::map_chr(strsplit(black_list, "_"), 3) %in%  c("C","A","T","G")),
+               all(purrr::map_chr(strsplit(black_list, "_"), 4) %in%  c("C","A","T","G")),
+               msg = "black_list should have characters in the format chr_pos_ref_alt")
 
-        idx <- paste(mutations$CHROM, mutations$POS, sep = "_") %in% black_list
+            idx <- paste(mutations$CHROM, mutations$POS, mutations$REF, mutations$ALT, sep = "_") %in% black_list
+         
+        } else {
+
+            assertthat::assert_that(all(purrr::map_dbl(strsplit(black_list, "_"),length) == 2),
+                msg = "black_list should have characters in the format chr_pos")
+
+            idx <- paste(mutations$CHROM, mutations$POS, sep = "_") %in% black_list
+
+        }
+
 
     } else {
 

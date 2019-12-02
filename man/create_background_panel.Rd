@@ -6,7 +6,8 @@
 \usage{
 create_background_panel(bam_list, targets, reference,
   vaf_threshold = 0.05, bam_list_tags = rep("", length(bam_list)),
-  min_base_quality = 10, max_depth = 1e+05, min_mapq = 20)
+  min_base_quality = 10, max_depth = 1e+05, min_mapq = 20,
+  substitution_specific = T)
 }
 \arguments{
 \item{bam_list}{A character vector of paths to bam files.}
@@ -24,6 +25,8 @@ create_background_panel(bam_list, targets, reference,
 \item{max_depth}{Maximum depth for the pileup}
 
 \item{min_mapq}{The minimum mapping quality to count a read for a loci}
+
+\item{substitution_specific}{logical, whether to have the loci by substitutions.}
 }
 \description{
 This function scans the targets regions in the list of bam files, and reports the number of reference, non-reference reads for each loci

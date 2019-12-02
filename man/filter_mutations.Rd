@@ -6,7 +6,8 @@
 \usage{
 filter_mutations(mutations, bams = NULL, black_list = NULL,
   tags = rep("", length(bams)), min_alt_reads = 2, min_samples = 2,
-  min_base_quality = 20, max_depth = 1e+05, min_mapq = 30)
+  min_base_quality = 20, max_depth = 1e+05, min_mapq = 30,
+  substitution_specific = T)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}
@@ -27,6 +28,8 @@ will be scanned for mismatches in the mutations loci and the specified threshold
 \item{max_depth}{maximum depth above which sampling will happen}
 
 \item{min_mapq}{the minimum mapping quality for a read to be counted}
+
+\item{substitution_specific}{logical, whether to have the loci of black_list by substitutions.}
 }
 \value{
 a named list contains: ref, vector of read counts of the reference alleles, and

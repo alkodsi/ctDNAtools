@@ -6,18 +6,20 @@
 #' @param reference the reference genome in BSgenome format
 #' @param vaf_threshold the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)
 #' @param tag the RG tag if the bam has more than one sample
-#' @param black_list a character vector of genomic loci of format chr_pos. 
+#' @param black_list a character vector of genomic loci of format chr_pos if substitution_specific is false, or chr_pos_ref_alt if substitution_specific is true. 
 #' The background will be computed on the target regions after excluding black_list loci.
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param max_depth maximum depth above which sampling will happen
 #' @param min_mapq the minimum mapping quality for a read to be counted
+#' @param substitution_specific logical, whether to have the loci of black_list by substitutions.
+
 #' @return a list containing the general mismatch rate and substitution-specific rates
 #' @export
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
 
 get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, tag = "", 
-    black_list = NULL, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
+    black_list = NULL, substitution_specific = T, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
     
     
     gr <- GenomicRanges::reduce(GenomicRanges::GRanges(targets$chr, IRanges::IRanges(targets$start, targets$end)))
@@ -31,11 +33,22 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
 
         assertthat::assert_that(is.character(black_list))
         
-        assertthat::assert_that(all(purrr::map_dbl(strsplit(black_list, "_"),length) == 2),
-            msg = "black_list should have characters in the format chr_pos")
-
+        if(substitution_specific) {
+          
+          assertthat::assert_that(all(purrr::map_dbl(strsplit(black_list, "_"),length) == 4),
+               all(purrr::map_chr(strsplit(black_list, "_"), 3) %in%  c("C","A","T","G")),
+               all(purrr::map_chr(strsplit(black_list, "_"), 4) %in%  c("C","A","T","G")),
+               msg = "black_list should have characters in the format chr_pos_ref_alt when substitution_specific is true")
+        
+        } else {
+           
+           assertthat::assert_that(all(purrr::map_dbl(strsplit(black_list, "_"),length) == 2),
+               msg = "black_list should have characters in the format chr_pos")
+        
+        }
+        
         assertthat::assert_that(all(purrr::map_chr(strsplit(black_list, "_"), 1) %in%  GenomeInfoDb::seqnames(reference)),
-            msg = "Chromosomes of black_list are not in rerference")
+            msg = "Chromosomes of black_list are not in reference")
     
     }
 
@@ -65,10 +78,28 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
         dplyr::filter((.data$nonRefCount/.data$depth) < vaf_threshold)
     
     if(!is.null(black_list)){
+      
+      if(substitution_specific) {
+          
+          p <- p %>% 
+             tidyr::pivot_longer(names_to = "alt", cols = c("C","A","G","T"), values_to = "count") %>% 
+             dplyr::mutate(locus = paste(.data$seqnames, .data$pos, .data$ref, .data$alt, sep = "_")) %>%
+             dplyr::filter(!.data$locus %in% black_list) %>%
+             dplyr::select(- .data$locus) %>%
+             tidyr::pivot_wider(names_from = .data$alt, values_from = .data$count, values_fill = list(count = 0)) %>%
+             dplyr::mutate(depth = .data$A + .data$C + .data$G + .data$T) %>%
+             as.data.frame()
 
-      pAnn <- pAnn %>% 
-        dplyr::filter(!paste(.data$seqnames, .data$pos, sep = "_") %in% black_list)
+          pAnn <- dplyr::mutate(p, refCount = purrr::map2_dbl(c(1:nrow(p)), p$ref, ~p[.x, .y]),
+             nonRefCount = .data$depth - .data$refCount) %>% 
+             dplyr::filter((.data$nonRefCount/.data$depth) < vaf_threshold)
 
+        } else {
+         
+         pAnn <- pAnn %>% 
+           dplyr::filter(!paste(.data$seqnames, .data$pos, sep = "_") %in% black_list)
+
+        }
     }
 
     rate_by_sub <- pAnn %>% dplyr::group_by(.data$ref) %>%
@@ -100,4 +131,3 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
     return(list(rate = rate, CA = CA, CG = CG, CT = CT, TA = TA, TC = TC, TG = TG))
     
 }
-

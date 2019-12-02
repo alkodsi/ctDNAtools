@@ -6,7 +6,7 @@
 \usage{
 create_background_panel_instance(bam, targets, reference,
   vaf_threshold = 0.05, tag = "", min_base_quality = 20,
-  max_depth = 1e+05, min_mapq = 30)
+  max_depth = 1e+05, min_mapq = 30, substitution_specific = T)
 }
 \arguments{
 \item{bam}{A character specifying the path to bam file.}
@@ -22,6 +22,8 @@ create_background_panel_instance(bam, targets, reference,
 \item{max_depth}{Maximum depth for the pileup}
 
 \item{min_mapq}{The minimum mapping quality to count a read for a loci}
+
+\item{substitution_specific}{logical, whether to have the loci by substitutions.}
 
 \item{bam_list_tags}{RG tags for the list of bam files. By default, the whole bam file will be used.}
 }

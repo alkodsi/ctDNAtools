@@ -11,10 +11,12 @@
 #' @param min_base_quality The minimum base quality to count a read for a loci.
 #' @param max_depth Maximum depth for the pileup
 #' @param min_mapq The minimum mapping quality to count a read for a loci
+#' @param substitution_specific logical, whether to have the loci by substitutions.
+#' @return A named list having depth, alt and vaf data frames. Each has the same order of loci in rows and the input samples in columns.
 
 #' @export
 create_background_panel <- function(bam_list, targets, reference, vaf_threshold = 0.05, bam_list_tags = rep("",length(bam_list)), 
-    min_base_quality = 10, max_depth = 1e+05, min_mapq = 20) {
+    min_base_quality = 10, max_depth = 1e+05, min_mapq = 20, substitution_specific = T) {
     
     assertthat::assert_that(class(reference) == "BSgenome")
     assertthat::assert_that(is.data.frame(targets), assertthat::not_empty(targets), 
@@ -24,6 +26,8 @@ create_background_panel <- function(bam_list, targets, reference, vaf_threshold 
 
     assertthat::assert_that(length(bam_list) > 1,
         msg = "At least two bam files should be provided")
+    
+    assertthat::assert_that(is.logical(substitution_specific) & length(substitution_specific) == 1)
         
     bam_list_chr <- purrr::map(bam_list, get_bam_chr)
         
@@ -46,7 +50,7 @@ create_background_panel <- function(bam_list, targets, reference, vaf_threshold 
     background_panel <- furrr::future_map2(bam_list, bam_list_tags,
    	  ~ create_background_panel_instance(bam = .x, tag = .y, targets = targets, reference = reference,
    	  	   vaf_threshold = vaf_threshold, min_base_quality = min_base_quality, min_mapq = min_mapq,
-   	  	   max_depth = max_depth), .progress = T)
+   	  	   max_depth = max_depth, substitution_specific = substitution_specific), .progress = T)
     
     sm <- make.unique(purrr::map_chr(bam_list, get_bam_SM))
 

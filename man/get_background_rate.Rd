@@ -5,8 +5,8 @@
 \title{Compute the background mismatch rate from a bam file}
 \usage{
 get_background_rate(bam, targets, reference, vaf_threshold = 0.1,
-  tag = "", black_list = NULL, min_base_quality = 20,
-  max_depth = 1e+05, min_mapq = 30)
+  tag = "", black_list = NULL, substitution_specific = T,
+  min_base_quality = 20, max_depth = 1e+05, min_mapq = 30)
 }
 \arguments{
 \item{bam}{path to bam file}
@@ -19,8 +19,10 @@ get_background_rate(bam, targets, reference, vaf_threshold = 0.1,
 
 \item{tag}{the RG tag if the bam has more than one sample}
 
-\item{black_list}{a character vector of genomic loci of format chr_pos. 
+\item{black_list}{a character vector of genomic loci of format chr_pos if substitution_specific is false, or chr_pos_ref_alt if substitution_specific is true. 
 The background will be computed on the target regions after excluding black_list loci.}
+
+\item{substitution_specific}{logical, whether to have the loci of black_list by substitutions.}
 
 \item{min_base_quality}{minimum base quality for a read to be counted}
 
