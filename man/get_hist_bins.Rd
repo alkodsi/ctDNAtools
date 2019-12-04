@@ -4,7 +4,7 @@
 \alias{get_hist_bins}
 \title{Helper function to bin a variable}
 \usage{
-get_hist_bins(x, from, to, by, normalized)
+get_hist_bins(x, from, to, by, normalized, custom_bins = NULL)
 }
 \arguments{
 \item{x}{the variable to be binned}
@@ -14,6 +14,8 @@ get_hist_bins(x, from, to, by, normalized)
 \item{to}{the maximum range}
 
 \item{by}{the break length}
+
+\item{custom_bins}{A numeric vector for custom breaks to bin the histogram of fragment length. Over-rides bin_size.}
 }
 \value{
 A numeric vector having counts within bins normalized by the sum of the variable

@@ -9,6 +9,7 @@
 #' @param mutations An optional data frame with mutations. Must have the columns CHROM, POS, REF, ALT.
 #' @param tag the RG tag if the bam has more than one samplee.
 #' @param bin_size the width of the bin (breaks) of the histogram.
+#' @param custom_bins A numeric vector for custom breaks to bin the histogram of fragment length. Over-rides bin_size.
 #' @param mutated_only A logical, whether to return the counts for only mutated reads. The 'mutations' input should be given when TRUE.
 #' @param normalized A logical, whether to normalize the counts to the total number of reads.
 #' @param isProperPair a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).
@@ -23,7 +24,7 @@
 #' @importFrom magrittr %>%
 #' @export
 
-bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, mutated_only = F, 
+bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, custom_bins = NULL, mutated_only = F, 
     normalized = F, isProperPair = NA, min_size = 1, max_size = 400, ignore_trimmed = T, 
     different_strands = T, simple_cigar = F) {
     
@@ -34,6 +35,12 @@ bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, mut
     assertthat::assert_that(is.numeric(bin_size), bin_size%%1 == 0, 
         length(bin_size) == 1, bin_size > 0)
     
+    if(!is.null(custom_bins)){
+    
+        assertthat::assert_that(is.numeric(custom_bins))
+    
+    }
+
     if (mutated_only) {
         
         assertthat::assert_that(!is.null(mutations), 
@@ -54,10 +61,12 @@ bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, mut
     
     message(sprintf("binning %s reads ...", nrow(frag_length)))
     
-    out <- data.frame(counts = get_hist_bins(frag_length$size, from = min_size, to = max_size, 
-        by = bin_size, normalized = normalized))
+    histogram <- get_hist_bins(frag_length$size, from = min_size, to = max_size, 
+        by = bin_size, normalized = normalized, custom_bins = custom_bins)
+
+    out <- data.frame(Breaks = histogram$breaks, counts = histogram$counts, stringsAsFactors = F)
     
-    colnames(out) <- frag_length$Sample[1]
+    colnames(out)[[2]] <- frag_length$Sample[[1]]
     
     return(out)
     

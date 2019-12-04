@@ -5,9 +5,9 @@
 \title{Get histogram of fragment lengths from a bam file}
 \usage{
 bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
-  mutated_only = F, normalized = F, isProperPair = NA,
-  min_size = 1, max_size = 400, ignore_trimmed = T,
-  different_strands = T, simple_cigar = F)
+  custom_bins = NULL, mutated_only = F, normalized = F,
+  isProperPair = NA, min_size = 1, max_size = 400,
+  ignore_trimmed = T, different_strands = T, simple_cigar = F)
 }
 \arguments{
 \item{bam}{path to bam file.}
@@ -17,6 +17,8 @@ bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
 \item{tag}{the RG tag if the bam has more than one samplee.}
 
 \item{bin_size}{the width of the bin (breaks) of the histogram.}
+
+\item{custom_bins}{A numeric vector for custom breaks to bin the histogram of fragment length. Over-rides bin_size.}
 
 \item{mutated_only}{A logical, whether to return the counts for only mutated reads. The 'mutations' input should be given when TRUE.}
 
