@@ -58,12 +58,12 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
            msg = "Specified tag not found")
 	    
 	    sbp <- Rsamtools::ScanBamParam(flag = flag, mapqFilter = 30, simpleCigar = simple_cigar,
-	       tagFilter = list(RG = tag), what = c("qname","flag","qwidth","isize","rname","pos","mpos"))
+	       tagFilter = list(RG = tag), what = c("qname","flag","qwidth","isize"))
     
     } else {
 
         sbp <- Rsamtools::ScanBamParam(flag = flag, mapqFilter = 30, simpleCigar = simple_cigar,
-           what = c("qname","flag","qwidth","isize","rname","pos","mpos"))
+           what = c("qname","flag","qwidth","isize"))
     
     }
     
@@ -98,7 +98,7 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
 
     if(!is.null(mutations)) {
      
-        read_names <- unique(unlist(get_mutations_read_names(bam = bam, tag = tag, mutations = mutations)))
+        read_names <- unique(unlist(purrr::map(get_mutations_read_names(bam = bam, tag = tag, mutations = mutations), "alt")))
         
         fragment_lengths <- dplyr::mutate(fragment_lengths, 
         	category = ifelse(.data$ID %in% read_names, "mutated", "other"))
