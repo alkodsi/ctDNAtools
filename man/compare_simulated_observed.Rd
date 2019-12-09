@@ -2,10 +2,17 @@
 % Please edit documentation in R/simulator.R
 \name{compare_simulated_observed}
 \alias{compare_simulated_observed}
-\title{Compares simulated and observed}
+\title{Compares simulated and observed variant allele counts}
 \usage{
 compare_simulated_observed(simulated, observed, depths)
 }
+\arguments{
+\item{simulated}{the simulated variant allele counts}
+
+\item{observed}{the observed variant allele counts}
+
+\item{depths}{the total depths}
+}
 \description{
-Compares simulated and observed
+Compares simulated and observed variant allele counts
 }

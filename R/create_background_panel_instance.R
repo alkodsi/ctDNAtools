@@ -9,7 +9,7 @@
 #' @param targets The targets data frame must have the columns chr, start and end.
 #' @param reference The reference genome as BSgenome object.
 #' @param vaf_threshold Loci with the fraction of non-reference reads above this value are masked with NA.
-#' @param bam_list_tags RG tags for the list of bam files. By default, the whole bam file will be used.
+#' @param tag The RG tag in the bam file. Empty string defaults to using the whole bam.
 #' @param min_base_quality The minimum base quality to count a read for a loci.
 #' @param max_depth Maximum depth for the pileup
 #' @param min_mapq The minimum mapping quality to count a read for a loci
@@ -49,7 +49,7 @@ create_background_panel_instance <- function(bam, targets, reference, vaf_thresh
                 VAFT = .data$T / .data$depth,
                 VAFG = .data$G / .data$depth,
                 VAFA = .data$A / .data$depth) %>%
-            tidyr::pivot_longer(names_to = "alt", cols = starts_with("VAF"), values_to = "vaf") %>% 
+            tidyr::pivot_longer(names_to = "alt", cols = dplyr::starts_with("VAF"), values_to = "vaf") %>% 
             dplyr::mutate(alt = gsub("VAF","",.data$alt)) %>% 
             dplyr::filter(.data$ref != .data$alt) %>%
             dplyr::mutate(Locus = paste(.data$seqnames, .data$pos, .data$ref, .data$alt, sep = "_"),
@@ -60,9 +60,9 @@ create_background_panel_instance <- function(bam, targets, reference, vaf_thresh
 
         pAnn <- dplyr::mutate(p, refCount = purrr::map2_dbl(c(1:nrow(p)), p$ref, ~p[.x, .y]),
             nonRefCount = .data$depth - .data$refCount, vaf = .data$nonRefCount/.data$depth) %>% 
-            dplyr::mutate(nonRefCount = ifelse(vaf >= vaf_threshold, NA, nonRefCount),
-        	    depth = ifelse(vaf >= vaf_threshold, NA, depth),
-                vaf = ifelse(vaf >= vaf_threshold, NA, vaf), 
+            dplyr::mutate(nonRefCount = ifelse(.data$vaf >= vaf_threshold, NA, .data$nonRefCount),
+        	    depth = ifelse(.data$vaf >= vaf_threshold, NA, .data$depth),
+                vaf = ifelse(.data$vaf >= vaf_threshold, NA, .data$vaf), 
                 Locus = paste(.data$seqnames, .data$pos, sep = "_")) %>%
             dplyr::select(.data$Locus, .data$depth, .data$nonRefCount, .data$vaf)
    

@@ -62,7 +62,7 @@ compute_fragment_size_wps <- function(bam, targets, tag = "", window_size = 120,
 
     regions <- regions %>%
         dplyr::mutate(WPS = (n_within_overlaps - n_side_overlaps),
-            WPS_adjusted = WPS / ifelse(n_overlaps == 0, 1, n_overlaps),
+            WPS_adjusted = .data$WPS / ifelse(n_overlaps == 0, 1, n_overlaps),
             n_fragment_ends = n_frag_ends,
             n_fragment_ends_adjusted = n_frag_ends / ifelse(n_overlaps == 0, 1, n_overlaps))
 

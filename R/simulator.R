@@ -1,12 +1,10 @@
 # ` Helper function
 #'
-#' Compares simulated and observed
+#' Compares simulated and observed variant allele counts
+#' @param simulated the simulated variant allele counts
+#' @param observed the observed variant allele counts
+#' @param depths the total depths 
 compare_simulated_observed <- function(simulated, observed, depths) {
-    
-    #comparison <- purrr::map_dbl(c(0:max(observed)),
-    #    ~ as.numeric(sum(simulated >= .x) >= sum(observed >= .x)))
-    #
-    #out <- ifelse(sum(comparison) == length(comparison), 1, 0)
     
     observed_vaf <- mean(observed/depths, na.rm = T)
     observed_nonzero <- sum(observed > 0)

@@ -3,8 +3,6 @@
 #' Extract the names of the reads in a bam file that support the variant allele of a single mutation
 #' @param bam path to bam file
 #' @param mutations A data frame containing the mutations. Must have the columns CHROM, POS, REF, ALT.
-#' @param what Either Alt: names of the reads that exhibit variant alleles in mutations, 
-#' or Ref: names of the reads the exhibit reference alleles in mutations
 #' @param tag the RG tag if the bam has more than one samplee
 #' @param min_base_quality integer specifying the minimum base quality for reads to be included.
 #' @param min_mapq integer specifying the minimum mapping quality for reads to be included

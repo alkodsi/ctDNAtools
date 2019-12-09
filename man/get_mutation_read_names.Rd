@@ -8,15 +8,17 @@ get_mutation_read_names(bam, chr, pos, ref, alt, tag = "",
   min_base_quality = 20, min_mapq = 30)
 }
 \arguments{
-\item{bam}{path to bam file}
+\item{bam}{path to bam file.}
 
-\item{chr}{Chromosome name for the mutation}
+\item{chr}{Chromosome name for the mutation.}
 
-\item{pos}{Chromosome position for the mutation}
+\item{pos}{Chromosome position for the mutation.}
 
-\item{alt}{The alternative allele of the mutation}
+\item{ref}{The reference allele of the mutation.}
 
-\item{tag}{the RG tag if the bam has more than one samplee}
+\item{alt}{The alternative allele of the mutation.}
+
+\item{tag}{the RG tag if the bam has more than one samplee.}
 
 \item{min_base_quality}{integer specifying the minimum base quality for reads to be included.}
 

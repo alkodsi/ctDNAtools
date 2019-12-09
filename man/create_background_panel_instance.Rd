@@ -17,6 +17,8 @@ create_background_panel_instance(bam, targets, reference,
 
 \item{vaf_threshold}{Loci with the fraction of non-reference reads above this value are masked with NA.}
 
+\item{tag}{The RG tag in the bam file. Empty string defaults to using the whole bam.}
+
 \item{min_base_quality}{The minimum base quality to count a read for a loci.}
 
 \item{max_depth}{Maximum depth for the pileup}
@@ -24,8 +26,6 @@ create_background_panel_instance(bam, targets, reference,
 \item{min_mapq}{The minimum mapping quality to count a read for a loci}
 
 \item{substitution_specific}{logical, whether to have the loci by substitutions.}
-
-\item{bam_list_tags}{RG tags for the list of bam files. By default, the whole bam file will be used.}
 }
 \value{
 A named list having depth, alt and vaf data frames. Each has the same order of loci in rows and the input sample in columns.

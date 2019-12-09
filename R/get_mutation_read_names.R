@@ -2,11 +2,12 @@
 #' Get names of the reads showing alternative allele of a mutation
 #'
 #' Extract the names of the reads in a bam file that support the variant allele of a single mutation
-#' @param bam path to bam file
-#' @param chr Chromosome name for the mutation
-#' @param pos Chromosome position for the mutation
-#' @param alt The alternative allele of the mutation
-#' @param tag the RG tag if the bam has more than one samplee
+#' @param bam path to bam file.
+#' @param chr Chromosome name for the mutation.
+#' @param pos Chromosome position for the mutation.
+#' @param ref The reference allele of the mutation.
+#' @param alt The alternative allele of the mutation.
+#' @param tag the RG tag if the bam has more than one samplee.
 #' @param min_base_quality integer specifying the minimum base quality for reads to be included.
 #' @param min_mapq integer specifying the minimum mapping quality for reads to be included.
 #' @return A character vector having the read names

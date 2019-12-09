@@ -17,9 +17,6 @@ get_mutations_read_names(bam, mutations, min_base_quality = 20,
 \item{tag}{the RG tag if the bam has more than one samplee}
 
 \item{min_mapq}{integer specifying the minimum mapping quality for reads to be included}
-
-\item{what}{Either Alt: names of the reads that exhibit variant alleles in mutations, 
-or Ref: names of the reads the exhibit reference alleles in mutations}
 }
 \value{
 A list with length equal to the number of mutations. Each element is a character vector with the read names.

@@ -11,6 +11,7 @@
 #' @return a character vector of the loci in the black list
 
 #' @export
+#' @importFrom stats quantile
 
 create_black_list <- function(background_panel, mean_vaf_quantile = 0.95, 
     min_samples_one_read = max(2, ceiling(ncol(background_panel$vaf) * 0.75)), 

@@ -4,9 +4,11 @@
 #' @param from the minimum range
 #' @param to the maximum range
 #' @param by the break length
+#' @param normalized whether to normalize the counts to total counts.
 #' @param custom_bins A numeric vector for custom breaks to bin the histogram of fragment length. Over-rides bin_size.
 
 #' @return A numeric vector having counts within bins normalized by the sum of the variable
+#' @importFrom graphics hist
 
 get_hist_bins <- function(x, from, to, by, normalized,  custom_bins = NULL) {
     

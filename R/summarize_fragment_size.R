@@ -9,6 +9,7 @@
 #' @export
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
+#' @importFrom stats median
 
 summarize_fragment_size <- function(bam, regions, tag = "", 
     summary_functions = list(Mean = mean, Median = median), ...) {
@@ -23,7 +24,7 @@ summarize_fragment_size <- function(bam, regions, tag = "",
     assertthat::assert_that(is.list(summary_functions), !is.null(names(summary_functions)),
         msg = "summary_functions must be a named list")
 
-    assertthat::assert_that(all(map_lgl(list(mean = mean, median = median), is.function)),
+    assertthat::assert_that(all(purrr::map_lgl(summary_functions, is.function)),
         msg = "all elements of summary_functions must be functions")
 
     assertthat::assert_that(all(purrr::map_dbl(purrr::invoke_map(summary_functions, x = c(1:5)),length)==1),
@@ -45,7 +46,7 @@ summarize_fragment_size <- function(bam, regions, tag = "",
 
     fragments <- reads %>%
         dplyr::mutate(Region = NA) %>%
-        dplyr::select(Fragment = ID, size, Region)
+        dplyr::select(Fragment = .data$ID, .data$size, .data$Region)
 
     fragments[overlaps[,1], "Region"] <- regions[overlaps[,2], "ID"]
    
