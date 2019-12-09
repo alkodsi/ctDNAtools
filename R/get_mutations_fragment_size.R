@@ -5,28 +5,26 @@
 #' @param bam path to bam file.
 #' @param mutations Data frame with mutations. Must have the columns CHROM, POS, REF, ALT.
 #' @param tag the RG tag if the bam has more than one samplee.
-#' @param isProperPair a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).
-#' @param min_size Integer with the lowest fragment length.
-#' @param max_size Integer with the highest fragment length.
-#' @param ignore_trimmed logical, whether to remove reads that have been hard trimmed.
-#' @param different_strands logical, whether to keep only reads whose mates map to different strand.
-#' @param simple_cigar logical, whether to include only reads with simple cigar.
+#' @param min_base_quality minimum base quality when extracting reads covering mutations.
+#' @param min_mapq minimum mapping quality when extracting reads covering mutations.
+#' @param ... Other parameters passed to get_fragment_size.
 #' @return A list with length equal to the number of mutations. Each element contains an integer vector of fragment lengths
 #' @export 
 
-get_mutations_fragment_size <- function(bam, mutations, tag = "", isProperPair = NA, 
-    min_size = 1, max_size = 400, ignore_trimmed = T, different_strands = T, simple_cigar = F) {
+get_mutations_fragment_size <- function(bam, mutations, tag = "", min_base_quality = 20,
+    min_mapq = 30, ...) {
     
     assertthat::assert_that(!missing(mutations), !missing(bam))
     
-    frag_size <- get_fragment_size(bam = bam, tag = tag, isProperPair = isProperPair, 
-        min_size = min_size, max_size = max_size, ignore_trimmed = ignore_trimmed, 
-        different_strands = different_strands, simple_cigar = simple_cigar)
+    ellipsis::check_dots_used()
+
+    frag_size <- get_fragment_size(bam = bam, tag = tag, ...)
     
-    read_names <- get_mutations_read_names(bam = bam, mutations = mutations, tag = tag)
+    read_names <- get_mutations_read_names(bam = bam, mutations = mutations, tag = tag, 
+    	min_base_quality = min_base_quality, min_mapq = min_mapq)
     
-    mutation_frag_size <- purrr::map(read_names, ~frag_size[frag_size$ID %in% .x, 
-        "size"])
+    mutation_frag_size <- purrr::map(read_names, 
+    	~ list(ref = frag_size[frag_size$ID %in% .x$ref, "size"], alt = frag_size[frag_size$ID %in% .x$alt, "size"]))
     
     return(mutation_frag_size)
 }
