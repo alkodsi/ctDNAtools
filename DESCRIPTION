@@ -1,6 +1,6 @@
 Package: ctDNAtools
 Title: Tools to analyze ctDNA mutation data
-Version: 0.1.4
+Version: 0.2.0
 Authors@R: 
     person(given = "Amjad",
            family = "Alkodsi",
@@ -25,11 +25,12 @@ Imports:
     BSgenome,
     ggplot2,
     GenomicAlignments,
-    rlang,
+    rlang (>= 0.4.0),
     Biostrings,
     methods,
     mclust,
-    furrr
+    furrr (>= 0.1.0),
+    ellipsis (>= 0.3.0)
 Suggests:
     BSgenome.Hsapiens.UCSC.hg19
 Encoding: UTF-8

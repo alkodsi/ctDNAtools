@@ -5,8 +5,7 @@
 \title{Get reads fragment lengths for a list of mutations}
 \usage{
 get_mutations_fragment_size(bam, mutations, tag = "",
-  isProperPair = NA, min_size = 1, max_size = 400,
-  ignore_trimmed = T, different_strands = T, simple_cigar = F)
+  min_base_quality = 20, min_mapq = 30, ...)
 }
 \arguments{
 \item{bam}{path to bam file.}
@@ -15,17 +14,11 @@ get_mutations_fragment_size(bam, mutations, tag = "",
 
 \item{tag}{the RG tag if the bam has more than one samplee.}
 
-\item{isProperPair}{a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).}
+\item{min_base_quality}{minimum base quality when extracting reads covering mutations.}
 
-\item{min_size}{Integer with the lowest fragment length.}
+\item{min_mapq}{minimum mapping quality when extracting reads covering mutations.}
 
-\item{max_size}{Integer with the highest fragment length.}
-
-\item{ignore_trimmed}{logical, whether to remove reads that have been hard trimmed.}
-
-\item{different_strands}{logical, whether to keep only reads whose mates map to different strand.}
-
-\item{simple_cigar}{logical, whether to include only reads with simple cigar.}
+\item{...}{Other parameters passed to get_fragment_size.}
 }
 \value{
 A list with length equal to the number of mutations. Each element contains an integer vector of fragment lengths

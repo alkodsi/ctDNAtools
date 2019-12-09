@@ -6,9 +6,7 @@
 \usage{
 bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
   custom_bins = NULL, mutated_only = F, normalized = F,
-  isProperPair = NA, min_size = 1, max_size = 400,
-  ignore_trimmed = T, mapqFilter = 30, different_strands = T,
-  simple_cigar = F)
+  min_size = 1, max_size = 400, ...)
 }
 \arguments{
 \item{bam}{path to bam file.}
@@ -25,17 +23,11 @@ bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
 
 \item{normalized}{A logical, whether to normalize the counts to the total number of reads.}
 
-\item{isProperPair}{a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).}
-
 \item{min_size}{Integer with the lowest fragment length.}
 
 \item{max_size}{Integer with the highest fragment length.}
 
-\item{ignore_trimmed}{logical, whether to remove reads that have been hard trimmed.}
-
-\item{different_strands}{logical, whether to keep only reads whose mates map to different strand.}
-
-\item{simple_cigar}{logical, whether to include only reads with simple cigar.}
+\item{...}{Other parameters passed to get_fragment_size.}
 }
 \value{
 A data frame with one column corresponding to the sample name from the bam. 

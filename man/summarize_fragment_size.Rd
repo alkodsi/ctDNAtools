@@ -4,10 +4,8 @@
 \alias{summarize_fragment_size}
 \title{The function summarizes fragment size in defined genomic regions}
 \usage{
-summarize_fragment_size(bam, regions, tag = "", isProperPair = NA,
-  mapqFilter = 30, different_strands = T, min_size = 1,
-  max_size = 400, simple_cigar = F, ignore_trimmed = T,
-  summary_functions = list(Mean = mean, Median = median))
+summarize_fragment_size(bam, regions, tag = "",
+  summary_functions = list(Mean = mean, Median = median), ...)
 }
 \arguments{
 \item{bam}{the input bam file}
@@ -16,21 +14,9 @@ summarize_fragment_size(bam, regions, tag = "", isProperPair = NA,
 
 \item{tag}{the RG tag if the bam has more than one samplee.}
 
-\item{isProperPair}{a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).}
-
-\item{mapqFilter}{mapping quality threshold for considering reads.}
-
-\item{different_strands}{logical, whether to keep only reads whose mates map to different strand.}
-
-\item{min_size}{Integer with the lowest fragment length.}
-
-\item{max_size}{Integer with the highest fragment length.}
-
-\item{simple_cigar}{logical, whether to include only reads with simple cigar.}
-
-\item{ignore_trimmed}{logical, whether to remove reads that have been hard trimmed.}
-
 \item{summary_functions}{a named list containing the R functions used for summarization, e.g. mean, sd.}
+
+\item{...}{Other parameters passed to get_fragment_size}
 }
 \value{
 a data frame with the first column having the regions in the format of chr:start-end, and other columns correspond to summary_functions.

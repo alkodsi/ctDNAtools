@@ -3,22 +3,15 @@
 #' @param bam the input bam file
 #' @param regions data frame contatining the genomic regions. Must have the columns chr, start and end.
 #' @param tag  the RG tag if the bam has more than one samplee.
-#' @param isProperPair a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).
-#' @param mapqFilter mapping quality threshold for considering reads.
-#' @param min_size Integer with the lowest fragment length.
-#' @param max_size Integer with the highest fragment length.
-#' @param ignore_trimmed logical, whether to remove reads that have been hard trimmed.
-#' @param different_strands logical, whether to keep only reads whose mates map to different strand.
-#' @param simple_cigar logical, whether to include only reads with simple cigar.
 #' @param summary_functions a named list containing the R functions used for summarization, e.g. mean, sd.
+#' @param ... Other parameters passed to get_fragment_size
 #' @return a data frame with the first column having the regions in the format of chr:start-end, and other columns correspond to summary_functions.
 #' @export
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 
-summarize_fragment_size <- function(bam, regions, tag = "", isProperPair = NA, mapqFilter = 30, 
-    different_strands = T, min_size = 1, max_size = 400, simple_cigar = F,  ignore_trimmed = T,
-    summary_functions = list(Mean = mean, Median = median)) {
+summarize_fragment_size <- function(bam, regions, tag = "", 
+    summary_functions = list(Mean = mean, Median = median), ...) {
    
     assertthat::assert_that(assertthat::has_name(regions, c("chr", "start", "end")),
         is.data.frame(regions))
@@ -38,9 +31,9 @@ summarize_fragment_size <- function(bam, regions, tag = "", isProperPair = NA, m
 
     sm <- get_bam_SM(bam = bam, tag = tag)
 
-    reads <- get_fragment_size(bam = bam, tag = tag,  isProperPair = isProperPair, mapqFilter = mapqFilter,
-        min_size = min_size, max_size = max_size, ignore_trimmed = ignore_trimmed, 
-        different_strands = different_strands, simple_cigar = simple_cigar)
+    ellipsis::check_dots_used()
+
+    reads <- get_fragment_size(bam = bam, tag = tag, ...)
     
     reads_gr <- GenomicRanges::GRanges(reads$chr, IRanges::IRanges(reads$start, reads$end))
 
