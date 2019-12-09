@@ -21,6 +21,7 @@ Imports:
     GenomicRanges,
     IRanges,
     GenomeInfoDb,
+    BiocGenerics,
     BSgenome,
     ggplot2,
     GenomicAlignments,

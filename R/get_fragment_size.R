@@ -6,6 +6,7 @@
 #' @param mutations An optional data frame with mutations. Must have the columns CHROM, POS, REF, ALT.
 #' @param tag the RG tag if the bam has more than one samplee.
 #' @param isProperPair a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).
+#' @param mapqFilter mapping quality threshold for considering reads.
 #' @param min_size Integer with the lowest fragment length.
 #' @param max_size Integer with the highest fragment length.
 #' @param ignore_trimmed logical, whether to remove reads that have been hard trimmed.
@@ -16,7 +17,7 @@
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 
-get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA, 
+get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA, mapqFilter = 30,
 	min_size = 1, max_size = 400, ignore_trimmed = T, different_strands = T, simple_cigar = F) {
 
     assertthat::assert_that(!missing(bam), is.character(bam), length(bam) == 1, file.exists(bam))
@@ -57,12 +58,12 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
 	    assertthat::assert_that(verify_tag(bam = bam, tag = tag), 
            msg = "Specified tag not found")
 	    
-	    sbp <- Rsamtools::ScanBamParam(flag = flag, mapqFilter = 30, simpleCigar = simple_cigar,
+	    sbp <- Rsamtools::ScanBamParam(flag = flag, mapqFilter = mapqFilter, simpleCigar = simple_cigar,
 	       tagFilter = list(RG = tag), what = c("qname","flag","qwidth","isize"))
     
     } else {
 
-        sbp <- Rsamtools::ScanBamParam(flag = flag, mapqFilter = 30, simpleCigar = simple_cigar,
+        sbp <- Rsamtools::ScanBamParam(flag = flag, mapqFilter = mapqFilter, simpleCigar = simple_cigar,
            what = c("qname","flag","qwidth","isize"))
     
     }
@@ -90,9 +91,6 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
     fragment_lengths <- data.frame(Sample = sm, 
     	ID = paste(sm, scanned_bam$qname, sep = "_"),
     	size = abs(scanned_bam$isize),
-        chr = scanned_bam$rname,
-        pos = scanned_bam$pos,
-        mpos = scanned_bam$mpos,
     	stringsAsFactors = F) %>%
       dplyr::filter(.data$size >= min_size & .data$size <= max_size)
 
@@ -147,7 +145,7 @@ plot_fragment_size_region <- function(fragments1, fragments2 = NULL, chr, start,
     
     if(!is.null(fragments2)){
    
-        data2 <- GenomicRanges::GRanges(fragments2$chr, IRanges(fragments2$pos, fragments2$pos), size2 = fragments2$smoothed_size)
+        data2 <- GenomicRanges::GRanges(fragments2$chr, IRanges::IRanges(fragments2$pos, fragments2$pos), size2 = fragments2$smoothed_size)
         
         covTrack2 <- DataTrack(as(coverage(data2), "GRanges"), genome = genome,
            type = "l", name = "Coverage", groups=factor(unique(fragments2$Sample), levels=sample_levels))
@@ -171,39 +169,3 @@ plot_fragment_size_region <- function(fragments1, fragments2 = NULL, chr, start,
     }
 
 }
-
-#' @export
-summarize_fragment_size <- function(bam, regions, tag = "", ...){
-   
-    assertthat::assert_that(assertthat::has_name(regions, c("chr", "start", "end")),
-        is.data.frame(regions))
-
-    fragments <- get_fragment_size(bam = bam, tag = tag, ...)
-
-    regions$ID <- paste0(regions$chr, ":", regions$start, "-", regions$end)
-
-    regions_gr <- GenomicRanges::GRanges(regions$chr, IRanges::IRanges(regions$start, regions$end))
-
-    fragments_gr <- GenomicRanges::GRanges(fragments$chr, IRanges::IRanges(fragments$pos, fragments$pos))
-
-    overlaps <- as.data.frame(GenomicRanges::findOverlaps(fragments_gr, regions_gr))
-
-    fragments$Region <- NA
-
-    fragments[overlaps[,1], "Region"] <- regions[overlaps[,2], "ID"]
-   
-    summary <- fragments %>% 
-        tidyr::replace_na(list(Region = "offTargets")) %>%
-        dplyr::group_by(.data$Region) %>%
-        dplyr::summarize(mean = mean(.data$size)) %>%
-        as.data.frame()
-
-    colnames(summary) <- c("Region", unique(fragments$Sample))
-
-    return(summary)
-   
-}
-
-
-#plot_fragment_size_region(k, chr = "chr18", start = 60774470, end = 60774594)
-#plot_fragment_size_region(s25,k, chr = "chr12", start = 113515229-2000, end = 113515910+2000, smoothing_window = 200)

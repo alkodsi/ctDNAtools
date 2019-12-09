@@ -5,8 +5,8 @@
 \title{Get fragment lengths from bam}
 \usage{
 get_fragment_size(bam, mutations = NULL, tag = "", isProperPair = NA,
-  min_size = 1, max_size = 400, ignore_trimmed = T,
-  different_strands = T, simple_cigar = F)
+  mapqFilter = 30, min_size = 1, max_size = 400,
+  ignore_trimmed = T, different_strands = T, simple_cigar = F)
 }
 \arguments{
 \item{bam}{path to bam file.}
@@ -16,6 +16,8 @@ get_fragment_size(bam, mutations = NULL, tag = "", isProperPair = NA,
 \item{tag}{the RG tag if the bam has more than one samplee.}
 
 \item{isProperPair}{a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).}
+
+\item{mapqFilter}{mapping quality threshold for considering reads.}
 
 \item{min_size}{Integer with the lowest fragment length.}
 
