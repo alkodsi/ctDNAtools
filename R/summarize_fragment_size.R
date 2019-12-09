@@ -27,12 +27,6 @@ summarize_fragment_size <- function(bam, regions, tag = "", isProperPair = NA, m
 
     assertthat::assert_that(is.character(tag), length(tag) == 1)
 
-    assertthat::assert_that(is.logical(isProperPair), is.logical(ignore_trimmed), 
-        is.logical(different_strands), is.logical(simple_cigar),
-        is.numeric(min_size), is.numeric(max_size), max_size > min_size, 
-        length(isProperPair) == 1, length(ignore_trimmed) == 1, length(different_strands) == 1, 
-        length(simple_cigar) == 1, length(min_size) == 1, length(max_size) == 1)
-
     assertthat::assert_that(is.list(summary_functions), !is.null(names(summary_functions)),
         msg = "summary_functions must be a named list")
 
@@ -42,57 +36,23 @@ summarize_fragment_size <- function(bam, regions, tag = "", isProperPair = NA, m
     assertthat::assert_that(all(purrr::map_dbl(purrr::invoke_map(summary_functions, x = c(1:5)),length)==1),
         msg = "Functions in summary_functions must produce output of length 1")
 
-    flag <- Rsamtools::scanBamFlag(isPaired = T, isProperPair = isProperPair, isUnmappedQuery = F,
-              hasUnmappedMate = F, isSecondaryAlignment = F,
-              isNotPassingQualityControls = F, isDuplicate = F, isSupplementaryAlignment = F)
-    
-    if(tag != ""){
-    
-        assertthat::assert_that(verify_tag(bam = bam, tag = tag), 
-           msg = "Specified tag not found")
-        
-        sbp <- Rsamtools::ScanBamParam(flag = flag, mapqFilter = mapqFilter, simpleCigar = simple_cigar,
-           tagFilter = list(RG = tag), what = c("qname","flag","qwidth","isize"))
-    
-    } else {
-
-        sbp <- Rsamtools::ScanBamParam(flag = flag, mapqFilter = mapqFilter, simpleCigar = simple_cigar,
-           what = c("qname","flag","qwidth","isize"))
-    
-    }
-
     sm <- get_bam_SM(bam = bam, tag = tag)
 
-    reads <- GenomicAlignments::readGAlignmentPairs(file = bam, param = sbp)
+    reads <- get_fragment_size(bam = bam, tag = tag,  isProperPair = isProperPair, mapqFilter = mapqFilter,
+        min_size = min_size, max_size = max_size, ignore_trimmed = ignore_trimmed, 
+        different_strands = different_strands, simple_cigar = simple_cigar)
     
-    reads <- reads[abs(reads@first@elementMetadata$isize) > min_size & 
-        abs(reads@first@elementMetadata$isize) < max_size]
-
-    if(different_strands) {
-
-        reads <- reads[xor(BiocGenerics::strand(reads@first) == "+",
-            BiocGenerics::strand(reads@last) == "+")]
-    
-    }
-
-    if(ignore_trimmed){
-
-        max_qwidth <- max(reads@first@elementMetadata$qwidth)
-
-        reads <- reads[reads@first@elementMetadata$qwidth == max_qwidth & 
-            reads@last@elementMetadata$qwidth == max_qwidth]
-   
-    }
+    reads_gr <- GenomicRanges::GRanges(reads$chr, IRanges::IRanges(reads$start, reads$end))
 
     regions$ID <- paste0(regions$chr, ":", regions$start, "-", regions$end)
 
     regions_gr <- GenomicRanges::GRanges(regions$chr, IRanges::IRanges(regions$start, regions$end))
 
-    overlaps <- as.data.frame(GenomicRanges::findOverlaps(reads, regions_gr))
+    overlaps <- as.data.frame(GenomicRanges::findOverlaps(reads_gr, regions_gr))
 
-    fragments <- as.data.frame(reads) %>%
-        dplyr::mutate(Region = NA, size = abs(.data$isize.first)) %>%
-        dplyr::select(Fragment = qname.first, size, Region)
+    fragments <- reads %>%
+        dplyr::mutate(Region = NA) %>%
+        dplyr::select(Fragment = ID, size, Region)
 
     fragments[overlaps[,1], "Region"] <- regions[overlaps[,2], "ID"]
    

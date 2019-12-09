@@ -50,8 +50,8 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
     }
 
     flag <- Rsamtools::scanBamFlag(isPaired = T, isProperPair = isProperPair, isUnmappedQuery = F,
-    	      hasUnmappedMate = F, isFirstMateRead = T, isSecondaryAlignment = F,
-    	      isNotPassingQualityControls = F, isDuplicate = F, isSupplementaryAlignment = F)
+              hasUnmappedMate = F, isSecondaryAlignment = F,
+              isNotPassingQualityControls = F, isDuplicate = F, isSupplementaryAlignment = F)
     
     if(tag != ""){
 	
@@ -70,29 +70,37 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
     
     sm <- get_bam_SM(bam = bam, tag = tag)
     
-    scanned_bam <- Rsamtools::scanBam(bam, param = sbp)[[1]] %>%
-        dplyr::bind_cols() %>% as.data.frame()
-
-    if(different_strands){
-       
-        flag_matrix <- Rsamtools::bamFlagAsBitMatrix(as.integer(scanned_bam$flag))
+    reads <- GenomicAlignments::readGAlignmentPairs(file = bam, param = sbp)
     
-        scanned_bam <- scanned_bam[xor(flag_matrix[,'isMinusStrand'], flag_matrix[,'isMateMinusStrand']),]
+    reads <- reads[abs(reads@first@elementMetadata$isize) > min_size & 
+        abs(reads@first@elementMetadata$isize) < max_size]
+
+    if(different_strands) {
+
+        reads <- reads[xor(BiocGenerics::strand(reads@first) == "+",
+            BiocGenerics::strand(reads@last) == "+")]
+    
     }
 
     if(ignore_trimmed){
-    	
-    	read_length <- max(scanned_bam$qwidth)
-        
-        scanned_bam <- scanned_bam %>%
-          dplyr::filter(.data$qwidth == read_length)
+
+        max_qwidth <- max(reads@first@elementMetadata$qwidth)
+
+        reads <- reads[reads@first@elementMetadata$qwidth == max_qwidth & 
+            reads@last@elementMetadata$qwidth == max_qwidth]
+   
     }
 
-    fragment_lengths <- data.frame(Sample = sm, 
-    	ID = paste(sm, scanned_bam$qname, sep = "_"),
-    	size = abs(scanned_bam$isize),
-    	stringsAsFactors = F) %>%
-      dplyr::filter(.data$size >= min_size & .data$size <= max_size)
+    fragment_lengths <- as.data.frame(reads) %>%
+        dplyr::mutate(Sample = sm,
+            ID = paste(sm, .data$qname.first, sep = "_"),
+            chr = .data$seqnames.first,
+            start = pmin(.data$start.first, .data$end.first, .data$start.last, .data$end.last),
+            end = pmax(.data$start.first, .data$end.first, .data$start.last, .data$end.last),
+            size = abs(.data$isize.first),
+            stringsAsFactors = F) %>%
+        dplyr::select(.data$Sample, .data$ID, .data$chr,
+            .data$start, .data$end, .data$size)
 
     if(!is.null(mutations)) {
      

@@ -7,7 +7,8 @@
 bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
   custom_bins = NULL, mutated_only = F, normalized = F,
   isProperPair = NA, min_size = 1, max_size = 400,
-  ignore_trimmed = T, different_strands = T, simple_cigar = F)
+  ignore_trimmed = T, mapqFilter = 30, different_strands = T,
+  simple_cigar = F)
 }
 \arguments{
 \item{bam}{path to bam file.}

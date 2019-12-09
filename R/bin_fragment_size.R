@@ -25,7 +25,7 @@
 #' @export
 
 bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, custom_bins = NULL, mutated_only = F, 
-    normalized = F, isProperPair = NA, min_size = 1, max_size = 400, ignore_trimmed = T, 
+    normalized = F, isProperPair = NA, min_size = 1, max_size = 400, ignore_trimmed = T, mapqFilter = 30,
     different_strands = T, simple_cigar = F) {
     
     assertthat::assert_that(is.logical(mutated_only),  
@@ -49,13 +49,15 @@ bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, cus
         frag_length <- get_fragment_size(bam = bam, mutations = mutations, tag = tag, 
             isProperPair = isProperPair, min_size = min_size, max_size = max_size, 
             ignore_trimmed = ignore_trimmed, different_strands = different_strands, 
-            simple_cigar = simple_cigar) %>% dplyr::filter(.data$category == "mutated")
+            simple_cigar = simple_cigar, mapqFilter = mapqFilter) %>% 
+        dplyr::filter(.data$category == "mutated")
         
     } else {
         
         frag_length <- get_fragment_size(bam = bam, tag = tag, isProperPair = isProperPair, 
             min_size = min_size, max_size = max_size, ignore_trimmed = ignore_trimmed, 
-            different_strands = different_strands, simple_cigar = simple_cigar)
+            different_strands = different_strands, simple_cigar = simple_cigar, 
+            mapqFilter = mapqFilter)
         
     }
     
