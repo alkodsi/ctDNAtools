@@ -8,7 +8,7 @@ Authors@R:
            email = "amjad.alkodsi@gmail.com",
            comment = c(ORCID = ""))
 Description: The package contains tools to analyze ctDNA mutation data.
-License: GPL + file LICENSE
+License: MIT + file LICENSE
 Depends: 
     R (>= 3.6.0),
 Imports:
