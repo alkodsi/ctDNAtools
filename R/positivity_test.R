@@ -8,7 +8,6 @@
 #' @param seed the random seed
 #' @param n_simulations the number of simulations to run.
 #' @return a scalar, simulation p-value.
-#' @export
 
 positivity_test <- function(depths, altReads, rate, substitutions = NULL, seed = 123, 
     n_simulations = 10000) {

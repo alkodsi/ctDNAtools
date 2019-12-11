@@ -30,9 +30,39 @@ get_fragment_size(bam, mutations = NULL, tag = "", isProperPair = NA,
 \item{simple_cigar}{logical, whether to include only reads with simple cigar.}
 }
 \value{
-A data frame with the columns Sample (SM tag in bam), ID (read ID), size (fragment size), and category (only if mutations is provided).
+A data frame with the columns Sample (SM tag in bam or file name), ID (read ID), size (fragment size), and category (only if mutations is provided).
 }
 \description{
 A function to extract fragment lengths from a bam file. Optionally, given a mutation data frame, it can categorize read lengths 
 in mutated vs non-mutated reads.
+}
+\details{
+Extracts the fragment size of reads in the input bam that satisfy the following conditions:
+ \itemize{
+  \item Paired, and optionally properly paired depending on the isProperPair parameter.
+
+  \item Both the reads and mate are mapped.
+
+  \item Not secondary or supplementary alignment
+
+  \item Not duplicate
+
+  \item Passing quality control
+
+  \item Read and mate on different strands (optional depending on the different_strands parameter)
+
+  \item Not trimmed (optional depending on the ignore_trimmed parameter), i.e. will keep only reads with the max length.
+
+  \item Having a simple cigar (optional depending on the simple_cigar parameter).
+
+  \item Satisfy the mapping quality threshold specified in the mapqFilter parameter.
+
+  \item Reads and mates on the same chromosome when min_size > 0.
+}
+
+When the input mutations is given, the output will label the reads that support the variant alleles of the mutation in
+a separate column.
+}
+\seealso{
+\code{\link{summarize_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{compute_fragment_size_wps}} \code{\link{get_mutations_fragment_size}}
 }

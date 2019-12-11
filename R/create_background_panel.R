@@ -1,5 +1,5 @@
 
-#' Create a background panel from a list of bam files (e.g. healthy samples)
+#' Create a background panel from a list of bam files
 #'
 #' This function scans the targets regions in the list of bam files, and reports the number of reference, non-reference reads for each loci
 #' in addition to the non-reference (VAF) allele frequency. Loci with VAF higher than vaf_threshold are masked with NA. 
@@ -13,8 +13,21 @@
 #' @param min_mapq The minimum mapping quality to count a read for a loci
 #' @param substitution_specific logical, whether to have the loci by substitutions.
 #' @return A named list having depth, alt and vaf data frames. Each has the same order of loci in rows and the input samples in columns.
-
+#' @seealso  \code{\link{create_black_list}}  \code{\link{test_ctDNA}}
+#' @details Extracts the depth, variant allele counts and variant allele frequency (VAF) for each genomic position in the input targets
+#' across a panel of bam files (e.g. from healthy samples to represent only technical noise). The extracted information can be fed to
+#' \code{\link{create_black_list}} in order to extract a black listed loci according to defined criteria
+#'
+#' The function support two modes, either loci-specific regardless of the basepair substitution, or substitution-specific where each
+#' substitution class (e.g. C>T, C>G) are quantified separately. This behaviour is controlled by the substitution_specific parameter.
+#'
+#' VAF above vaf_threshold parameters are masked with NA, to exclude real SNPs/mutations.
+#'
+#' Since this function can take a long time when the bam_list comprises a large number of bam files, the function supports multi-threading
+#' using the furrr and future R packages. All you need to do is call 'plan(multiprocess)' or other multi-threading strategies before
+#' calling this function.
 #' @export
+
 create_background_panel <- function(bam_list, targets, reference, vaf_threshold = 0.05, bam_list_tags = rep("",length(bam_list)), 
     min_base_quality = 10, max_depth = 1e+05, min_mapq = 20, substitution_specific = T) {
     

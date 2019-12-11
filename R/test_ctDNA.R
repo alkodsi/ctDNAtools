@@ -8,26 +8,80 @@
 #' @param reference the reference genome in BSgenome format
 #' @param vaf_threshold the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)
 #' @param tag the RG tag if the bam has more than one sample
-#' @param ID_column The name of the column that contains the ID of mutations in phase. All mutations in Phase should have the same ID in that column. 
-#' Will lead to considerable slow down when provided.
+#' @param ID_column The name of the column that contains the ID of mutations in phase. All mutations in Phase should have the same ID in that column.
 #' @param black_list a character vector of genomic loci to filter. The format is chr_pos if substitution_specific is false or
-#' chr_pos_ref_alt if substitution_specific is true. If given, will override bam_list.
+#' chr_pos_ref_alt if substitution_specific is true. If given, will override \code{bam_list}.
 #' @param substitution_specific logical, whether to have the loci of black_list by substitutions.
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param max_depth maximum depth above which sampling will happen
 #' @param min_mapq the minimum mapping quality for a read to be counted
-#' @param bam_list A vector containing the paths to bam files used to filter mutations. Mutations that have more than min_alt_reads in more than min_samples will be filtered.
+#' @param bam_list A vector containing the paths to bam files used to filter mutations. 
+#' Mutations that have more than min_alt_reads in more than min_samples will be filtered. Using black_list is more recommended.
 #' @param bam_list_tags the RG tags for the bams included in bams list.
 #' @param min_alt_reads When bam_list is provided, this sets the minimum number of alternative allele reads for a sample to be counted.
-#' @param min_samples When number of samples having more than min_alt_reads exceeds this number, the mutation will be filtered.
+#' @param min_samples When number of samples having more than \code{min_alt_reads} exceeds this number, the mutation will be filtered.
 #' @param by_substitution boolean whether to run the test according to substitution-specific background rate
 #' @param n_simulations the number of simulations.
 #' @param pvalue_threshold the p-value threshold used to decide positivity or negativity.
 #' @param seed the random seed.
 #' @param informative_reads_threshold the number of informative reads (unique reads mapping to specified mutations) under which the test will be undetermined.
-#' @return a named list contains: counts, a data frame of read counts of reference and variant alleles for the reporter mutations in the tested sample,
-#'         backgroundRate, a list of substituion-specific background rate, and pvalue, the p-value of the test
+#' @return a data frame with the following columns:
+#' \itemize{
+#'   \item sample: The sample name taken from SM field in the bam file or file base name
+#'   \item n_mutations: The number of mutations used in the test.
+#'   \item n_nonzero_alt: Number of mutations that have at least one read supporting alternative allele.
+#'   \item total_alt_reads: Total number of reads supporting alternative alleles of all mutations in input.
+#'   \item mutations_filtered: The number of filtered mutations.
+#'   \item background_rate: The background rate of the tested sample (after all adjustments)
+#'   \item informative_reads: The number of unique reads covering the mutations used.
+#'   \item multi_support_reads: The number of reads that support more than one mutations in phase. Non-zero values is a sign of 
+#'    positivity not used in the p-value calculation.
+#'   \item pvalue: The emperical p-value from the Monte Carlo test.
+#'   \item decision: The decision can be positive, negative or undetermined.
+#' }
+#'
 #' @export
+#' @seealso \code{\link{get_background_rate}} \code{\link{merge_mutations_in_phase}} \code{\link{create_black_list}} \code{\link{create_background_panel}} 
+#'    \code{\link{filter_mutations}}
+
+#' @details This is the main function to test minimal residual disease by ctDNA positivity in a follow-up sample (e.g. after treatment).
+#' The inputs include a bam file for the follow-up sample to be tested, a list of reporter mutations (detected for example before treatment in a ctDNA positive sample),
+#' and an optional black_list (recommended to use) computed from a list of bam files of healthy-like samples or bam_list of the bam_files to use instead of black_list.
+#'
+#' The workflow includes the following steps:
+#'
+#' \describe{
+#' \item{1.}{Filtering mutations (optional but recommended): The mutations in the input will be filtered removing the ones reported in the black list. If bam_list is provided,
+#'    the mutations will be filtered according to the min_samples and min_alt_reads parameters. See \code{\link{filter_mutations}}.}
+#'
+#' \item{2.}{The background rate will be computed for the input bam. The black list will be plugged in to exclude the black-listed loci when computing the background rate.
+#'    The black list can be substitution_specific or not, but in both cases, the background rate will be adjusted accordingly. See \code{\link{get_background_rate}}.}
+#' 
+#' \item{3.}{Counting reference and alternative alleles of the reporter mutations in the bam file.}
+#'
+#' \item{4.}{Merging mutations in phase (optional but recommended): If the ID_column is specified in the mutations input, mutations with the same ID (in phase) will be merged. 
+#'    While doing so, it is expected that real traces of mutations will be exhibited in the mutations in phase, while artifacts will manifest only in one of the mutations
+#'    in phase. Therefore, the mismatches that map only to one of the mutations in phase but not the others (the others are covered and show reference allele) will be removed.
+#'    This will lead to reduction of the observed mismatches, and therefore, the computed background rate will be adjusted accordingly: 
+#'    new rate = old rate * (1 - purification_probability). See \code{\link{merge_mutations_in_phase}}.}
+#'
+#' \item{5.}{Monte Carlo test: this approach was used by Newman et al., Nature Biotechnology 2016.
+#'    \itemize{
+#'    \item  Given \eqn{N} reporter mutations each with depth \ifelse{html}{\out{D<sub>i</sub>}}{\eqn{D_i}}, randomly sample variant allele reads \ifelse{html}{\out{X<sub>i</sub>}}{\eqn{X_i}} 
+#'    under the background rate \eqn{p} using binomial distribution \ifelse{html}{\out{X<sub>i</sub>}}{\eqn{X_i}} ~ Binom(\ifelse{html}{\out{D<sub>i</sub>}}{\eqn{D_i}}, \eqn{p}). 
+#'
+#'    \item  Repeat \code{n_simuations} times.
+#'
+#'    \item  Count the number of simulations, where simulated data equal or exceed observed data in jointly two measurements: (1) the average VAF for the \eqn{N} mutations,
+#'      and (2) the number of mutations with non-zero VAF.
+#'
+#'    \item  Compute an emperical p-value as (#successes + 1)/(#simulations + 1)
+#'    }}
+#'
+#' \item{6.}{Make a decision: If number of informative reads is lower than \code{informative_reads_threshold} parameter, 
+#'  the decision will be undetermined. Otherwise, the \code{pvalue_threshold}
+#'    parameters will be used to determine positivity or negativity.}
+#' }
 
 test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column = NULL, black_list = NULL, substitution_specific = T,
     vaf_threshold = 0.1, min_base_quality = 30, max_depth = 1e+05, min_mapq = 40, bam_list = NULL, 
@@ -142,7 +196,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
             assertthat::assert_that(all(purrr::map_dbl(strsplit(black_list, "_"),length) == 4),
                all(purrr::map_chr(strsplit(black_list, "_"), 3) %in%  c("C","A","T","G")),
                all(purrr::map_chr(strsplit(black_list, "_"), 4) %in%  c("C","A","T","G")),
-               msg = "black_list should have characters in the format chr_pos_ref_alt")
+               msg = "black_list must have characters in the format chr_pos_ref_alt when substitution_specific is true")
         
         } else {
 

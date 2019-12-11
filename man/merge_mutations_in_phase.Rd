@@ -29,3 +29,19 @@ the count of reads that support multiple mutations in phase, and the total numbe
 Given a mutations data frame and a bam file, this function collapses mutations in phase identified by the ID_column into one event.
 While doing that, it ignores the reads that support both the reference and alternative alleles for different mutations in phase.
 }
+\details{
+Mutations in phase are those that are supported by the same reads (same allele). The function doesn't identify mutations in phase, but rather use
+an ID column in the input whose name is specified by ID_column to tell which mutations are in phase.
+
+Since two or more mutations can be supported by the same evidence,
+this function merges these mutations into one event. The function will also remove the mismatches that are exhibited in only one of the mutations in phase (since
+this function is developed for the intent of minimal residual disease testing).
+
+The output will include the merged mutations, the probability of purification, which is defined as the number of 
+reads covering at least two mutations in phase devided by the number of informative reads. 
+Informative reads count is the total number of unique reads mapping to the mutations input
+(including both mutations in phase and other mutations).
+}
+\seealso{
+\code{\link{test_ctDNA}} \code{\link{get_mutations_read_names}}
+}

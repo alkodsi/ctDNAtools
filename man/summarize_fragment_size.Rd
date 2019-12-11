@@ -2,7 +2,7 @@
 % Please edit documentation in R/summarize_fragment_size.R
 \name{summarize_fragment_size}
 \alias{summarize_fragment_size}
-\title{The function summarizes fragment size in defined genomic regions}
+\title{Summarizes fragment size in defined genomic regions}
 \usage{
 summarize_fragment_size(bam, regions, tag = "",
   summary_functions = list(Mean = mean, Median = median), ...)
@@ -16,11 +16,20 @@ summarize_fragment_size(bam, regions, tag = "",
 
 \item{summary_functions}{a named list containing the R functions used for summarization, e.g. mean, sd.}
 
-\item{...}{Other parameters passed to get_fragment_size}
+\item{...}{Other parameters passed to \code{\link{get_fragment_size}}}
 }
 \value{
 a data frame with the first column having the regions in the format of chr:start-end, and other columns correspond to summary_functions.
 }
 \description{
-The function summarizes fragment size in defined genomic regions
+Summarizes fragment size in defined genomic regions
+}
+\details{
+Fragment size for reads that are paired (optionally properly paired), whose both mates are mapped,
+not secondary or supplementary alignment, not duplicates, passed quality control, and satisfy mapq threshold will be used for summarization. 
+The reads that overlap the specified regions will be summarized by the specified summary_functions. Overlaps consider fragments to span the 
+left most to the right most coordinate from either the read or the mate. Minimum and maximum bounds of the fragment size will be applied before summarization.
+}
+\seealso{
+\code{\link{get_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{compute_fragment_size_wps}}
 }

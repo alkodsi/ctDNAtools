@@ -22,5 +22,11 @@ get_mutations_read_names(bam, mutations, min_base_quality = 20,
 A list with length equal to the number of mutations. Each element is a character vector with the read names.
 }
 \description{
-Extract the names of the reads in a bam file that support the variant allele of a single mutation
+Extract the names of the reads in a bam file that support the variant and reference alleles of the input mutations
+}
+\details{
+Returns the IDs of the read that cover the input mutations (ref and alt alleles).
+}
+\seealso{
+\code{\link{get_mutations_read_counts}} \code{\link{get_mutations_fragment_size}} \code{\link{test_ctDNA}}
 }

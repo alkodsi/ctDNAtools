@@ -8,15 +8,19 @@ The ctDNAtools package provides functionalities to analyse ctDNA sequencing data
 
 ## Installation
 
-You can install the package from github:
 
 ``` r
-library(devtools)
-install_github("alkodsi/ctDNAtools")
+# From github
+
+# install.packages("devtools")
+devtools::install_github("tidyverse/tidyr")
 ```
 
 ## Tutorial
 
 Link to tutorial can be found here
+Raise an issue for bugs and feature requests.
 
+## Citation
 
+If you use ctDNAtools in your work, please cite:

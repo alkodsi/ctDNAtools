@@ -1,12 +1,14 @@
 #' Get names of the reads showing alternative allele of a mutation
 #'
-#' Extract the names of the reads in a bam file that support the variant allele of a single mutation
+#' Extract the names of the reads in a bam file that support the variant and reference alleles of the input mutations
 #' @param bam path to bam file
 #' @param mutations A data frame containing the mutations. Must have the columns CHROM, POS, REF, ALT.
 #' @param tag the RG tag if the bam has more than one samplee
 #' @param min_base_quality integer specifying the minimum base quality for reads to be included.
 #' @param min_mapq integer specifying the minimum mapping quality for reads to be included
 #' @return A list with length equal to the number of mutations. Each element is a character vector with the read names.
+#' @seealso \code{\link{get_mutations_read_counts}} \code{\link{get_mutations_fragment_size}} \code{\link{test_ctDNA}}
+#' @details Returns the IDs of the read that cover the input mutations (ref and alt alleles).
 #' @export 
 
 get_mutations_read_names <- function(bam, mutations, min_base_quality = 20, tag = "", min_mapq = 30) {

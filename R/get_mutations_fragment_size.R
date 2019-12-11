@@ -8,7 +8,11 @@
 #' @param min_base_quality minimum base quality when extracting reads covering mutations.
 #' @param min_mapq minimum mapping quality when extracting reads covering mutations.
 #' @param ... Other parameters passed to get_fragment_size.
-#' @return A list with length equal to the number of mutations. Each element contains an integer vector of fragment lengths
+#' @return A list with length equal to the number of mutations. 
+#' Each element contains a list with two elements ref and alt each having an integer vector of fragment lengths
+#' @details Fragment length will extracted from the bam file according to the parameters passed to \code{\link{get_fragment_size}},
+#' and the fragment size of the reads that map to the ref and alt alleles of each mutation in the input will be returned.
+#' @seealso \code{\link{get_fragment_size}} 
 #' @export 
 
 get_mutations_fragment_size <- function(bam, mutations, tag = "", min_base_quality = 20,

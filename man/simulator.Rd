@@ -23,3 +23,6 @@ a scalar. Either 1 if the simulation exceeds observed variant alleles or 0 other
 \description{
 Samples from binomial distribution N variants with different depths and fixed mismatch rate for one simulation. Return 1 if the simulation exceeds observed alt allele reads or 0 otherwise
 }
+\seealso{
+\code{\link{test_ctDNA}}
+}

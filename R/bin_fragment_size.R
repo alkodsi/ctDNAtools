@@ -17,6 +17,11 @@
 #' @param ... Other parameters passed to get_fragment_size.
 #' @return A data frame with one column corresponding to the sample name from the bam. 
 #' Each row has the count of fragment lengths within the bin normalized by the total number of reads.
+#' @details Fragment length will extracted from the bam file according to the parameters passed to \code{\link{get_fragment_size}}, and histogram counts (optionally normalized to total counts)
+#' are computed. Both equal histogram bins via bin_size and manually customized bins via custom_bins are supported. 
+#'
+#' By setting mutated_only to true and using an input mutations, the function would bin only fragments that support mutation variant alleles.
+#' @seealso \code{\link{get_fragment_size}} \code{\link{compute_fragment_size_wps}} \code{\link{summarize_fragment_size}}
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 #' @export

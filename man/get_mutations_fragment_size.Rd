@@ -21,9 +21,17 @@ get_mutations_fragment_size(bam, mutations, tag = "",
 \item{...}{Other parameters passed to get_fragment_size.}
 }
 \value{
-A list with length equal to the number of mutations. Each element contains an integer vector of fragment lengths
+A list with length equal to the number of mutations. 
+Each element contains a list with two elements ref and alt each having an integer vector of fragment lengths
 }
 \description{
 The function extracts the fragment lengths for the reads holding alternative allele for each mutation
 in the mutations data frame.
+}
+\details{
+Fragment length will extracted from the bam file according to the parameters passed to \code{\link{get_fragment_size}},
+and the fragment size of the reads that map to the ref and alt alleles of each mutation in the input will be returned.
+}
+\seealso{
+\code{\link{get_fragment_size}}
 }

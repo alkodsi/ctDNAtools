@@ -38,3 +38,12 @@ The function first extracts fragment length from a bam file then computes the hi
 the counts per bin will be normalized to the total read counts. Optionally,
 it can computes the histogram of fragment lengths only for mutated reads (confirmed ctDNA molecules).
 }
+\details{
+Fragment length will extracted from the bam file according to the parameters passed to \code{\link{get_fragment_size}}, and histogram counts (optionally normalized to total counts)
+are computed. Both equal histogram bins via bin_size and manually customized bins via custom_bins are supported. 
+
+By setting mutated_only to true and using an input mutations, the function would bin only fragments that support mutation variant alleles.
+}
+\seealso{
+\code{\link{get_fragment_size}} \code{\link{compute_fragment_size_wps}} \code{\link{summarize_fragment_size}}
+}

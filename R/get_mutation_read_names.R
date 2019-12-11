@@ -12,7 +12,6 @@
 #' @param min_mapq integer specifying the minimum mapping quality for reads to be included.
 #' @return A character vector having the read names
 #' @importFrom rlang .data
-#' @export 
 
 get_mutation_read_names <- function(bam, chr, pos, ref, alt, tag = "", min_base_quality = 20, min_mapq = 30) {
     

@@ -9,6 +9,8 @@
 #' @param min_mapq the minimum mapping quality for a read to be counted
 #' @return a named list contains: ref, vector of read counts of the reference alleles, and
 #'         alt, vector of read counts of the alternative allele
+#' @seealso \code{\link{get_mutations_read_names}} \code{\link{test_ctDNA}} \code{\link{get_mutations_fragment_size}}
+#' @details Quantifies the reference and variant alleles for the input mutations in the input bam file. Useful for forced calling mutations.   
 #' @export
 
 get_mutations_read_counts <- function(mutations, bam, tag = "", min_base_quality = 20, 

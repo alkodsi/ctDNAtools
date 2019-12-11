@@ -14,8 +14,24 @@
 #' @param min_mapq the minimum mapping quality for a read to be counted
 #' @param substitution_specific logical, whether to have the loci of black_list by substitutions.
 
-#' @return a named list contains: ref, vector of read counts of the reference alleles, and
-#'         alt, vector of read counts of the alternative allele
+#' @return a named list contains: 
+#'  \itemize{
+#'   \item ref: vector of read counts of the reference alleles
+#'   \item alt: vector of read counts of the alternative allele
+#' }
+#'
+#' @seealso \code{\link{create_black_list}} \code{\link{test_ctDNA}} \code{\link{create_background_panel}}
+#' @details Filter a set of mutations using one of two options:
+#'
+#' \describe{
+#' \item{1.}{By providing a black list (recommended), which includes a vector of genomic loci chr_pos when substitution_specific is false,
+#'    or chr_pos_ref_alt when substitutions_specific is true. In this mode, all mutations reported in the black list are simply removed.}
+#' 
+#' \item{2.}{By providing a set of bam files. The function will run a similar functionality to \code{\link{create_background_panel}} and filter
+#'    mutations based on the min_alt_reads and min_samples criteria.}
+#' }
+#'
+#' This function is called internally in \code{\link{test_ctDNA}} so you likely won't need to use it yourself.
 #' @export
 
 filter_mutations <- function(mutations, bams = NULL, black_list = NULL, 
@@ -47,7 +63,6 @@ filter_mutations <- function(mutations, bams = NULL, black_list = NULL,
             idx <- paste(mutations$CHROM, mutations$POS, sep = "_") %in% black_list
 
         }
-
 
     } else {
 

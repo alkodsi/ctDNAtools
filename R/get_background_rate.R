@@ -14,6 +14,12 @@
 #' @param substitution_specific logical, whether to have the loci of black_list by substitutions.
 
 #' @return a list containing the general mismatch rate and substitution-specific rates
+#' @seealso \code{\link{create_black_list}} \code{\link{test_ctDNA}} \code{\link{create_background_panel}}
+#' @details Computes the background rate of the input bam file for all bases in the specified targets. Substitutions-specific rates are also calculated.
+#' 
+#' Genomic positions having non-reference allele frequency higher than vaf_threshold will be excluded (to exclude SNPs and real mutations).
+#'
+#' If a black_list is specified, the positions in the black_list (whether substituion_specific or not) will be excluded before computing the background rate.
 #' @export
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data

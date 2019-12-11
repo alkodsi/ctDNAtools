@@ -27,3 +27,9 @@ a named list contains: ref, vector of read counts of the reference alleles, and
 \description{
 Counts ref and alt reads for a set of mutations in a bam file
 }
+\details{
+Quantifies the reference and variant alleles for the input mutations in the input bam file. Useful for forced calling mutations.
+}
+\seealso{
+\code{\link{get_mutations_read_names}} \code{\link{test_ctDNA}} \code{\link{get_mutations_fragment_size}}
+}

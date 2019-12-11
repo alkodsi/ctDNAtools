@@ -25,3 +25,6 @@ a character vector of the loci in the black list
 The function applies criteria on the background panel to extract the noisy genomic loci. Criteria include minimum number of samples having
 at least one and at least two non-reference allele. Additionally the quantile of mean VAF above which the loci are considered noisy
 }
+\seealso{
+\code{\link{create_background_panel}}  \code{\link{test_ctDNA}}
+}

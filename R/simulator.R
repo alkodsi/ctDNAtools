@@ -29,6 +29,7 @@ compare_simulated_observed <- function(simulated, observed, depths) {
 #' @param seed the random seed
 #' @return a scalar. Either 1 if the simulation exceeds observed variant alleles or 0 otherwise
 #' @importFrom stats C rbinom runif
+#' @seealso \code{\link{test_ctDNA}}
 
 simulator <- function(depths, rate, altReads, substitutions = NULL, seed) {
     

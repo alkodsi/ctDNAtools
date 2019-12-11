@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_fragment_size_wps.R
 \name{compute_fragment_size_wps}
 \alias{compute_fragment_size_wps}
-\title{Analysis of fragment ends}
+\title{Provides fragment ends analysis}
 \usage{
 compute_fragment_size_wps(bam, targets, tag = "", window_size = 120,
   step_size = 5, min_size = 120, max_size = 180, ...)
@@ -33,5 +33,16 @@ other columns having the WPS (raw and adjusted by coverage) and number of fragme
 Caluclates the number of fragment ends and the Windowed Protection Score (WPS) in genomic tiles within targets
 }
 \details{
-Check Snyder et al., Cell 2016.
+Fragment length will extracted from the bam file according to the parameters passed to \code{\link{get_fragment_size}}, and the number of fragment ends,
+and the Windowed Protection Score (WPS) will be computed in the binned input targets. Binning is done according to the window_size and step_size parameters.
+
+WPS is defined as the number of fragments completely spanning a window (bin) minus 
+the number of fragments with an endpoint within the same window as reported by Snyder et al., Cell 2016.
+
+The output include both the fragment end counts and the WPS in their raw format as well as after adjustment by coverage in the bin.
+
+Minimum and maximum bounds of the fragment size are applied before computing WPS and fragment ends counts.
+}
+\seealso{
+\code{\link{get_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{summarize_fragment_size}}
 }

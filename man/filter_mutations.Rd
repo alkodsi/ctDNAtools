@@ -32,10 +32,29 @@ will be scanned for mismatches in the mutations loci and the specified threshold
 \item{substitution_specific}{logical, whether to have the loci of black_list by substitutions.}
 }
 \value{
-a named list contains: ref, vector of read counts of the reference alleles, and
-        alt, vector of read counts of the alternative allele
+a named list contains: 
+ \itemize{
+  \item ref: vector of read counts of the reference alleles
+  \item alt: vector of read counts of the alternative allele
+}
 }
 \description{
 Filter a set of mutations given the input black list or the prevalence of their mismatches in a set of bam files. Mutations that 
 have more than min_alt_reads in more than min_samples will be removed when no black list is given.
+}
+\details{
+Filter a set of mutations using one of two options:
+
+\describe{
+\item{1.}{By providing a black list (recommended), which includes a vector of genomic loci chr_pos when substitution_specific is false,
+   or chr_pos_ref_alt when substitutions_specific is true. In this mode, all mutations reported in the black list are simply removed.}
+
+\item{2.}{By providing a set of bam files. The function will run a similar functionality to \code{\link{create_background_panel}} and filter
+   mutations based on the min_alt_reads and min_samples criteria.}
+}
+
+This function is called internally in \code{\link{test_ctDNA}} so you likely won't need to use it yourself.
+}
+\seealso{
+\code{\link{create_black_list}} \code{\link{test_ctDNA}} \code{\link{create_background_panel}}
 }
