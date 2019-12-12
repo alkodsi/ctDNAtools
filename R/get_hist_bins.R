@@ -34,11 +34,9 @@ get_hist_bins <- function(x, from, to, by, normalized,  custom_bins = NULL) {
     
     if (normalized) {
         
-        return(h$counts/sum(h$counts))
+        h$counts <- h$counts/sum(h$counts)
         
-    } else {
+    } 
         
-        return(list(counts = h$counts, breaks = paste(h$breaks[-length(h$breaks)], h$breaks[-1], sep = "_")))
-        
-    }
+    return(list(counts = h$counts, breaks = paste(h$breaks[-length(h$breaks)], h$breaks[-1], sep = "_")))    
 }

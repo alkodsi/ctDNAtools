@@ -13,7 +13,7 @@ The ctDNAtools package provides functionalities to analyse ctDNA sequencing data
 # From github
 
 # install.packages("devtools")
-devtools::install_github("tidyverse/tidyr")
+devtools::install_github("alkodsi/ctDNAtools")
 ```
 
 ## Tutorial
