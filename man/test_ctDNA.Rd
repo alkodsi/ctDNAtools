@@ -27,7 +27,7 @@ test_ctDNA(mutations, bam, targets, reference, tag = "",
 \item{ID_column}{The name of the column that contains the ID of mutations in phase. All mutations in Phase should have the same ID in that column.}
 
 \item{black_list}{a character vector of genomic loci to filter. The format is chr_pos if substitution_specific is false or
-chr_pos_ref_alt if substitution_specific is true. If given, will override bam_list.}
+chr_pos_ref_alt if substitution_specific is true. If given, will override \code{bam_list}.}
 
 \item{substitution_specific}{logical, whether to have the loci of black_list by substitutions.}
 
@@ -46,7 +46,7 @@ Mutations that have more than min_alt_reads in more than min_samples will be fil
 
 \item{min_alt_reads}{When bam_list is provided, this sets the minimum number of alternative allele reads for a sample to be counted.}
 
-\item{min_samples}{When number of samples having more than min_alt_reads exceeds this number, the mutation will be filtered.}
+\item{min_samples}{When number of samples having more than \code{min_alt_reads} exceeds this number, the mutation will be filtered.}
 
 \item{by_substitution}{boolean whether to run the test according to substitution-specific background rate}
 
@@ -83,7 +83,7 @@ This is the main function to test minimal residual disease by ctDNA positivity i
 The inputs include a bam file for the follow-up sample to be tested, a list of reporter mutations (detected for example before treatment in a ctDNA positive sample),
 and an optional black_list (recommended to use) computed from a list of bam files of healthy-like samples or bam_list of the bam_files to use instead of black_list.
 
-The workflow include the following steps:
+The workflow includes the following steps:
 
 \describe{
 \item{1.}{Filtering mutations (optional but recommended): The mutations in the input will be filtered removing the ones reported in the black list. If bam_list is provided,
@@ -92,13 +92,13 @@ The workflow include the following steps:
 \item{2.}{The background rate will be computed for the input bam. The black list will be plugged in to exclude the black-listed loci when computing the background rate.
    The black list can be substitution_specific or not, but in both cases, the background rate will be adjusted accordingly. See \code{\link{get_background_rate}}.}
 
-\item{3.}{Counting reference and alternative alleles of the reporter mutations in the bam file}
+\item{3.}{Counting reference and alternative alleles of the reporter mutations in the bam file.}
 
 \item{4.}{Merging mutations in phase (optional but recommended): If the ID_column is specified in the mutations input, mutations with the same ID (in phase) will be merged. 
    While doing so, it is expected that real traces of mutations will be exhibited in the mutations in phase, while artifacts will manifest only in one of the mutations
    in phase. Therefore, the mismatches that map only to one of the mutations in phase but not the others (the others are covered and show reference allele) will be removed.
    This will lead to reduction of the observed mismatches, and therefore, the computed background rate will be adjusted accordingly: 
-   new rate = old rate * (1 - purification_probability). See \code{\link{merge_mutations_in_phase}}}
+   new rate = old rate * (1 - purification_probability). See \code{\link{merge_mutations_in_phase}}.}
 
 \item{5.}{Monte Carlo test: this approach was used by Newman et al., Nature Biotechnology 2016.
    \itemize{
@@ -107,7 +107,7 @@ The workflow include the following steps:
 
    \item  Repeat \code{n_simuations} times.
 
-   \item  Count the number of simulations where simulated data equal or exceed observed data in jointly two measurements: (1) the average VAF for the \eqn{N} mutations,
+   \item  Count the number of simulations, where simulated data equal or exceed observed data in jointly two measurements: (1) the average VAF for the \eqn{N} mutations,
      and (2) the number of mutations with non-zero VAF.
 
    \item  Compute an emperical p-value as (#successes + 1)/(#simulations + 1)
