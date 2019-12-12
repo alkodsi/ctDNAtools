@@ -43,6 +43,22 @@
 #' @seealso \code{\link{summarize_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{compute_fragment_size_wps}} \code{\link{get_mutations_fragment_size}}
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
+#' @examples
+#' \dontrun{
+#' data('mutations',package = 'ctDNAtools')
+#' bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+#' 
+#' ## basic usage
+#' fs <- get_fragment_size(bam = bamT1)
+#'
+#' ## More options
+#' fs1 <- get_fragment_size(bam = bamT1, isProperPair = TRUE, min_size = 70,
+#'     max_size = 200, ignore_trimmed = FALSE, different_strands = FALSE, 
+#'     simple_cigar = TRUE)
+#'
+#' ## with mutations input
+#' fs2 <- get_fragment_size(bam = bamT1, mutations = mutations)
+#' }
 
 get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA, mapqFilter = 30,
 	min_size = 1, max_size = 400, ignore_trimmed = T, different_strands = T, simple_cigar = F) {

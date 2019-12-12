@@ -26,6 +26,18 @@
 #' @export
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
+#' @examples
+#' \dontrun{
+#' data('targets',package = 'ctDNAtools')
+#' bamN1 <- system.file('extdata', 'N1.bam', package = 'ctDNAtools')
+#' 
+#' ## basic usage
+#' compute_fragment_size_wps(bam = bamN1, targets = targets)
+#' 
+#' ## more options
+#' compute_fragment_size_wps(bam = bamN1, targets = targets,
+#'    step_size = 10, window_size = 50)
+#' }
 
 compute_fragment_size_wps <- function(bam, targets, tag = "", window_size = 120,
     step_size = 5, min_size = 120, max_size = 180, ...) {

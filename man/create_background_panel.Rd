@@ -49,6 +49,42 @@ Since this function can take a long time when the bam_list comprises a large num
 using the furrr and future R packages. All you need to do is call 'plan(multiprocess)' or other multi-threading strategies before
 calling this function.
 }
+\examples{
+\dontrun{
+## Load example data
+data('targets', package = 'ctDNAtools')
+bamN1 <- system.file('extdata', 'N1.bam', package = 'ctDNAtools')
+bamN2 <- system.file('extdata', 'N2.bam', package = 'ctDNAtools')
+bamN3 <- system.file('extdata', 'N3.bam', package = 'ctDNAtools')
+
+## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library
+suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
+
+## Use a black list based on loci
+bg_panel <- create_background_panel(bam_list = c(bamN1, bamN2, bamN3),
+  targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+  substitution_specific = FALSE)
+
+bl1 <- create_black_list(bg_panel, mean_vaf_quantile = 0.99, 
+    min_samples_one_read = 2, min_samples_two_reads = 1)
+
+## Use a substitution-specific black list
+bg_panel <- create_background_panel(bam_list = c(bamN1, bamN2, bamN3),
+  targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+  substitution_specific = TRUE)
+
+bl2 <- create_black_list(bg_panel, mean_vaf_quantile = 0.99,
+    min_samples_one_read = 2, min_samples_two_reads = 1)
+
+## Multi-threading (commented)
+## library(furrr)
+## plan(multiprocess)
+## plan(multiprocess, workers = 3)
+bg_panel <- create_background_panel(bam_list = c(bamN1, bamN2, bamN3),
+  targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+  substitution_specific = TRUE)
+}
+}
 \seealso{
 \code{\link{create_black_list}}  \code{\link{test_ctDNA}}
 }

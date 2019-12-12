@@ -44,6 +44,23 @@ are computed. Both equal histogram bins via bin_size and manually customized bin
 
 By setting mutated_only to true and using an input mutations, the function would bin only fragments that support mutation variant alleles.
 }
+\examples{
+\dontrun{
+data('targets',package = 'ctDNAtools')
+data('mutations',package = 'ctDNAtools')
+bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+
+## basic usage
+bin_fragment_size(bam = bamT1)
+
+## with normalization
+bin_fragment_size(bam = bamT1, normalized = TRUE)
+
+
+## binning only mutated reads
+bin_fragment_size(bam = bamT1, mutations = mutations, mutated_only = TRUE)
+}
+}
 \seealso{
 \code{\link{get_fragment_size}} \code{\link{compute_fragment_size_wps}} \code{\link{summarize_fragment_size}}
 }

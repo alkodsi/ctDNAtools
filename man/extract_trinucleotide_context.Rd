@@ -19,3 +19,15 @@ A data frame with two columns having the substitutions and the trinucleotide con
 \description{
 A function to extract the trinucleotide context for a set of mutations
 }
+\examples{
+data('mutations',package = 'ctDNAtools')
+## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library
+suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
+
+## with destranding
+extract_trinucleotide_context(mutations, BSgenome.Hsapiens.UCSC.hg19)
+
+## without destranding
+extract_trinucleotide_context(mutations, BSgenome.Hsapiens.UCSC.hg19,
+   destrand = FALSE)
+}

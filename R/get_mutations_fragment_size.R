@@ -14,6 +14,11 @@
 #' and the fragment size of the reads that map to the ref and alt alleles of each mutation in the input will be returned.
 #' @seealso \code{\link{get_fragment_size}} 
 #' @export 
+#' @examples
+#' data('mutations',package = 'ctDNAtools')
+#' bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+#' 
+#' mfs <- get_mutations_fragment_size(bam = bamT1, mutations = mutations[1:2,])
 
 get_mutations_fragment_size <- function(bam, mutations, tag = "", min_base_quality = 20,
     min_mapq = 30, ...) {

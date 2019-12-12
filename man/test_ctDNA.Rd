@@ -118,6 +118,63 @@ The workflow includes the following steps:
    parameters will be used to determine positivity or negativity.}
 }
 }
+\examples{
+## Load example data
+data('mutations',package = 'ctDNAtools')
+data('targets', package = 'ctDNAtools')
+bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+bamT2 <- system.file('extdata', 'T2.bam', package = 'ctDNAtools')
+bamN1 <- system.file('extdata', 'N1.bam', package = 'ctDNAtools')
+bamN2 <- system.file('extdata', 'N2.bam', package = 'ctDNAtools')
+bamN3 <- system.file('extdata', 'N3.bam', package = 'ctDNAtools')
+
+## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library
+suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
+
+\dontrun{
+## basic usage
+test_ctDNA(mutations = mutations, bam = bamT1, 
+    targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+    n_simulation = 100)
+
+## More options
+test_ctDNA(mutations = mutations, bam = bamT1, 
+    targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+    n_simulation = 100, min_base_quality = 20, min_mapq = 30,
+    vaf_threshold = 0.05)
+
+## Use phasing information
+test_ctDNA(mutations = mutations, bam = bamT2, 
+    targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+    n_simulation = 100, ID_column = "PHASING")
+
+## Use a black list based on loci
+bg_panel <- create_background_panel(bam_list = c(bamN1, bamN2, bamN3),
+  targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+  substitution_specific = FALSE)
+
+bl1 <- create_black_list(bg_panel, mean_vaf_quantile = 0.99, 
+    min_samples_one_read = 2, min_samples_two_reads = 1)
+
+test_ctDNA(mutations = mutations, bam = bamT1, 
+    targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+    n_simulation = 100, ID_column = "PHASING", black_list = bl1,
+    substitution_specific = FALSE)
+}
+## Use a substitution-specific black list
+bg_panel <- create_background_panel(bam_list = c(bamN1, bamN2, bamN3),
+  targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+  substitution_specific = TRUE)
+
+bl2 <- create_black_list(bg_panel, mean_vaf_quantile = 0.99,
+    min_samples_one_read = 2, min_samples_two_reads = 1)
+
+test_ctDNA(mutations = mutations, bam = bamT1, 
+    targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+    n_simulation = 100, ID_column = "PHASING", black_list = bl2,
+    substitution_specific = TRUE)
+
+}
 \seealso{
 \code{\link{get_background_rate}} \code{\link{merge_mutations_in_phase}} \code{\link{create_black_list}} \code{\link{create_background_panel}} 
    \code{\link{filter_mutations}}

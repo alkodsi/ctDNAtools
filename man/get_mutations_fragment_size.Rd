@@ -32,6 +32,12 @@ in the mutations data frame.
 Fragment length will extracted from the bam file according to the parameters passed to \code{\link{get_fragment_size}},
 and the fragment size of the reads that map to the ref and alt alleles of each mutation in the input will be returned.
 }
+\examples{
+data('mutations',package = 'ctDNAtools')
+bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+
+mfs <- get_mutations_fragment_size(bam = bamT1, mutations = mutations[1:2,])
+}
 \seealso{
 \code{\link{get_fragment_size}}
 }

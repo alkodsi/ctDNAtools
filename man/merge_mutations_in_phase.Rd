@@ -22,8 +22,21 @@ NA values will be filled automatically by unique mutation identifiers.}
 \item{min_mapq}{integer specifying the minimum mapping quality for reads to be included.}
 }
 \value{
-A data frame that has the ref and alt counts for the mutations/events, as well as, 
-the count of reads that support multiple mutations in phase, and the total number of reads.
+A list with the following slots:
+\describe{
+ \item{out:}{ A data frame that has the columns:
+      \itemize{
+        \item Phasing_id: the ID of the mutations/event.
+        \item ref: number of reference reads.
+        \item alt: number of alternative reads.
+        \item n_reads_multi_mutation: Number of reads that span more than one mutation in phase.
+        \item all_reads: total number of reads.
+        \item multi_support: number of reads that support the alt allele of multiple mutations in phase.
+      }}
+ \item{purification_prob:}{Probability of purification: sum(n_reads_multi_mutation)/sum(all_reads)}
+ \item{multi_support:}{Number of multi-support reads in all mutations/events}
+ \item{informative_reads:}{Number of unique reads covering the mutations/events}
+}
 }
 \description{
 Given a mutations data frame and a bam file, this function collapses mutations in phase identified by the ID_column into one event.
@@ -41,6 +54,12 @@ The output will include the merged mutations, the probability of purification, w
 reads covering at least two mutations in phase devided by the number of informative reads. 
 Informative reads count is the total number of unique reads mapping to the mutations input
 (including both mutations in phase and other mutations).
+}
+\examples{
+data('mutations',package = 'ctDNAtools')
+bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+merge_mutations_in_phase(mutations = mutations[5:10,], bam = bamT1, ID_column = "PHASING")
+
 }
 \seealso{
 \code{\link{test_ctDNA}} \code{\link{get_mutations_read_names}}

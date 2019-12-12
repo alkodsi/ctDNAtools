@@ -30,6 +30,26 @@ not secondary or supplementary alignment, not duplicates, passed quality control
 The reads that overlap the specified regions will be summarized by the specified summary_functions. Overlaps consider fragments to span the 
 left most to the right most coordinate from either the read or the mate. Minimum and maximum bounds of the fragment size will be applied before summarization.
 }
+\examples{
+data('targets',package = 'ctDNAtools')
+bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+
+## binning the target in arbitrary way
+## Note that regions don't need to be bins, 
+## they can be any regions in the genome
+regions <- data.frame(chr = targets$chr,
+    start = seq(from = targets$start - 200, to = targets$end + 200, by = 30),
+    stringsAsFactors = FALSE)
+regions$end <- regions$start + 50 
+
+## basic usage
+sfs <- summarize_fragment_size(bam = bamT1, regions = regions)
+
+## different summary functions
+sfs <- summarize_fragment_size(bam = bamT1, regions = regions,
+    summary_functions = list(Var = var, SD = sd, 
+    meanSD = function(x)mean(x)/sd(x)))
+}
 \seealso{
 \code{\link{get_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{compute_fragment_size_wps}}
 }

@@ -25,6 +25,22 @@
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 #' @export
+#' @examples
+#' \dontrun{
+#' data('targets',package = 'ctDNAtools')
+#' data('mutations',package = 'ctDNAtools')
+#' bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+#' 
+#' ## basic usage
+#' bin_fragment_size(bam = bamT1)
+#' 
+#' ## with normalization
+#' bin_fragment_size(bam = bamT1, normalized = TRUE)
+#' 
+#' 
+#' ## binning only mutated reads
+#' bin_fragment_size(bam = bamT1, mutations = mutations, mutated_only = TRUE)
+#' }
 
 bin_fragment_size <- function(bam, mutations = NULL, tag = "", bin_size = 2, custom_bins = NULL, mutated_only = F, 
     normalized = F, min_size = 1, max_size = 400, ...) {

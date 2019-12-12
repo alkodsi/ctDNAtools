@@ -10,8 +10,21 @@
 #' NA values will be filled automatically by unique mutation identifiers.
 #' @param min_base_quality minimum base quality for a read to be counted
 #' @param min_mapq integer specifying the minimum mapping quality for reads to be included.
-#' @return A data frame that has the ref and alt counts for the mutations/events, as well as, 
-#' the count of reads that support multiple mutations in phase, and the total number of reads.
+#' @return A list with the following slots:
+#' \describe{
+#'  \item{out:}{ A data frame that has the columns:
+#'       \itemize{
+#'         \item Phasing_id: the ID of the mutations/event.
+#'         \item ref: number of reference reads.
+#'         \item alt: number of alternative reads.
+#'         \item n_reads_multi_mutation: Number of reads that span more than one mutation in phase.
+#'         \item all_reads: total number of reads.
+#'         \item multi_support: number of reads that support the alt allele of multiple mutations in phase.
+#'       }}
+#'  \item{purification_prob:}{Probability of purification: sum(n_reads_multi_mutation)/sum(all_reads)}
+#'  \item{multi_support:}{Number of multi-support reads in all mutations/events}
+#'  \item{informative_reads:}{Number of unique reads covering the mutations/events}
+#' }
 #' @export
 #' @seealso \code{\link{test_ctDNA}} \code{\link{get_mutations_read_names}}
 #' @details Mutations in phase are those that are supported by the same reads (same allele). The function doesn't identify mutations in phase, but rather use
@@ -28,7 +41,11 @@
 
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-
+#' @examples
+#' data('mutations',package = 'ctDNAtools')
+#' bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+#' merge_mutations_in_phase(mutations = mutations[5:10,], bam = bamT1, ID_column = "PHASING")
+#'
 merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phasingID", min_base_quality = 20, min_mapq = 30) {
 	
 	assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 

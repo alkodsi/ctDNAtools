@@ -23,6 +23,36 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
+#' @examples
+#' \dontrun{
+#' ## Load example data
+#' data('targets', package = 'ctDNAtools')
+#' bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+#' bamN1 <- system.file('extdata', 'N1.bam', package = 'ctDNAtools')
+#' bamN2 <- system.file('extdata', 'N2.bam', package = 'ctDNAtools')
+#' bamN3 <- system.file('extdata', 'N3.bam', package = 'ctDNAtools')
+#'
+#' ## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library
+#' suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
+#' 
+#' ## basic usage
+#' get_background_rate(bamT1, targets, BSgenome.Hsapiens.UCSC.hg19)
+#'
+#' ## more options
+#' get_background_rate(bamT1, targets, BSgenome.Hsapiens.UCSC.hg19,
+#'    min_base_quality = 30, min_mapq = 40, vaf_threshold = 0.05)
+#'
+#' ## with blacklist
+#' bg_panel <- create_background_panel(bam_list = c(bamN1, bamN2, bamN3),
+#'   targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+#'   substitution_specific = TRUE)
+#'
+#' bl2 <- create_black_list(bg_panel, mean_vaf_quantile = 0.99,
+#'     min_samples_one_read = 2, min_samples_two_reads = 1)
+#' 
+#' get_background_rate(bamT1, targets, BSgenome.Hsapiens.UCSC.hg19, 
+#'     black_list = bl2)
+#' }
 
 get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, tag = "", 
     black_list = NULL, substitution_specific = T, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {

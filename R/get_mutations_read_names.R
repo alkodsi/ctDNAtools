@@ -10,7 +10,12 @@
 #' @seealso \code{\link{get_mutations_read_counts}} \code{\link{get_mutations_fragment_size}} \code{\link{test_ctDNA}}
 #' @details Returns the IDs of the read that cover the input mutations (ref and alt alleles).
 #' @export 
-
+#'
+#' @examples
+#' data('mutations',package = 'ctDNAtools')
+#' bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+#' get_mutations_read_names(bam = bamT1, mutations = mutations[1:3,])
+#'
 get_mutations_read_names <- function(bam, mutations, min_base_quality = 20, tag = "", min_mapq = 30) {
     
     assertthat::assert_that(!missing(bam), is.character(bam),

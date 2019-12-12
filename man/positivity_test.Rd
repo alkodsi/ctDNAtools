@@ -26,3 +26,6 @@ a scalar, simulation p-value.
 \description{
 A function to determine ctDNA positivity with N repeated Monte Carlo simulations. Return a p-value based on Monte Carlo simulation test. Calls simulator function  n_simulations times.
 }
+\seealso{
+\code{\link{test_ctDNA}}
+}

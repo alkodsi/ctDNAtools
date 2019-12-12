@@ -18,6 +18,25 @@
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 #' @importFrom stats median
+#' @examples
+#' data('targets',package = 'ctDNAtools')
+#' bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+#'
+#' ## binning the target in arbitrary way
+#' ## Note that regions don't need to be bins, 
+#' ## they can be any regions in the genome
+#' regions <- data.frame(chr = targets$chr,
+#'     start = seq(from = targets$start - 200, to = targets$end + 200, by = 30),
+#'     stringsAsFactors = FALSE)
+#' regions$end <- regions$start + 50 
+#'
+#' ## basic usage
+#' sfs <- summarize_fragment_size(bam = bamT1, regions = regions)
+#'
+#' ## different summary functions
+#' sfs <- summarize_fragment_size(bam = bamT1, regions = regions,
+#'     summary_functions = list(Var = var, SD = sd, 
+#'     meanSD = function(x)mean(x)/sd(x)))
 
 summarize_fragment_size <- function(bam, regions, tag = "", 
     summary_functions = list(Mean = mean, Median = median), ...) {

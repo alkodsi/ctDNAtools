@@ -33,6 +33,10 @@
 #'
 #' This function is called internally in \code{\link{test_ctDNA}} so you likely won't need to use it yourself.
 #' @export
+#'
+#' @examples
+#' data('mutations',package = 'ctDNAtools')
+#' filter_mutations(mutations, black_list = "chr14_106327474_C_G")
 
 filter_mutations <- function(mutations, bams = NULL, black_list = NULL, 
     tags = rep("", length(bams)), min_alt_reads = 2, 
