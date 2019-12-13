@@ -42,7 +42,7 @@ summarize_fragment_size <- function(bam, regions, tag = "",
     summary_functions = list(Mean = mean, Median = median), ...) {
    
     assertthat::assert_that(assertthat::has_name(regions, c("chr", "start", "end")),
-        is.data.frame(regions))
+        is.data.frame(regions), assertthat::not_empty(regions))
 
     assertthat::assert_that(!missing(bam), is.character(bam), length(bam) == 1, file.exists(bam))
 
