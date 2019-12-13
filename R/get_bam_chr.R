@@ -3,8 +3,8 @@
 
 get_bam_chr <- function(bam) {
     
-    header <- Rsamtools::scanBamHeader(bam)[[1]]$text
-    chr <- gsub("SN:", "", purrr::map_chr(header[names(header) == "@SQ"], 1))
+    chr <- GenomeInfoDb::seqnames(GenomeInfoDb::seqinfo(Rsamtools::BamFile(bam)))
+
     return(chr)
     
 }
