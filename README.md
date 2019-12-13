@@ -2,6 +2,7 @@
 # ctDNAtools
 
 <!-- badges: start -->
+[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 <!-- badges: end -->
 
 The ctDNAtools package provides functionalities to analyse ctDNA sequencing data. The tools cover mainly analysis of ctDNA/cfDNA fragmentation and analysis of minimal residual disease using detected reporter mutations.
