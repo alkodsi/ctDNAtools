@@ -40,7 +40,7 @@
 #' When the input mutations is given, the output will label the reads that support the variant alleles of the mutation in
 #' a separate column.
 
-#' @seealso \code{\link{summarize_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{compute_fragment_size_wps}} \code{\link{get_mutations_fragment_size}}
+#' @seealso \code{\link{summarize_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{analyze_fragmentation}} \code{\link{get_mutations_fragment_size}}
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 #' @examples

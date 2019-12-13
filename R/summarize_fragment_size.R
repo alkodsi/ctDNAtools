@@ -12,7 +12,7 @@
 #' The reads that overlap the specified regions will be summarized by the specified summary_functions. Overlaps consider fragments to span the 
 #' left most to the right most coordinate from either the read or the mate. Minimum and maximum bounds of the fragment size will be applied before summarization.
 
-#' @seealso \code{\link{get_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{compute_fragment_size_wps}}
+#' @seealso \code{\link{get_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{analyze_fragmentation}}
 
 #' @export
 #' @importFrom rlang .data

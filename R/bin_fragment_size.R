@@ -21,7 +21,7 @@
 #' are computed. Both equal histogram bins via bin_size and manually customized bins via custom_bins are supported. 
 #'
 #' By setting mutated_only to true and using an input mutations, the function would bin only fragments that support mutation variant alleles.
-#' @seealso \code{\link{get_fragment_size}} \code{\link{compute_fragment_size_wps}} \code{\link{summarize_fragment_size}}
+#' @seealso \code{\link{get_fragment_size}} \code{\link{analyze_fragmentation}} \code{\link{summarize_fragment_size}}
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 #' @export

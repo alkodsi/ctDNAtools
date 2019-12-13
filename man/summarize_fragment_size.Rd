@@ -51,5 +51,5 @@ sfs <- summarize_fragment_size(bam = bamT1, regions = regions,
     meanSD = function(x)mean(x)/sd(x)))
 }
 \seealso{
-\code{\link{get_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{compute_fragment_size_wps}}
+\code{\link{get_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{analyze_fragmentation}}
 }

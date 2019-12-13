@@ -81,5 +81,5 @@ fs2 <- get_fragment_size(bam = bamT1, mutations = mutations)
 }
 }
 \seealso{
-\code{\link{summarize_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{compute_fragment_size_wps}} \code{\link{get_mutations_fragment_size}}
+\code{\link{summarize_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{analyze_fragmentation}} \code{\link{get_mutations_fragment_size}}
 }

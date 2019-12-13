@@ -163,9 +163,11 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
         all(mutations$REF %in% c("A", "C", "T", "G")), all(mutations$ALT %in% c("A", "C", "T", "G")),
         msg = "REF and ALT in mutations should be characters having basepairs")
     
-    assertthat::assert_that(is.numeric(mutations$POS), all(mutations$POS > 0))
+    assertthat::assert_that(is.numeric(mutations$POS), assertthat::noNA(mutations$POS), 
+        all(mutations$POS > 0))
     
-    assertthat::assert_that(is.numeric(targets$start), all(targets$start > 0), 
+    assertthat::assert_that(is.numeric(targets$start), assertthat::noNA(targets$start),
+        all(targets$start > 0), assertthat::noNA(targets$end),
         is.numeric(targets$end), all(targets$end > 0))
     
     assertthat::assert_that(all(mutations$CHROM %in% GenomeInfoDb::seqnames(reference)), 

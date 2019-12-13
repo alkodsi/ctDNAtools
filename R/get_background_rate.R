@@ -56,10 +56,7 @@
 
 get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, tag = "", 
     black_list = NULL, substitution_specific = T, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
-    
-    
-    gr <- GenomicRanges::reduce(GenomicRanges::GRanges(targets$chr, IRanges::IRanges(targets$start, targets$end)))
-    
+       
     assertthat::assert_that(class(reference) == "BSgenome")
 
     assertthat::assert_that(is.data.frame(targets), assertthat::not_empty(targets), 
@@ -85,6 +82,15 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
         
         assertthat::assert_that(all(purrr::map_chr(strsplit(black_list, "_"), 1) %in%  GenomeInfoDb::seqnames(reference)),
             msg = "Chromosomes of black_list are not in reference")
+    
+    }
+
+    gr <- GenomicRanges::reduce(GenomicRanges::GRanges(targets$chr, 
+        IRanges::IRanges(targets$start, targets$end)))
+
+    if(sum(BiocGenerics::width(gr)) < 100){
+        
+        warning("Targets too small", immediate. = TRUE)
     
     }
 

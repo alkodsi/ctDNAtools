@@ -62,5 +62,5 @@ bin_fragment_size(bam = bamT1, mutations = mutations, mutated_only = TRUE)
 }
 }
 \seealso{
-\code{\link{get_fragment_size}} \code{\link{compute_fragment_size_wps}} \code{\link{summarize_fragment_size}}
+\code{\link{get_fragment_size}} \code{\link{analyze_fragmentation}} \code{\link{summarize_fragment_size}}
 }
