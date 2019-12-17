@@ -1,4 +1,11 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
+r: bioc-devel
+
+bioc_required: true
+
 cache: packages
+
+after_success:
+  - Rscript -e 'covr::codecov()'

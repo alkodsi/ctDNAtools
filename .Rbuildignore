@@ -3,3 +3,4 @@
 ^doc/Vignette.html$
 
 ^\.travis\.yml$
+^codecov\.yml$
