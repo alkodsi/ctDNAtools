@@ -34,6 +34,9 @@ compare_simulated_observed <- function(simulated, observed, depths) {
 simulator <- function(depths, rate, altReads, substitutions = NULL, seed) {
     
     assertthat::assert_that(length(depths) == length(altReads))
+
+    assertthat::assert_that(all(altReads <= depths))
+    
     assertthat::assert_that(is.list(rate), 
     	assertthat::has_name(rate, c("rate", "CT", "CA", "CG", "TA", "TC", "TG")),
     	msg = "rate must be a list as produced by get_background_rate")

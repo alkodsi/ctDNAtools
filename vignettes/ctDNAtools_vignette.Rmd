@@ -1,0 +1,320 @@
+---
+title: "Analysis of ctDNA sequencing data with ctDNAtools"
+author: "Amjad Alkodsi"
+date: "`r Sys.Date()`"
+output:  
+  rmdformats::readthedown:
+    df_print: kable
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Analysis of ctDNA sequencing data with ctDNAtools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE
+)
+```
+
+# Introduction 
+
+The ctDNAtools package is built on the Rsamtools and the GenomicAlignments R packages providing functionalities to analyze circulating tumor DNA sequencing data.
+In particular, the ctDNAtools can be used to:
+
+1. Test minimal residual disease by tracking a set of pre-detected mutations referred to as reporter mutations in a follow-up ctDNA sample.
+
+2. Analyze fragmentation patterns, histograms and profiles of cell-free DNA (cfDNA) and ctDNA.
+
+
+# Minimal residual disease testing
+
+The amount of ctDNA in plasma can drop dramatically after treatment to a level that makes genomic variants undetectable by conventional variant calling. The functionality of testing minimal residual disease (MRD) aims to track pre-detected mutations (e.g. detected in a pretreatment sample) in a follow-up sample, and determine whether the traces of these mutations can be expected by chance given the background mutation rate (ctDNA negative), or they are significantly higher than the background rate (ctDNA positive). This is implemented in the ```test_ctDNA``` function, which uses a set of reporter mutations, a bam file of the sample to be tested, reference genome in BSgenome format, and a target file containing the sequencing targets of the panel. See method details in ```help(test_ctDNA)```
+
+
+```{r setup}
+library(ctDNAtools)
+library(purrr)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+
+## Load example data
+
+## example list of predetected mutations
+data('mutations',package = 'ctDNAtools')
+mutations
+
+## example target file
+data('targets', package = 'ctDNAtools')
+targets
+
+## Example bam files for middle-treatment and after-treatment
+bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+bamT2 <- system.file('extdata', 'T2.bam', package = 'ctDNAtools')
+
+## Eample bam files from samples taken from healthy subjects
+bamN1 <- system.file('extdata', 'N1.bam', package = 'ctDNAtools')
+bamN2 <- system.file('extdata', 'N2.bam', package = 'ctDNAtools')
+bamN3 <- system.file('extdata', 'N3.bam', package = 'ctDNAtools')
+
+## Reference genome
+suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
+```
+
+## Basic usage
+
+In the basic usage, the read counts for reference and variant alleles of the reporter mutations will be quantified, the background rate of the tested sample will be estimated, and a Monte Carlo based sampling test will determine an emperical p-value. The p-value will only be used to determine positivity if the number of informative reads (number of all unique reads covering the mutations) exceed the specified threshold. Otherwise, the sample will be considered undetermined. Note that the test only accepts single nucleotide variants, and indels are not supported.
+
+```{r basic1}
+test1 <- test_ctDNA(mutations = mutations,
+          bam = bamT1,
+          reference = BSgenome.Hsapiens.UCSC.hg19, 
+          targets = targets,
+          informative_reads_threshold = 100)
+test1
+```
+
+Several parameters can be adjusted including ```min_base_quality``` and ```min_mapq``` which specify which reads in the bam file to count.
+
+```{r basic2}
+test2 <- test_ctDNA(mutations = mutations, 
+          bam = bamT2,
+          reference = BSgenome.Hsapiens.UCSC.hg19,
+          targets = targets,
+          informative_reads_threshold = 100,
+          min_base_quality = 20,
+          min_mapq = 30)
+test2
+
+## batch runs
+## use future_map2_dfr for multi-threading
+
+tests <- map2_dfr(c(bamT1, bamT2),
+            list(mutations, mutations), # in case mutations are different
+            ~ test_ctDNA(bam = .x, mutations = .y,
+                         targets = targets,
+                         reference = BSgenome.Hsapiens.UCSC.hg19,
+                         informative_reads_threshold = 100))
+tests
+
+```
+
+## Using a black list
+
+A black list of genomic loci or genomic variants can be constructed from a list of bam files corresponding to samples from healthy subjects. The black list can be plugged in the ```test_ctDNA``` function to achieve two goals:
+
+1. It will filter out variants that are likely false positives, limiting false positive ctDNA tests.
+
+2. The black listed (often noisy) loci are excluded when computing the background rate, which lowers the background rate against which the observed traces of mutations are tested, and thereby enhancing sensitivity.
+
+The ctDNAtools package provides two functions (```create_background_panel``` and ```create_black_list```) to build a black list of genomic loci (chr_pos regardless of substitutions) or variants (chr_pos_ref_alt). Both formats are recognized in ```test_ctDNA``` and controlled by the ```substitution_specific``` parameter.
+
+```{r blacklist}
+## Black list by loci (substition_specific = FALSE)
+bg_panel1 <- create_background_panel(bam_list = c(bamN1, bamN2, bamN3), 
+          targets = targets, 
+          reference = BSgenome.Hsapiens.UCSC.hg19, 
+          substitution_specific = FALSE)
+
+black_list1 <- create_black_list(bg_panel1,
+          mean_vaf_quantile = 0.99,
+          min_samples_one_read = 2,
+          min_samples_two_reads = 1)
+
+head(black_list1)
+
+test3 <- test_ctDNA(mutations = mutations, bam = bamT1,
+          reference = BSgenome.Hsapiens.UCSC.hg19, targets = targets,
+          informative_reads_threshold = 100, black_list = black_list1,
+          substitution_specific = FALSE)
+test3
+
+## Black list by variants (substition_specific = TRUE)
+bg_panel2 <- create_background_panel(bam_list = c(bamN1, bamN2, bamN3),
+           targets = targets, 
+           reference = BSgenome.Hsapiens.UCSC.hg19,
+           substitution_specific = TRUE)
+
+black_list2 <- create_black_list(bg_panel2,
+          mean_vaf_quantile = 0.99,
+          min_samples_one_read = 2,
+          min_samples_two_reads = 1)
+
+head(black_list2)
+
+test4 <- test_ctDNA(mutations = mutations,
+          bam = bamT1,
+          reference = BSgenome.Hsapiens.UCSC.hg19, 
+          targets = targets,
+          informative_reads_threshold = 100,
+          black_list = black_list2,
+          substitution_specific = TRUE)
+
+test4
+```
+
+The way how to determine the black list variants or loci is very crucial, so careful selection of the parameters in ```create_black_list``` is needed. You can also easily design your own more sophisticated criteria to create a black list from the output of ```create_background_panel```, which reports the depths, variant allele frequency, and number of alternative allele reads for all loci in the targets across the input bam files.
+
+Since ```create_background_panel``` can take along time with a large number of bam files, multi-threading is supported. All you have to do is call ```plan(multiprocess)``` or other plan from the ```furrr``` package before calling ```create_background_panel```.
+
+## Exploiting variants in phase
+
+Variants in phase (aka phased variants) are variants that are exhibited by the same sequencing reads (same allele). They are very common in some types of cancer such as lymphomas, but also can be found in other cancers. Mutect2, for example, reports phased variants in the output vcf (note that they can be collapsed into multiple-nucleotide polymorphisms - MNPs, so make sure to have your variants in un-collapsed format for this function). Phased variants can be useful in MRD because we expect that the real traces of phased variants to show in both or all mutations in phase, whereas an artifact that matches one of the mutations in phase will be only exhibited in one variant. 
+
+In the ctDNAtools package, you can supply the column name having an ID column in the ```mutations``` input, which contains a common ID for the variants in phase. When provided, the variants in phase will be collapsed and quantified jointly, reads that exhibit only one of the variants but not the others will be purified (mismatches removed), and the background rate will be adjusted according to the level of purification expected. See ```help(merge_mutations_in_phase)``` and ```help(test_ctDNA)``` for more details.
+
+```{r phasing}
+## Exploiting phased variants in the test
+test5 <- test_ctDNA(mutations = mutations, 
+          bam = bamT1,
+          reference = BSgenome.Hsapiens.UCSC.hg19,
+          targets = targets,
+          informative_reads_threshold = 100, 
+          black_list = black_list2,
+          substitution_specific = TRUE, 
+          ID_column = "PHASING")
+test5
+```
+
+Notice how using phased variants above led to significant reduction in the background rate.
+
+## Useful internal functionalities
+
+The following functions are called internally by ```test_ctDNA```, but are available for usage if you want to build your own framework:
+
+1. ```get_background_rate```: Computing the background rate using a bam file
+
+2. ```merge_mutations_in_phase```: To merge phased variants in single events, purify mismatches and compute the probability of purification.
+
+3. ```get_mutations_read_counts```: Useful for forced calling mutations.
+
+4. ```get_mutations_read_names```: Getting the read IDs covering a list of mutations.
+
+
+# Analysis of fragmentation
+
+The fragment size distribution and fragmentation patterns of cfDNA and ctDNA is biologically relevant (see this nice [review](https://www.sciencedirect.com/science/article/pii/S1535610819303861) by van der Pol and Mouliere to learn more). The ctDNAtools package provides functionalities to analyze fragment size histograms, fragment size profiles, and fragmentation patterns.
+
+## Extracting fragment size from a bam file
+
+Fragment size is extracted from the isize field in the bam file from informative reads. What makes an informative read is left to the user to customize in the available parameters. See ```help(get_fragment_size)``` for details. 
+
+```{r fragments1}
+
+fs1 <- get_fragment_size(bam = bamT1, 
+      mapqFilter = 30, 
+      isProperPair = NA, 
+      min_size = 1, 
+      max_size = 400, 
+      ignore_trimmed = FALSE, 
+      simple_cigar = FALSE, 
+      different_strands = TRUE)
+head(fs1)
+
+```
+
+The start and end in the output are considered the most left and most right coordinate from either reads or mates. Note that the output will contain one row for each read pair satisfying conditions in the bam file. There is also an option to input a list of mutations together with the bam file, which leads to an additional column in the output marking the reads that support alternative alleles.
+
+```{r fragments2}
+
+fs2 <- get_fragment_size(bam = bamT1, 
+      mutations = mutations)
+head(fs2)
+
+```
+
+## Fragment size histograms
+
+Getting a histogram of the fragment size can be done with the ```bin_fragment_size``` function. The function supports fixed bin size or custom bins, and can output the counts or normalized counts in each bin.
+
+```{r histograms}
+bfs1 <- bin_fragment_size(bam = bamT1,
+          min_size = 1, 
+          max_size = 400, 
+          normalized = TRUE,
+          bin_size = 5)
+
+head(bfs1)
+
+## batch execution
+## you can use multithreading by using
+## furrr::future_map instead of map
+bfs <- c(bamT1, bamT2, bamN1, bamN2, bamN3) %>%
+  map(bin_fragment_size, bin_size = 5, normalized = TRUE) %>%
+  purrr::reduce(inner_join, by = "Breaks")
+
+head(bfs)
+
+bfs %>%
+  tidyr::pivot_longer(cols = -Breaks, names_to = "Sample",values_to = "Counts") %>%
+  tidyr::separate(Breaks, into = c("start", "end"), sep = "_", convert = T) %>%
+  ggplot(aes(x  = start, y = Counts, color = Sample)) +
+  geom_line(size = 1) + theme_minimal()
+
+
+## custom bins
+bfs2 <- bin_fragment_size(bam = bamT1,
+          normalized = TRUE,
+          custom_bins = c(100,200),
+          min_size = 1,
+          max_size = 400)
+
+bfs2
+```
+
+## Fragment size profiles
+
+The function ```summarize_fragment_size``` provides the functionality to summarize the fragment size of reads in predefined genomic regions. You can use any summary function of your choosing, and several of them simultaneously.
+
+```{r profiles}
+## create some regions from the targets
+ regions <- data.frame(chr = targets$chr,
+         start = seq(from = targets$start - 50, to = targets$end + 50, by = 30),
+         stringsAsFactors = FALSE) %>%
+     mutate(end = start + 30)
+     
+sfs1 <- summarize_fragment_size(bam = bamT1,
+          regions = regions,
+          summary_functions = c(Mean = mean, SD = sd))
+
+head(sfs1)
+
+## batch run
+sfs <- c(bamT1, bamT2, bamN1, bamN2, bamN3) %>%
+  map(summarize_fragment_size, regions = regions, summary_functions = c(Median = median)) %>%
+  purrr::reduce(inner_join, by = "Region")
+
+head(sfs)
+```
+
+
+## Fragmentation patterns
+
+Fragmentations patterns in a running genomic tiles (overlapping or non-overlapping bins) within target regions can be computed with the ```analyze_fragmentation``` function. It will compute the number of fragment ends, the Windowed Protection Score (WPS), and the total number of fragments in each bin. WPS is defined as the number of fragments completely spanning a window (bin) minus the number of fragments with an endpoint within the same window as reported by [Snyder et al., Cell 2016](https://www.cell.com/fulltext/S0092-8674(15)01569-X).
+
+```{r}
+af <- analyze_fragmentation(bam = bamT1, 
+          targets = targets, 
+          window_size = 120, 
+          step_size = 5, 
+          min_size = 120, 
+          max_size = 180)
+
+head(af)
+
+af %>% tidyr::pivot_longer(
+    cols = c("WPS_adjusted", "n_fragment_ends_adjusted","n_reads"),
+    names_to = "Measurement",
+    values_to = "value") %>%
+  mutate(Measurement = factor(Measurement, 
+        levels = c("n_reads", "n_fragment_ends_adjusted", "WPS_adjusted"))) %>%
+  ggplot(aes(x = start, y = value, color = Measurement)) +
+  geom_line(size = 1) +
+  facet_wrap(~Measurement, scales = "free", nrow = 3) +
+  theme_linedraw() +
+  labs(x = "Chromosome 14", y = "")
+
+```
+

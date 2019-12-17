@@ -1,1 +1,4 @@
 ^LICENSE\.md$
+^doc$
+^doc/Vignette.html$
+
