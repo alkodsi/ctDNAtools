@@ -19,7 +19,7 @@ devtools::install_github("alkodsi/ctDNAtools")
 
 ## Tutorial
 
-You can browse the vignette [here](doc/Vignette.html)
+You can browse the vignette [here](doc/ctDNAtools_vignette.html)
 
 Raise an issue for bugs and feature requests.
 
