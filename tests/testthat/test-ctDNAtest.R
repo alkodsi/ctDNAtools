@@ -57,6 +57,10 @@ test_that("test_ctDNA works", {
   expect_warning(test_ctDNA(mutations = mutations[mutations$CHROM != "chr14",], bam = bamT2, 
          targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19))
   
+  expect_warning(test_ctDNA(mutations = mutations[1, ], bam = bamT2, 
+        targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+        black_list = "chr14_106327474", substitution_specific = FALSE))
+  
   expect_error(test_ctDNA(mutations = mutations, bam = bamT2, 
          targets = targets[targets$chr != "chr14",], reference = BSgenome.Hsapiens.UCSC.hg19))
   
@@ -128,7 +132,7 @@ test_that("merge_mutations_in_phase works", {
 
 fm <- list(
   fm1 = filter_mutations(mutations, black_list = "chr14_106327474_C_G"),
-  fm2 = filter_mutations(mutations, black_list = "chr14_106327474", substitution_specific = F),
+  fm2 = filter_mutations(mutations, black_list = "chr14_106327474", substitution_specific = FALSE),
   fm3 = filter_mutations(mutations, bams = bams))
 
 test_that("filter_mutations works", {
@@ -138,13 +142,15 @@ test_that("filter_mutations works", {
 
 test_that("extract_trinucleotide_context works", {
   
-  tri <- extract_trinucleotide_context(mutations, BSgenome.Hsapiens.UCSC.hg19)
+  tri <- list(
+      tri1 = extract_trinucleotide_context(mutations, BSgenome.Hsapiens.UCSC.hg19),
+      tri2 = extract_trinucleotide_context(mutations, BSgenome.Hsapiens.UCSC.hg19, destrand = FALSE))
   
-  expect_is(tri, "data.frame")
+  map(tri, ~expect_is(.x, "data.frame"))
   
-  expect_true(ncol(tri) == 2)
+  map(tri, ~expect_true(ncol(.x) == 2))
   
-  expect_true(has_name(tri, c("substitution","context")))
+  map(tri, ~expect_true(has_name(.x, c("substitution","context"))))
 })
 
 test_that("get_mutations_read_counts works", {

@@ -14,7 +14,8 @@ fs <- list(
   fs1 = get_fragment_size(bamN3),
   fs2 = get_fragment_size(bamN3, mutations = mutations, isProperPair = T,
         ignore_trimmed = F, different_strands = F),
-  fs3 = get_fragment_size(bamN3, max_size = 200, min_size = 100)
+  fs3 = get_fragment_size(bamN3, max_size = 200, min_size = 100),
+  fs4 = get_fragment_size(bamN3, tag = "ID1")
 )
 
 test_that("get_fragment_size works", {
