@@ -36,7 +36,11 @@ tests2 <- list(
        n_simulation = 100, ID_column = "PHASING", black_list = "chr14_106327474_C_G"),
   test4 = test_ctDNA(mutations = mutations, bam = bamT2, informative_reads_threshold = 100,
        targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19, substitution_specific = FALSE,
-       n_simulation = 100, ID_column = "PHASING", black_list = "chr14_106327474"))
+       n_simulation = 100, ID_column = "PHASING", black_list = "chr14_106327474"),
+  test5 = test_ctDNA(mutations = mutations, bam = bamT2, tag = "ID1", targets = targets,
+       n_simulation = 100, ID_column = "PHASING", bam_list = c(bamN1, bamN2, bamN3),
+       bam_list_tags = c("ID1","",""),
+       informative_reads_threshold = 100, reference = BSgenome.Hsapiens.UCSC.hg19))
 
 test_that("test_ctDNA works", {
   
@@ -81,7 +85,7 @@ test_that("get_background_rate works", {
 bams <- c(bamN1, bamN2, bamN3)
 
 bgp <- list(
-  bgp1 = create_background_panel(bams, targets, BSgenome.Hsapiens.UCSC.hg19),
+  bgp1 = create_background_panel(bams, bam_list_tags = c("", "","ID1"), targets, BSgenome.Hsapiens.UCSC.hg19),
   bgp2 = create_background_panel(bams, targets, BSgenome.Hsapiens.UCSC.hg19,
           min_base_quality = 20, substitution_specific = FALSE))
 
@@ -187,12 +191,16 @@ test_that("positivity_test works", {
   expect_equal(positivity_test(depths = 5, rate = bgr$bgr1, altReads = 1, n_simulations = 100), 1/101)
 })
 
+bamNoSM <- system.file('extdata', 'ex1.bam', package = 'Rsamtools')
+
 test_that("bamutils works", {
   expect_true(verify_tag(bamT1, "ID1"))
   
   expect_false(verify_tag(bamT1, "ID11"))
   
   expect_equal(get_bam_SM(bamT1), "T1")
+  
+  expect_equal(get_bam_SM(bamNoSM), "ex1.bam")
   
   expect_true(all(paste0("chr",c(1:22)) %in% get_bam_chr(bamT1)))
 })
