@@ -9,8 +9,8 @@ test_ctDNA(mutations, bam, targets, reference, tag = "",
   vaf_threshold = 0.1, min_base_quality = 30, max_depth = 1e+05,
   min_mapq = 40, bam_list = NULL, bam_list_tags = rep("",
   length(bam_list)), min_alt_reads = 1,
-  min_samples = ceiling(length(bam_list)/10), by_substitution = F,
-  n_simulations = 10000, pvalue_threshold = 0.05, seed = 123,
+  min_samples = ceiling(length(bam_list)/10), n_simulations = 10000,
+  pvalue_threshold = 0.05, seed = 123,
   informative_reads_threshold = 10000)
 }
 \arguments{
@@ -47,8 +47,6 @@ Mutations that have more than min_alt_reads in more than min_samples will be fil
 \item{min_alt_reads}{When bam_list is provided, this sets the minimum number of alternative allele reads for a sample to be counted.}
 
 \item{min_samples}{When number of samples having more than \code{min_alt_reads} exceeds this number, the mutation will be filtered.}
-
-\item{by_substitution}{boolean whether to run the test according to substitution-specific background rate}
 
 \item{n_simulations}{the number of simulations.}
 

@@ -20,7 +20,6 @@
 #' @param bam_list_tags the RG tags for the bams included in bams list.
 #' @param min_alt_reads When bam_list is provided, this sets the minimum number of alternative allele reads for a sample to be counted.
 #' @param min_samples When number of samples having more than \code{min_alt_reads} exceeds this number, the mutation will be filtered.
-#' @param by_substitution boolean whether to run the test according to substitution-specific background rate
 #' @param n_simulations the number of simulations.
 #' @param pvalue_threshold the p-value threshold used to decide positivity or negativity.
 #' @param seed the random seed.
@@ -142,7 +141,7 @@
 test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column = NULL, black_list = NULL, substitution_specific = T,
     vaf_threshold = 0.1, min_base_quality = 30, max_depth = 1e+05, min_mapq = 40, bam_list = NULL, 
     bam_list_tags = rep("", length(bam_list)), min_alt_reads = 1, min_samples = ceiling(length(bam_list)/10), 
-    by_substitution = F, n_simulations = 10000, pvalue_threshold = 0.05, seed = 123,
+    n_simulations = 10000, pvalue_threshold = 0.05, seed = 123,
     informative_reads_threshold = 10000) {
     
     assertthat::assert_that(!missing(mutations), !missing(bam), !missing(targets), 
@@ -198,9 +197,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
     
     assertthat::assert_that(is.numeric(seed), length(seed) == 1, seed%%1 == 0, 
         seed >= 0)
-    
-    assertthat::assert_that(is.logical(by_substitution), length(by_substitution) == 1)
-    
+       
     if (tag != "") {
         
         assertthat::assert_that(verify_tag(bam = bam, tag = tag), msg = "Specified tag not found")
@@ -374,21 +371,10 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
     refAlt <- data.frame(Ref = refReads, Alt = altReads)
       
     message("Running Monte Carlo simulations")
-    
-    if (by_substitution && is.null(ID_column)) {
-        
-        substitutions <- paste0(mutations$REF, mutations$ALT)
-        
-        posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
-            substitutions = substitutions, rate = bg, seed = seed, n_simulations = n_simulations)
-        
-    } else {
-        
-        posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
-            rate = bg, seed = seed, n_simulations = n_simulations)
-        
-    }
-    
+       
+    posTest <- positivity_test(depths = refReads + altReads, altReads = altReads, 
+        rate = bg, seed = seed, n_simulations = n_simulations)
+       
     message(paste("Pvalue = ", posTest))
     
     decision <- ifelse(posTest < pvalue_threshold, "positive", "negative")
