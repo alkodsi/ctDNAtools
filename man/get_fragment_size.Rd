@@ -30,7 +30,23 @@ get_fragment_size(bam, mutations = NULL, tag = "", isProperPair = NA,
 \item{simple_cigar}{logical, whether to include only reads with simple cigar.}
 }
 \value{
-A data frame with the columns Sample (SM tag in bam or file name), ID (read ID), size (fragment size), and category (only if mutations is provided).
+A data frame with the columns:
+ \itemize{
+   
+   \item Sample: The SM tag in bam or file name
+   
+   \item ID: the read ID
+    
+   \item chr: chromosome 
+   
+   \item start: the left most end of either the read or mate
+
+   \item end: the right most end of either the read or mate.
+
+   \item size:  the fragment size
+    
+   \item category (only if mutations is provided): either ref, alt, or other
+   }
 }
 \description{
 A function to extract fragment lengths from a bam file. Optionally, given a mutation data frame, it can categorize read lengths 

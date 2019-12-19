@@ -12,7 +12,24 @@
 #' @param ignore_trimmed logical, whether to remove reads that have been hard trimmed.
 #' @param different_strands logical, whether to keep only reads whose mates map to different strand.
 #' @param simple_cigar logical, whether to include only reads with simple cigar.
-#' @return A data frame with the columns Sample (SM tag in bam or file name), ID (read ID), size (fragment size), and category (only if mutations is provided).
+#' @return A data frame with the columns:
+#'  \itemize{
+#'    
+#'    \item Sample: The SM tag in bam or file name
+#'    
+#'    \item ID: the read ID
+#'     
+#'    \item chr: chromosome 
+#'    
+#'    \item start: the left most end of either the read or mate
+#'
+#'    \item end: the right most end of either the read or mate.
+#'
+#'    \item size:  the fragment size
+#'     
+#'    \item category (only if mutations is provided): either ref, alt, or other
+#'    } 
+#'
 #' @export 
 #' @details Extracts the fragment size of reads in the input bam that satisfy the following conditions:
 #'  \itemize{
@@ -147,10 +164,15 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
 
     if(!is.null(mutations)) {
      
-        read_names <- unique(unlist(purrr::map(get_mutations_read_names(bam = bam, tag = tag, mutations = mutations), "alt")))
+        read_names <- get_mutations_read_names(bam = bam, tag = tag, mutations = mutations)
+        
+        reads_alt <- unique(unlist(purrr::map(read_names, "alt")))
+        
+        reads_ref <- unique(unlist(purrr::map(read_names, "ref")))
         
         fragment_lengths <- dplyr::mutate(fragment_lengths, 
-        	category = ifelse(.data$ID %in% read_names, "mutated", "other"))
+        	category = ifelse(.data$ID %in% reads_alt, "alt",
+                ifelse(.data$ID %in% reads_ref, "ref", "other")))
     }
 
     return(fragment_lengths)

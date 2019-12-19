@@ -5,8 +5,8 @@
 \title{Get histogram of fragment lengths from a bam file}
 \usage{
 bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
-  custom_bins = NULL, mutated_only = F, normalized = F,
-  min_size = 1, max_size = 400, ...)
+  custom_bins = NULL, normalized = F, min_size = 1, max_size = 400,
+  ...)
 }
 \arguments{
 \item{bam}{path to bam file.}
@@ -19,8 +19,6 @@ bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
 
 \item{custom_bins}{A numeric vector for custom breaks to bin the histogram of fragment length. Over-rides bin_size.}
 
-\item{mutated_only}{A logical, whether to return the counts for only mutated reads. The 'mutations' input should be given when TRUE.}
-
 \item{normalized}{A logical, whether to normalize the counts to the total number of reads.}
 
 \item{min_size}{Integer with the lowest fragment length.}
@@ -30,8 +28,9 @@ bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
 \item{...}{Other parameters passed to get_fragment_size.}
 }
 \value{
-A data frame with one column corresponding to the sample name from the bam. 
-Each row has the count of fragment lengths within the bin normalized by the total number of reads.
+A data frame with one column for the used breaks and one having the histogram (normalized) counts. If mutations is supplied, the output will have one breaks column and three columns
+corresponding to variant allele reads, reference allele reads, and other reads. 
+Each row has the count of fragment lengths within the bin and optionally normalized by the total number of reads.
 }
 \description{
 The function first extracts fragment length from a bam file then computes the histogram over defined bins. If normalized is TRUE, 
@@ -42,7 +41,7 @@ it can computes the histogram of fragment lengths only for mutated reads (confir
 Fragment length will extracted from the bam file according to the parameters passed to \code{\link{get_fragment_size}}, and histogram counts (optionally normalized to total counts)
 are computed. Both equal histogram bins via bin_size and manually customized bins via custom_bins are supported. 
 
-By setting mutated_only to true and using an input mutations, the function would bin only fragments that support mutation variant alleles.
+By using an input mutations, the function will bin separately the reads that support variant alleles, reference alleles and other reads.
 }
 \examples{
 \dontrun{
@@ -58,7 +57,7 @@ bin_fragment_size(bam = bamT1, normalized = TRUE)
 
 
 ## binning only mutated reads
-bin_fragment_size(bam = bamT1, mutations = mutations, mutated_only = TRUE)
+bin_fragment_size(bam = bamT1, mutations = mutations)
 }
 }
 \seealso{

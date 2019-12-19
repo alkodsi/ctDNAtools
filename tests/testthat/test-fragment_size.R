@@ -34,7 +34,7 @@ test_that("get_fragment_size works", {
 
 bfs <- list(
   bfs1 = bin_fragment_size(bamN3),
-  bfs2 = bin_fragment_size(bamT1, mutations = mutations, mutated_only = TRUE),
+  bfs2 = bin_fragment_size(bamT1, mutations = mutations),
   bfs3 = bin_fragment_size(bamN3, normalized = TRUE),
   bfs4 = bin_fragment_size(bamN3, normalized = TRUE, custom_bins = c(50, 100, 150)))
 
@@ -49,6 +49,8 @@ test_that("bin_fragment_size works", {
   map(bfs, ~expect_true(is.numeric(.x[[2]])))
   
   expect_equal(sum(bfs$bfs4[[2]]), 1)
+  
+  expect_equal(ncol(bfs$bfs2), 4)
   
 })
 
