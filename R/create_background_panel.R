@@ -65,7 +65,7 @@
 #' }
 
 create_background_panel <- function(bam_list, targets, reference, vaf_threshold = 0.05, bam_list_tags = rep("",length(bam_list)), 
-    min_base_quality = 10, max_depth = 1e+05, min_mapq = 20, substitution_specific = T) {
+    min_base_quality = 10, max_depth = 1e+05, min_mapq = 20, substitution_specific = TRUE) {
     
     assertthat::assert_that(class(reference) == "BSgenome")
     assertthat::assert_that(is.data.frame(targets), assertthat::not_empty(targets), 

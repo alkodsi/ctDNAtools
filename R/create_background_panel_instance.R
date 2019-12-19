@@ -17,7 +17,7 @@
 #' @return A named list having depth, alt and vaf data frames. Each has the same order of loci in rows and the input sample in columns.
 
 create_background_panel_instance <- function(bam, targets, reference, vaf_threshold = 0.05, tag = "", 
-    min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, substitution_specific = T) {
+    min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, substitution_specific = TRUE) {
 
     gr <- GenomicRanges::reduce(GenomicRanges::GRanges(targets$chr, IRanges::IRanges(targets$start, targets$end)))
 
@@ -32,7 +32,7 @@ create_background_panel_instance <- function(bam, targets, reference, vaf_thresh
     }
 
     pileupParam <- Rsamtools::PileupParam(max_depth = max_depth, min_base_quality = min_base_quality, 
-        min_mapq = min_mapq, distinguish_strands = F, include_deletions = F, include_insertions = F)
+        min_mapq = min_mapq, distinguish_strands = FALSE, include_deletions = FALSE, include_insertions = FALSE)
 
     p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam) %>% 
         tidyr::pivot_wider(names_from = .data$nucleotide, values_from = .data$count, 
@@ -67,8 +67,8 @@ create_background_panel_instance <- function(bam, targets, reference, vaf_thresh
             dplyr::select(.data$Locus, .data$depth, .data$nonRefCount, .data$vaf)
    
     }
-    out <- list(depth = data.frame(Locus = pAnn$Locus, depth = pAnn$depth, stringsAsFactors = F),
-                alt = data.frame(Locus = pAnn$Locus, alt = pAnn$nonRefCount, stringsAsFactors = F),
-                vaf = data.frame(Locus = pAnn$Locus, vaf = pAnn$vaf, stringsAsFactors = F))
+    out <- list(depth = data.frame(Locus = pAnn$Locus, depth = pAnn$depth, stringsAsFactors = FALSE),
+                alt = data.frame(Locus = pAnn$Locus, alt = pAnn$nonRefCount, stringsAsFactors = FALSE),
+                vaf = data.frame(Locus = pAnn$Locus, vaf = pAnn$vaf, stringsAsFactors = FALSE))
     return(out)
 }

@@ -138,7 +138,7 @@
 #'     n_simulation = 100, ID_column = "PHASING", black_list = bl2,
 #'     substitution_specific = TRUE)
 #'
-test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column = NULL, black_list = NULL, substitution_specific = T,
+test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column = NULL, black_list = NULL, substitution_specific = TRUE,
     vaf_threshold = 0.1, min_base_quality = 30, max_depth = 1e+05, min_mapq = 40, bam_list = NULL, 
     bam_list_tags = rep("", length(bam_list)), min_alt_reads = 1, min_samples = ceiling(length(bam_list)/10), 
     n_simulations = 10000, pvalue_threshold = 0.05, seed = 123,
@@ -272,7 +272,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
     
     if(nrow(mutations) == 0 ){
             
-        warning(sprintf("In Sample %s, no mutations in input", sm), immediate.= T)
+        warning(sprintf("In Sample %s, no mutations in input", sm), immediate.= TRUE)
             
         out <- data.frame(
             sample = sm,
@@ -285,7 +285,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
             multi_support_reads = NA,
             pvalue = NA,
             decision = factor("undetermined", levels = c("positive","negative","undetermined")),
-            stringsAsFactors = F)
+            stringsAsFactors = FALSE)
         
         return(out)
     
@@ -305,7 +305,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
 
         if(nrow(mutations) == 0 ){
             
-            warning(sprintf("In Sample %s, all present mutations were filtered", sm), immediate.= T)
+            warning(sprintf("In Sample %s, all present mutations were filtered", sm), immediate.= TRUE)
             
             out <- data.frame(
                 sample = sm,
@@ -318,7 +318,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
                 multi_support_reads = NA,
                 pvalue = NA,
                 decision = factor("undetermined", levels = c("positive","negative","undetermined")),
-                stringsAsFactors = F)
+                stringsAsFactors = FALSE)
         
             return(out)
         }
@@ -394,7 +394,7 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
         multi_support_reads = multi_support_reads,
         pvalue = posTest,
         decision = factor(decision, levels = c("positive","negative","undetermined")),
-        stringsAsFactors = F)
+        stringsAsFactors = FALSE)
 
     return(out)
 }

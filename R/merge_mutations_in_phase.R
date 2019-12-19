@@ -54,7 +54,7 @@ merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phas
     mutation_id <- paste0(mutations$CHROM, ":",mutations$POS, "_", mutations$REF, "_", mutations$ALT)
     mutations[,ID_column] <- as.character(ifelse(is.na(mutations[,ID_column]), mutation_id, mutations[,ID_column]))
 
-    IDs <- data.frame(mutations_id = mutation_id, phasing_id = mutations[,ID_column], stringsAsFactors = F)
+    IDs <- data.frame(mutations_id = mutation_id, phasing_id = mutations[,ID_column], stringsAsFactors = FALSE)
     IDs_list <- purrr::map(unique(IDs$phasing_id), ~ IDs[IDs$phasing_id == .x, "mutations_id"])
 
     read_names <- get_mutations_read_names(mutations = mutations, bam = bam,

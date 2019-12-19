@@ -6,10 +6,10 @@
 #' @param depths the total depths 
 compare_simulated_observed <- function(simulated, observed, depths) {
     
-    observed_vaf <- mean(observed/depths, na.rm = T)
+    observed_vaf <- mean(observed/depths, na.rm = TRUE)
     observed_nonzero <- sum(observed > 0)
 
-    simulated_vaf <- mean(simulated/depths, na.rm = T)
+    simulated_vaf <- mean(simulated/depths, na.rm = TRUE)
     simulated_nonzero <- sum(simulated > 0)
 
     out <- ifelse((simulated_vaf >= observed_vaf) & 

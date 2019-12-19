@@ -30,7 +30,7 @@ get_hist_bins <- function(x, from, to, by, normalized,  custom_bins = NULL) {
         
     }
     
-    h <- hist(x, breaks = breaks, plot = F)
+    h <- hist(x, breaks = breaks, plot = FALSE)
     
     if (normalized) {
         

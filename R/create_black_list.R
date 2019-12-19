@@ -49,15 +49,15 @@ create_black_list <- function(background_panel, mean_vaf_quantile = 0.95,
         assertthat::has_name(background_panel, c("depth","alt","vaf")),
         msg = "background_panel should be a list as produced by create_background_panel")
     
-    mean_vaf <- rowMeans(background_panel$vaf[, -1, drop = F], na.rm = T)
-    mean_vaf_idx <- which(mean_vaf >= quantile(mean_vaf, mean_vaf_quantile, na.rm = T))
+    mean_vaf <- rowMeans(background_panel$vaf[, -1, drop = FALSE], na.rm = TRUE)
+    mean_vaf_idx <- which(mean_vaf >= quantile(mean_vaf, mean_vaf_quantile, na.rm = TRUE))
     message(sprintf("%s loci added satisfying Mean VAF condition", length(mean_vaf_idx)))
 
-    samples_one_read <- rowSums(background_panel$alt[, -1, drop = F] >= 1, na.rm =T)
+    samples_one_read <- rowSums(background_panel$alt[, -1, drop = FALSE] >= 1, na.rm =T)
     samples_one_read_idx <- which(samples_one_read >= min_samples_one_read)
     message(sprintf("%s loci added satisfying one read condition", length(samples_one_read_idx)))
 
-    samples_two_reads <- rowSums(background_panel$alt[, -1, drop = F] >=2, na.rm = T)
+    samples_two_reads <- rowSums(background_panel$alt[, -1, drop = FALSE] >=2, na.rm = TRUE)
     samples_two_reads_idx <- which(samples_two_reads >= min_samples_two_reads)
     message(sprintf("%s loci added satisfying two reads condition", length(samples_two_reads_idx)))
 
