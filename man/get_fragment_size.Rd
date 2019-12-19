@@ -4,14 +4,17 @@
 \alias{get_fragment_size}
 \title{Get fragment lengths from bam}
 \usage{
-get_fragment_size(bam, mutations = NULL, tag = "", isProperPair = NA,
-  mapqFilter = 30, min_size = 1, max_size = 400,
-  ignore_trimmed = T, different_strands = T, simple_cigar = F)
+get_fragment_size(bam, mutations = NULL, targets = NULL, tag = "",
+  isProperPair = NA, mapqFilter = 30, min_size = 1, max_size = 400,
+  ignore_trimmed = TRUE, different_strands = TRUE,
+  simple_cigar = FALSE)
 }
 \arguments{
 \item{bam}{path to bam file.}
 
 \item{mutations}{An optional data frame with mutations. Must have the columns CHROM, POS, REF, ALT.}
+
+\item{targets}{a data frame with the target regions to restrict the reads in the bam. Must have three columns: chr, start and end}
 
 \item{tag}{the RG tag if the bam has more than one samplee.}
 
@@ -82,6 +85,7 @@ a separate column.
 \examples{
 \dontrun{
 data('mutations',package = 'ctDNAtools')
+data('targets',package = 'ctDNAtools')
 bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
 
 ## basic usage
@@ -94,6 +98,9 @@ fs1 <- get_fragment_size(bam = bamT1, isProperPair = TRUE, min_size = 70,
 
 ## with mutations input
 fs2 <- get_fragment_size(bam = bamT1, mutations = mutations)
+
+## using targets
+fs3 <- get_fragment_size(bam = bamT1, targets = targets)
 }
 }
 \seealso{

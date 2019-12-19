@@ -213,15 +213,19 @@ fs1 <- get_fragment_size(bam = bamT1,
       different_strands = TRUE)
 head(fs1)
 
+## optional target restriction
+fs2 <- get_fragment_size(bam = bamT1, 
+      targets = targets)
+head(fs2)
 ```
 
 The start and end in the output are considered the most left and most right coordinate from either reads or mates. Note that the output will contain one row for each read pair satisfying conditions in the bam file. There is also an option to input a list of mutations together with the bam file, which leads to an additional column in the output marking the reads that support alternative alleles.
 
 ```{r fragments2}
 
-fs2 <- get_fragment_size(bam = bamT1, 
+fs3 <- get_fragment_size(bam = bamT1, 
       mutations = mutations)
-head(fs2)
+head(fs3)
 
 ```
 
@@ -256,6 +260,16 @@ bfs %>%
 
 ## custom bins
 bfs2 <- bin_fragment_size(bam = bamT1,
+          normalized = TRUE,
+          custom_bins = c(100,200),
+          min_size = 1,
+          max_size = 400)
+
+bfs2
+
+## restricted targets
+bfs2 <- bin_fragment_size(bam = bamT1,
+          targets = targets,
           normalized = TRUE,
           custom_bins = c(100,200),
           min_size = 1,

@@ -15,7 +15,7 @@ fs <- list(
   fs2 = get_fragment_size(bamN3, mutations = mutations, isProperPair = T,
         ignore_trimmed = F, different_strands = F),
   fs3 = get_fragment_size(bamN3, max_size = 200, min_size = 100),
-  fs4 = get_fragment_size(bamN3, tag = "ID1")
+  fs4 = get_fragment_size(bamN3, tag = "ID1", targets = targets)
 )
 
 test_that("get_fragment_size works", {
@@ -35,7 +35,7 @@ test_that("get_fragment_size works", {
 bfs <- list(
   bfs1 = bin_fragment_size(bamN3),
   bfs2 = bin_fragment_size(bamT1, mutations = mutations),
-  bfs3 = bin_fragment_size(bamN3, normalized = TRUE),
+  bfs3 = bin_fragment_size(bamN3, normalized = TRUE, targets = targets),
   bfs4 = bin_fragment_size(bamN3, normalized = TRUE, custom_bins = c(50, 100, 150)))
 
 test_that("bin_fragment_size works", {

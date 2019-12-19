@@ -56,7 +56,7 @@ analyze_fragmentation <- function(bam, targets, tag = "", window_size = 120,
 
     ellipsis::check_dots_used()
 
-    reads <- get_fragment_size(bam = bam, tag = tag, 
+    reads <- get_fragment_size(bam = bam, tag = tag, targets = targets,
     	min_size = min_size, max_size = max_size, ...)
 
     reads_gr <- GenomicRanges::GRanges(reads$chr, IRanges::IRanges(reads$start, reads$end))

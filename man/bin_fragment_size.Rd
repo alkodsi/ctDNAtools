@@ -4,14 +4,16 @@
 \alias{bin_fragment_size}
 \title{Get histogram of fragment lengths from a bam file}
 \usage{
-bin_fragment_size(bam, mutations = NULL, tag = "", bin_size = 2,
-  custom_bins = NULL, normalized = F, min_size = 1, max_size = 400,
-  ...)
+bin_fragment_size(bam, mutations = NULL, targets = NULL, tag = "",
+  bin_size = 2, custom_bins = NULL, normalized = F, min_size = 1,
+  max_size = 400, ...)
 }
 \arguments{
 \item{bam}{path to bam file.}
 
 \item{mutations}{An optional data frame with mutations. Must have the columns CHROM, POS, REF, ALT.}
+
+\item{targets}{a data frame with the target regions to restrict the reads in the bam. Must have three columns: chr, start and end}
 
 \item{tag}{the RG tag if the bam has more than one samplee.}
 
@@ -56,8 +58,11 @@ bin_fragment_size(bam = bamT1)
 bin_fragment_size(bam = bamT1, normalized = TRUE)
 
 
-## binning only mutated reads
+## binning reads categorized based on mutations ref and alt
 bin_fragment_size(bam = bamT1, mutations = mutations)
+
+## Restrict to reads into targets
+bin_fragment_size(bam = bamT1, targets = targets)
 }
 }
 \seealso{

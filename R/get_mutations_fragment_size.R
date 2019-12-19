@@ -25,9 +25,16 @@ get_mutations_fragment_size <- function(bam, mutations, tag = "", min_base_quali
     
     assertthat::assert_that(!missing(mutations), !missing(bam))
     
+    assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
+        
+    assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
+
     ellipsis::check_dots_used()
 
-    frag_size <- get_fragment_size(bam = bam, tag = tag, ...)
+    mutations_targets <- data.frame(chr = mutations$CHROM, start = mutations$POS, 
+    	end = mutations$POS, stringsAsFactors = FALSE)
+
+    frag_size <- get_fragment_size(bam = bam, tag = tag, targets = mutations_targets, ...)
     
     read_names <- get_mutations_read_names(bam = bam, mutations = mutations, tag = tag, 
     	min_base_quality = min_base_quality, min_mapq = min_mapq)

@@ -5,6 +5,7 @@
 #' @param bam path to bam file.
 #' @param mutations An optional data frame with mutations. Must have the columns CHROM, POS, REF, ALT.
 #' @param tag the RG tag if the bam has more than one samplee.
+#' @param targets a data frame with the target regions to restrict the reads in the bam. Must have three columns: chr, start and end
 #' @param isProperPair a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).
 #' @param mapqFilter mapping quality threshold for considering reads.
 #' @param min_size Integer with the lowest fragment length.
@@ -63,6 +64,7 @@
 #' @examples
 #' \dontrun{
 #' data('mutations',package = 'ctDNAtools')
+#' data('targets',package = 'ctDNAtools')
 #' bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
 #' 
 #' ## basic usage
@@ -75,10 +77,13 @@
 #'
 #' ## with mutations input
 #' fs2 <- get_fragment_size(bam = bamT1, mutations = mutations)
+#'
+#' ## using targets
+#' fs3 <- get_fragment_size(bam = bamT1, targets = targets)
 #' }
 
-get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA, mapqFilter = 30,
-	min_size = 1, max_size = 400, ignore_trimmed = T, different_strands = T, simple_cigar = F) {
+get_fragment_size <- function(bam, mutations = NULL, targets = NULL, tag = "", isProperPair = NA, mapqFilter = 30,
+	min_size = 1, max_size = 400, ignore_trimmed = TRUE, different_strands = TRUE, simple_cigar = FALSE) {
 
     assertthat::assert_that(!missing(bam), is.character(bam), length(bam) == 1, file.exists(bam))
 
@@ -109,9 +114,9 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
         assertthat::assert_that(all(mutations$CHROM %in% get_bam_chr(bam)))
     }
 
-    flag <- Rsamtools::scanBamFlag(isPaired = T, isProperPair = isProperPair, isUnmappedQuery = F,
-              hasUnmappedMate = F, isSecondaryAlignment = F,
-              isNotPassingQualityControls = F, isDuplicate = F, isSupplementaryAlignment = F)
+    flag <- Rsamtools::scanBamFlag(isPaired = TRUE, isProperPair = isProperPair, isUnmappedQuery = FALSE,
+              hasUnmappedMate = FALSE, isSecondaryAlignment = FALSE,
+              isNotPassingQualityControls = FALSE, isDuplicate = FALSE, isSupplementaryAlignment = FALSE)
     
     if(tag != ""){
 	
@@ -128,6 +133,18 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
     
     }
     
+    if(!is.null(targets)) {
+
+        assertthat::assert_that(assertthat::has_name(targets, c("chr", "start", "end")),
+            is.data.frame(targets), assertthat::not_empty(targets),
+            is.numeric(targets$start), is.numeric(targets$end))
+
+        gr <- GenomicRanges::reduce(GenomicRanges::GRanges(targets$chr, IRanges::IRanges(targets$start, targets$end)))
+    
+        Rsamtools::bamWhich(sbp) <- gr
+
+    }
+
     sm <- get_bam_SM(bam = bam, tag = tag)
     
     reads <- GenomicAlignments::readGAlignmentPairs(file = bam, param = sbp)
@@ -160,7 +177,8 @@ get_fragment_size <- function(bam, mutations = NULL, tag = "", isProperPair = NA
             size = abs(.data$isize.first),
             stringsAsFactors = F) %>%
         dplyr::select(.data$Sample, .data$ID, .data$chr,
-            .data$start, .data$end, .data$size)
+            .data$start, .data$end, .data$size) %>%
+        dplyr::filter(!duplicated(.data$ID)) # using targets may lead to dups
 
     if(!is.null(mutations)) {
      

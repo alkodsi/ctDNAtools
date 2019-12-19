@@ -54,14 +54,14 @@ summarize_fragment_size <- function(bam, regions, tag = "",
     assertthat::assert_that(all(purrr::map_lgl(summary_functions, is.function)),
         msg = "all elements of summary_functions must be functions")
 
-    assertthat::assert_that(all(purrr::map_dbl(purrr::invoke_map(summary_functions, x = c(1:5)),length)==1),
+    assertthat::assert_that(all(purrr::map_dbl(purrr::invoke_map(summary_functions, x = c(1:5)), length) == 1),
         msg = "Functions in summary_functions must produce output of length 1")
 
     sm <- get_bam_SM(bam = bam, tag = tag)
 
     ellipsis::check_dots_used()
 
-    reads <- get_fragment_size(bam = bam, tag = tag, ...)
+    reads <- get_fragment_size(bam = bam, tag = tag, targets = regions, ...)
     
     reads_gr <- GenomicRanges::GRanges(reads$chr, IRanges::IRanges(reads$start, reads$end))
 
