@@ -5,7 +5,7 @@
 \title{Tests the ctDNA positivity of a sample}
 \usage{
 test_ctDNA(mutations, bam, targets, reference, tag = "",
-  ID_column = NULL, black_list = NULL, substitution_specific = T,
+  ID_column = NULL, black_list = NULL, substitution_specific = TRUE,
   vaf_threshold = 0.1, min_base_quality = 30, max_depth = 1e+05,
   min_mapq = 40, bam_list = NULL, bam_list_tags = rep("",
   length(bam_list)), min_alt_reads = 1,
