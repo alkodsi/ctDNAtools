@@ -43,5 +43,5 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
-URL: https://github.com/alkodsi/ctDNAtools
+URL: https://alkodsi.github.io/ctDNAtools/
 BugReports: https://github.com/alkodsi/ctDNAtools/issues

@@ -3,3 +3,41 @@ destination: docs
 template:
   params:
     bootswatch: flatly
+
+reference:
+  - title: Minimal Residual Disease testing
+    contents:
+    - test_ctDNA
+    - create_background_panel
+    - create_black_list
+    - merge_mutations_in_phase
+    - get_mutations_read_counts
+    - get_mutations_read_names
+    - get_background_rate
+    - filter_mutations
+
+  - title: Fragmentation
+    contents:
+    - get_fragment_size
+    - bin_fragment_size
+    - summarize_fragment_size
+    - analyze_fragmentation
+  
+  - title: Other
+    - extract_trinucleotide_context
+
+  - title: Internals
+    - positivity_test
+    - simulator
+    - get_read_counts
+    - get_mutation_read_names
+    - create_background_panel_instance
+    - get_bam_chr
+    - get_bam_SM
+    - verify_tag
+    - get_hist_bins
+    - compare_simulated_observed
+
+  - title: Data
+    - mutations
+    - targets

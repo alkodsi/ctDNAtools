@@ -7,7 +7,8 @@
 [![Codecov test coverage](https://codecov.io/gh/alkodsi/ctDNAtools/branch/master/graph/badge.svg)](https://codecov.io/gh/alkodsi/ctDNAtools?branch=master)
 <!-- badges: end -->
 
-The ctDNAtools package provides functionalities to analyse ctDNA sequencing data. The tools cover mainly analysis of ctDNA/cfDNA fragmentation and analysis of minimal residual disease using detected reporter mutations.
+The ctDNAtools package provides functionalities to analyse circulating tumor DNA (ctDNA)/ cell-free DNA (cfDNA) sequencing data.
+The tools cover analysis of ctDNA/cfDNA fragmentation and analysis of cancer minimal residual disease.
 
 ## Installation
 
