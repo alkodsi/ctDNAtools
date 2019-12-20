@@ -57,7 +57,14 @@
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/alkodsi/ctDNAtools">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -75,7 +82,7 @@
             
             <h4 class="date">2019-12-20</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/alkodsi/ctDNAtools/blob/master/vignettes/ctDNAtools.Rmd"><code>vignettes/ctDNAtools.Rmd</code></a></small>
       <div class="hidden name"><code>ctDNAtools.Rmd</code></div>
 
     </div>
@@ -147,7 +154,7 @@
 <h2 class="hasAnchor">
 <a href="#basic-usage" class="anchor"></a>Basic usage</h2>
 <p>In the basic usage, the read counts for reference and variant alleles of the reporter mutations will be quantified, the background rate of the tested sample will be estimated, and a Monte Carlo based sampling test will determine an emperical p-value. The p-value will only be used to determine positivity if the number of informative reads (number of all unique reads covering the mutations) exceed the specified threshold. Otherwise, the sample will be considered undetermined. Note that the test only accepts single nucleotide variants, and indels are not supported.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">test1 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations,</a>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">test1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations,</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2">          <span class="dt">bam =</span> bamT1,</a>
 <a class="sourceLine" id="cb2-3" data-line-number="3">          <span class="dt">reference =</span> BSgenome.Hsapiens.UCSC.hg19, </a>
 <a class="sourceLine" id="cb2-4" data-line-number="4">          <span class="dt">targets =</span> targets,</a>
@@ -164,7 +171,7 @@
 <a class="sourceLine" id="cb2-15" data-line-number="15">##   background_rate informative_reads multi_support_reads    pvalue decision</a>
 <a class="sourceLine" id="cb2-16" data-line-number="16">## 1    0.0001403503              1327                  NA 9.999e-05 positive</a></code></pre></div>
 <p>Several parameters can be adjusted including <code>min_base_quality</code> and <code>min_mapq</code> which specify which reads in the bam file to count.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">test2 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations, </a>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">test2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations, </a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">          <span class="dt">bam =</span> bamT2,</a>
 <a class="sourceLine" id="cb3-3" data-line-number="3">          <span class="dt">reference =</span> BSgenome.Hsapiens.UCSC.hg19,</a>
 <a class="sourceLine" id="cb3-4" data-line-number="4">          <span class="dt">targets =</span> targets,</a>
@@ -188,7 +195,7 @@
 <a class="sourceLine" id="cb3-22" data-line-number="22"></a>
 <a class="sourceLine" id="cb3-23" data-line-number="23">tests &lt;-<span class="st"> </span><span class="kw"><a href="https://purrr.tidyverse.org/reference/map2.html">map2_dfr</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(bamT1, bamT2),</a>
 <a class="sourceLine" id="cb3-24" data-line-number="24">            <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(mutations, mutations), <span class="co"># in case mutations are different</span></a>
-<a class="sourceLine" id="cb3-25" data-line-number="25">            <span class="op">~</span><span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">bam =</span> .x, <span class="dt">mutations =</span> .y,</a>
+<a class="sourceLine" id="cb3-25" data-line-number="25">            <span class="op">~</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">bam =</span> .x, <span class="dt">mutations =</span> .y,</a>
 <a class="sourceLine" id="cb3-26" data-line-number="26">                         <span class="dt">targets =</span> targets,</a>
 <a class="sourceLine" id="cb3-27" data-line-number="27">                         <span class="dt">reference =</span> BSgenome.Hsapiens.UCSC.hg19,</a>
 <a class="sourceLine" id="cb3-28" data-line-number="28">                         <span class="dt">informative_reads_threshold =</span> <span class="dv">100</span>))</a>
@@ -222,12 +229,12 @@
 </ol>
 <p>The ctDNAtools package provides two functions (<code>create_background_panel</code> and <code>create_black_list</code>) to build a black list of genomic loci (chr_pos regardless of substitutions) or variants (chr_pos_ref_alt). Both formats are recognized in <code>test_ctDNA</code> and controlled by the <code>substitution_specific</code> parameter.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">## Black list by loci (substition_specific = FALSE)</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">bg_panel1 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/create_background_panel.html">create_background_panel</a></span>(<span class="dt">bam_list =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(bamN1, bamN2, bamN3), </a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">bg_panel1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/create_background_panel.html">create_background_panel</a></span>(<span class="dt">bam_list =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(bamN1, bamN2, bamN3), </a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">          <span class="dt">targets =</span> targets, </a>
 <a class="sourceLine" id="cb4-4" data-line-number="4">          <span class="dt">reference =</span> BSgenome.Hsapiens.UCSC.hg19, </a>
 <a class="sourceLine" id="cb4-5" data-line-number="5">          <span class="dt">substitution_specific =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb4-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb4-7" data-line-number="7">black_list1 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/create_black_list.html">create_black_list</a></span>(bg_panel1,</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">black_list1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/create_black_list.html">create_black_list</a></span>(bg_panel1,</a>
 <a class="sourceLine" id="cb4-8" data-line-number="8">          <span class="dt">mean_vaf_quantile =</span> <span class="fl">0.99</span>,</a>
 <a class="sourceLine" id="cb4-9" data-line-number="9">          <span class="dt">min_samples_one_read =</span> <span class="dv">2</span>,</a>
 <a class="sourceLine" id="cb4-10" data-line-number="10">          <span class="dt">min_samples_two_reads =</span> <span class="dv">1</span>)</a>
@@ -240,7 +247,7 @@
 <a class="sourceLine" id="cb4-17" data-line-number="17">## [1] "chr14_106327606" "chr14_106327637" "chr14_106327641" "chr14_106327784"</a>
 <a class="sourceLine" id="cb4-18" data-line-number="18">## [5] "chr14_106327814" "chr14_106327923"</a>
 <a class="sourceLine" id="cb4-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb4-20" data-line-number="20">test3 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations, <span class="dt">bam =</span> bamT1,</a>
+<a class="sourceLine" id="cb4-20" data-line-number="20">test3 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations, <span class="dt">bam =</span> bamT1,</a>
 <a class="sourceLine" id="cb4-21" data-line-number="21">          <span class="dt">reference =</span> BSgenome.Hsapiens.UCSC.hg19, <span class="dt">targets =</span> targets,</a>
 <a class="sourceLine" id="cb4-22" data-line-number="22">          <span class="dt">informative_reads_threshold =</span> <span class="dv">100</span>, <span class="dt">black_list =</span> black_list1,</a>
 <a class="sourceLine" id="cb4-23" data-line-number="23">          <span class="dt">substitution_specific =</span> <span class="ot">FALSE</span>)</a>
@@ -259,12 +266,12 @@
 <a class="sourceLine" id="cb4-36" data-line-number="36">## 1    0.0001419452              1327                  NA 9.999e-05 positive</a>
 <a class="sourceLine" id="cb4-37" data-line-number="37"></a>
 <a class="sourceLine" id="cb4-38" data-line-number="38">## Black list by variants (substition_specific = TRUE)</a>
-<a class="sourceLine" id="cb4-39" data-line-number="39">bg_panel2 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/create_background_panel.html">create_background_panel</a></span>(<span class="dt">bam_list =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(bamN1, bamN2, bamN3),</a>
+<a class="sourceLine" id="cb4-39" data-line-number="39">bg_panel2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/create_background_panel.html">create_background_panel</a></span>(<span class="dt">bam_list =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(bamN1, bamN2, bamN3),</a>
 <a class="sourceLine" id="cb4-40" data-line-number="40">           <span class="dt">targets =</span> targets, </a>
 <a class="sourceLine" id="cb4-41" data-line-number="41">           <span class="dt">reference =</span> BSgenome.Hsapiens.UCSC.hg19,</a>
 <a class="sourceLine" id="cb4-42" data-line-number="42">           <span class="dt">substitution_specific =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb4-43" data-line-number="43"></a>
-<a class="sourceLine" id="cb4-44" data-line-number="44">black_list2 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/create_black_list.html">create_black_list</a></span>(bg_panel2,</a>
+<a class="sourceLine" id="cb4-44" data-line-number="44">black_list2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/create_black_list.html">create_black_list</a></span>(bg_panel2,</a>
 <a class="sourceLine" id="cb4-45" data-line-number="45">          <span class="dt">mean_vaf_quantile =</span> <span class="fl">0.99</span>,</a>
 <a class="sourceLine" id="cb4-46" data-line-number="46">          <span class="dt">min_samples_one_read =</span> <span class="dv">2</span>,</a>
 <a class="sourceLine" id="cb4-47" data-line-number="47">          <span class="dt">min_samples_two_reads =</span> <span class="dv">1</span>)</a>
@@ -277,7 +284,7 @@
 <a class="sourceLine" id="cb4-54" data-line-number="54">## [1] "chr14_106327478_G_C" "chr14_106327494_A_C" "chr14_106327498_A_T"</a>
 <a class="sourceLine" id="cb4-55" data-line-number="55">## [4] "chr14_106327546_C_T" "chr14_106327606_C_T" "chr14_106327637_C_T"</a>
 <a class="sourceLine" id="cb4-56" data-line-number="56"></a>
-<a class="sourceLine" id="cb4-57" data-line-number="57">test4 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations,</a>
+<a class="sourceLine" id="cb4-57" data-line-number="57">test4 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations,</a>
 <a class="sourceLine" id="cb4-58" data-line-number="58">          <span class="dt">bam =</span> bamT1,</a>
 <a class="sourceLine" id="cb4-59" data-line-number="59">          <span class="dt">reference =</span> BSgenome.Hsapiens.UCSC.hg19, </a>
 <a class="sourceLine" id="cb4-60" data-line-number="60">          <span class="dt">targets =</span> targets,</a>
@@ -307,7 +314,7 @@
 <p>Variants in phase (aka phased variants) are variants that are exhibited by the same sequencing reads (same allele). They are very common in some types of cancer such as lymphomas, but also can be found in other cancers. Mutect2, for example, reports phased variants in the output vcf (note that they can be collapsed into multiple-nucleotide polymorphisms - MNPs, so make sure to have your variants in un-collapsed format for this function). Phased variants can be useful in MRD because we expect that the real traces of phased variants to show in both or all mutations in phase, whereas an artifact that matches one of the mutations in phase will be only exhibited in one variant.</p>
 <p>In the ctDNAtools package, you can supply the column name having an ID column in the <code>mutations</code> input, which contains a common ID for the variants in phase. When provided, the variants in phase will be collapsed and quantified jointly, reads that exhibit only one of the variants but not the others will be purified (mismatches removed), and the background rate will be adjusted according to the level of purification expected. See <code><a href="https://rdrr.io/r/utils/help.html">help(merge_mutations_in_phase)</a></code> and <code><a href="https://rdrr.io/r/utils/help.html">help(test_ctDNA)</a></code> for more details.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">## Exploiting phased variants in the test</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">test5 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations, </a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">test5 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations, </a>
 <a class="sourceLine" id="cb5-3" data-line-number="3">          <span class="dt">bam =</span> bamT1,</a>
 <a class="sourceLine" id="cb5-4" data-line-number="4">          <span class="dt">reference =</span> BSgenome.Hsapiens.UCSC.hg19,</a>
 <a class="sourceLine" id="cb5-5" data-line-number="5">          <span class="dt">targets =</span> targets,</a>
@@ -352,7 +359,7 @@
 <a href="#extracting-fragment-size-from-a-bam-file" class="anchor"></a>Extracting fragment size from a bam file</h2>
 <p>Fragment size is extracted from the isize field in the bam file from informative reads. What makes an informative read is left to the user to customize in the available parameters. See <code><a href="https://rdrr.io/r/utils/help.html">help(get_fragment_size)</a></code> for details.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">fs1 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/get_fragment_size.html">get_fragment_size</a></span>(<span class="dt">bam =</span> bamT1, </a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">fs1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/get_fragment_size.html">get_fragment_size</a></span>(<span class="dt">bam =</span> bamT1, </a>
 <a class="sourceLine" id="cb6-3" data-line-number="3">      <span class="dt">mapqFilter =</span> <span class="dv">30</span>, </a>
 <a class="sourceLine" id="cb6-4" data-line-number="4">      <span class="dt">isProperPair =</span> <span class="ot">NA</span>, </a>
 <a class="sourceLine" id="cb6-5" data-line-number="5">      <span class="dt">min_size =</span> <span class="dv">1</span>, </a>
@@ -370,7 +377,7 @@
 <a class="sourceLine" id="cb6-17" data-line-number="17">## 6     T1 T1_Library1:1956221 chr14 106327328 106327614  287</a>
 <a class="sourceLine" id="cb6-18" data-line-number="18"></a>
 <a class="sourceLine" id="cb6-19" data-line-number="19">## optional target restriction</a>
-<a class="sourceLine" id="cb6-20" data-line-number="20">fs2 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/get_fragment_size.html">get_fragment_size</a></span>(<span class="dt">bam =</span> bamT1, </a>
+<a class="sourceLine" id="cb6-20" data-line-number="20">fs2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/get_fragment_size.html">get_fragment_size</a></span>(<span class="dt">bam =</span> bamT1, </a>
 <a class="sourceLine" id="cb6-21" data-line-number="21">      <span class="dt">targets =</span> targets)</a>
 <a class="sourceLine" id="cb6-22" data-line-number="22"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(fs2)</a>
 <a class="sourceLine" id="cb6-23" data-line-number="23">##   Sample                  ID   chr     start       end size</a>
@@ -382,7 +389,7 @@
 <a class="sourceLine" id="cb6-29" data-line-number="29">## 6     T1 T1_Library1:1956221 chr14 106327328 106327614  287</a></code></pre></div>
 <p>The start and end in the output are considered the most left and most right coordinate from either reads or mates. Note that the output will contain one row for each read pair satisfying conditions in the bam file. There is also an option to input a list of mutations together with the bam file, which leads to an additional column in the output marking the reads that support alternative alleles.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">fs3 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/get_fragment_size.html">get_fragment_size</a></span>(<span class="dt">bam =</span> bamT1, </a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">fs3 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/get_fragment_size.html">get_fragment_size</a></span>(<span class="dt">bam =</span> bamT1, </a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">      <span class="dt">mutations =</span> mutations)</a>
 <a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(fs3)</a>
 <a class="sourceLine" id="cb7-5" data-line-number="5">##   Sample                  ID   chr     start       end size category</a>
@@ -397,7 +404,7 @@
 <h2 class="hasAnchor">
 <a href="#fragment-size-histograms" class="anchor"></a>Fragment size histograms</h2>
 <p>Getting a histogram of the fragment size can be done with the <code>bin_fragment_size</code> function. The function supports fixed bin size or custom bins, and can output the counts or normalized counts in each bin.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">bfs1 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/bin_fragment_size.html">bin_fragment_size</a></span>(<span class="dt">bam =</span> bamT1,</a>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">bfs1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/bin_fragment_size.html">bin_fragment_size</a></span>(<span class="dt">bam =</span> bamT1,</a>
 <a class="sourceLine" id="cb8-2" data-line-number="2">          <span class="dt">min_size =</span> <span class="dv">1</span>, </a>
 <a class="sourceLine" id="cb8-3" data-line-number="3">          <span class="dt">max_size =</span> <span class="dv">400</span>, </a>
 <a class="sourceLine" id="cb8-4" data-line-number="4">          <span class="dt">normalized =</span> <span class="ot">TRUE</span>,</a>
@@ -437,7 +444,7 @@
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb9-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb9-3" data-line-number="3">## custom bins</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">bfs2 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/bin_fragment_size.html">bin_fragment_size</a></span>(<span class="dt">bam =</span> bamT1,</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">bfs2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/bin_fragment_size.html">bin_fragment_size</a></span>(<span class="dt">bam =</span> bamT1,</a>
 <a class="sourceLine" id="cb9-5" data-line-number="5">          <span class="dt">normalized =</span> <span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb9-6" data-line-number="6">          <span class="dt">custom_bins =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">100</span>,<span class="dv">200</span>),</a>
 <a class="sourceLine" id="cb9-7" data-line-number="7">          <span class="dt">min_size =</span> <span class="dv">1</span>,</a>
@@ -450,7 +457,7 @@
 <a class="sourceLine" id="cb9-14" data-line-number="14">## 3 200_400 0.2128874</a>
 <a class="sourceLine" id="cb9-15" data-line-number="15"></a>
 <a class="sourceLine" id="cb9-16" data-line-number="16">## restricted targets</a>
-<a class="sourceLine" id="cb9-17" data-line-number="17">bfs2 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/bin_fragment_size.html">bin_fragment_size</a></span>(<span class="dt">bam =</span> bamT1,</a>
+<a class="sourceLine" id="cb9-17" data-line-number="17">bfs2 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/bin_fragment_size.html">bin_fragment_size</a></span>(<span class="dt">bam =</span> bamT1,</a>
 <a class="sourceLine" id="cb9-18" data-line-number="18">          <span class="dt">targets =</span> targets,</a>
 <a class="sourceLine" id="cb9-19" data-line-number="19">          <span class="dt">normalized =</span> <span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb9-20" data-line-number="20">          <span class="dt">custom_bins =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">100</span>,<span class="dv">200</span>),</a>
@@ -473,7 +480,7 @@
 <a class="sourceLine" id="cb10-4" data-line-number="4">         <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb10-5" data-line-number="5"><span class="st">     </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">end =</span> start <span class="op">+</span><span class="st"> </span><span class="dv">30</span>)</a>
 <a class="sourceLine" id="cb10-6" data-line-number="6">     </a>
-<a class="sourceLine" id="cb10-7" data-line-number="7">sfs1 &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/summarize_fragment_size.html">summarize_fragment_size</a></span>(<span class="dt">bam =</span> bamT1,</a>
+<a class="sourceLine" id="cb10-7" data-line-number="7">sfs1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/summarize_fragment_size.html">summarize_fragment_size</a></span>(<span class="dt">bam =</span> bamT1,</a>
 <a class="sourceLine" id="cb10-8" data-line-number="8">          <span class="dt">regions =</span> regions,</a>
 <a class="sourceLine" id="cb10-9" data-line-number="9">          <span class="dt">summary_functions =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dt">Mean =</span> mean, <span class="dt">SD =</span> sd))</a>
 <a class="sourceLine" id="cb10-10" data-line-number="10"></a>
@@ -504,7 +511,7 @@
 <h2 class="hasAnchor">
 <a href="#fragmentation-patterns" class="anchor"></a>Fragmentation patterns</h2>
 <p>Fragmentations patterns in a running genomic tiles (overlapping or non-overlapping bins) within target regions can be computed with the <code>analyze_fragmentation</code> function. It will compute the number of fragment ends, the Windowed Protection Score (WPS), and the total number of fragments in each bin. WPS is defined as the number of fragments completely spanning a window (bin) minus the number of fragments with an endpoint within the same window as reported by <a href="https://www.cell.com/fulltext/S0092-8674(15)01569-X">Snyder et al., Cell 2016</a>.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">af &lt;-<span class="st"> </span><span class="kw"><a href="https://alkodsi.github.io/ctDNAtools//reference/analyze_fragmentation.html">analyze_fragmentation</a></span>(<span class="dt">bam =</span> bamT1, </a>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">af &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/analyze_fragmentation.html">analyze_fragmentation</a></span>(<span class="dt">bam =</span> bamT1, </a>
 <a class="sourceLine" id="cb11-2" data-line-number="2">          <span class="dt">targets =</span> targets, </a>
 <a class="sourceLine" id="cb11-3" data-line-number="3">          <span class="dt">window_size =</span> <span class="dv">120</span>, </a>
 <a class="sourceLine" id="cb11-4" data-line-number="4">          <span class="dt">step_size =</span> <span class="dv">5</span>, </a>
