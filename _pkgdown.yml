@@ -24,9 +24,11 @@ reference:
     - analyze_fragmentation
   
   - title: Other
+    contents:
     - extract_trinucleotide_context
 
   - title: Internals
+    contents:
     - positivity_test
     - simulator
     - get_read_counts
@@ -39,5 +41,6 @@ reference:
     - compare_simulated_observed
 
   - title: Data
+    contents:
     - mutations
     - targets
