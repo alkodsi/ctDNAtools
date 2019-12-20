@@ -19,15 +19,9 @@ The ctDNAtools package provides functionalities to analyse ctDNA sequencing data
 devtools::install_github("alkodsi/ctDNAtools")
 ```
 
-## Tutorial
+## Getting started
 
-Use ```browseVignettes(package = "ctDNAtools")```
-
- or 
-
-```vignette("ctDNAtools_vignette", package = "ctDNAtools")``` to go through the tutorial.
-
-Raise an issue for bugs and feature requests.
+Browse the vignette [here](https://alkodsi.github.io/ctDNAtools/articles/ctDNAtools.html)
 
 ## Citation
 
