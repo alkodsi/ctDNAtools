@@ -1,5 +1,5 @@
 
-# ctDNAtools
+# ctDNAtools <a href='https:/alkodsi.github.io/ctDNAtools'><img src='man/figures/logo.png' align="right" height="120" /></a>
 
 <!-- badges: start -->
 [![Lifecycle: Maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
