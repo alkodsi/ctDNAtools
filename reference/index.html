@@ -87,12 +87,7 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/alkodsi/ctDNAtools">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -120,28 +115,16 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-minimal-residual-disease-testing" class="hasAnchor"><a href="#section-minimal-residual-disease-testing" class="anchor"></a>Minimal Residual Disease testing</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
       <tr>
         
         <td>
-          <p><code><a href="analyze_fragmentation.html">analyze_fragmentation()</a></code> </p>
+          <p><code><a href="test_ctDNA.html">test_ctDNA()</a></code> </p>
         </td>
-        <td><p>Provides fragment ends analysis</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="bin_fragment_size.html">bin_fragment_size()</a></code> </p>
-        </td>
-        <td><p>Get histogram of fragment lengths from a bam file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="compare_simulated_observed.html">compare_simulated_observed()</a></code> </p>
-        </td>
-        <td><p>Compares simulated and observed variant allele counts</p></td>
+        <td><p>Tests the ctDNA positivity of a sample</p></td>
       </tr><tr>
         
         <td>
@@ -151,69 +134,15 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="create_background_panel_instance.html">create_background_panel_instance()</a></code> </p>
-        </td>
-        <td><p>Create a background panel instance from a bam file (e.g. healthy samples)</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="create_black_list.html">create_black_list()</a></code> </p>
         </td>
         <td><p>A function to create a black list of genomic loci based on a background panel created from a list of bam files (e.g. healthy samples)</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="extract_trinucleotide_context.html">extract_trinucleotide_context()</a></code> </p>
+          <p><code><a href="merge_mutations_in_phase.html">merge_mutations_in_phase()</a></code> </p>
         </td>
-        <td><p>A function to extract the trinucleotide context for a set of mutations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="filter_mutations.html">filter_mutations()</a></code> </p>
-        </td>
-        <td><p>Filter a set of mutations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_background_rate.html">get_background_rate()</a></code> </p>
-        </td>
-        <td><p>Compute the background mismatch rate from a bam file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_bam_SM.html">get_bam_SM()</a></code> </p>
-        </td>
-        <td><p>Helper function to extract SM from a bam file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_bam_chr.html">get_bam_chr()</a></code> </p>
-        </td>
-        <td><p>Helper function to extract chromosome names from a bam file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_fragment_size.html">get_fragment_size()</a></code> </p>
-        </td>
-        <td><p>Get fragment lengths from bam</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_hist_bins.html">get_hist_bins()</a></code> </p>
-        </td>
-        <td><p>Helper function to bin a variable</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_mutation_read_names.html">get_mutation_read_names()</a></code> </p>
-        </td>
-        <td><p>Get names of the reads showing alternative allele of a mutation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_mutations_fragment_size.html">get_mutations_fragment_size()</a></code> </p>
-        </td>
-        <td><p>Get reads fragment lengths for a list of mutations</p></td>
+        <td><p>Collapses mutations in phase into one event</p></td>
       </tr><tr>
         
         <td>
@@ -229,22 +158,70 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="get_read_counts.html">get_read_counts()</a></code> </p>
+          <p><code><a href="get_background_rate.html">get_background_rate()</a></code> </p>
         </td>
-        <td><p>Get read counts for a specific base in the genome</p></td>
+        <td><p>Compute the background mismatch rate from a bam file</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="merge_mutations_in_phase.html">merge_mutations_in_phase()</a></code> </p>
+          <p><code><a href="filter_mutations.html">filter_mutations()</a></code> </p>
         </td>
-        <td><p>Collapses mutations in phase into one event</p></td>
+        <td><p>Filter a set of mutations</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-fragmentation" class="hasAnchor"><a href="#section-fragmentation" class="anchor"></a>Fragmentation</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="get_fragment_size.html">get_fragment_size()</a></code> </p>
+        </td>
+        <td><p>Get fragment lengths from bam</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="mutations.html">mutations</a></code> </p>
+          <p><code><a href="bin_fragment_size.html">bin_fragment_size()</a></code> </p>
         </td>
-        <td><p>Example mutations data to use with ctDNAtools package</p></td>
+        <td><p>Get histogram of fragment lengths from a bam file</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="summarize_fragment_size.html">summarize_fragment_size()</a></code> </p>
+        </td>
+        <td><p>Summarizes fragment size in defined genomic regions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="analyze_fragmentation.html">analyze_fragmentation()</a></code> </p>
+        </td>
+        <td><p>Provides fragment ends analysis</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-other" class="hasAnchor"><a href="#section-other" class="anchor"></a>Other</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="extract_trinucleotide_context.html">extract_trinucleotide_context()</a></code> </p>
+        </td>
+        <td><p>A function to extract the trinucleotide context for a set of mutations</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-internals" class="hasAnchor"><a href="#section-internals" class="anchor"></a>Internals</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
         
         <td>
           <p><code><a href="positivity_test.html">positivity_test()</a></code> </p>
@@ -259,27 +236,71 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="summarize_fragment_size.html">summarize_fragment_size()</a></code> </p>
+          <p><code><a href="get_read_counts.html">get_read_counts()</a></code> </p>
         </td>
-        <td><p>Summarizes fragment size in defined genomic regions</p></td>
+        <td><p>Get read counts for a specific base in the genome</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="targets.html">targets</a></code> </p>
+          <p><code><a href="get_mutation_read_names.html">get_mutation_read_names()</a></code> </p>
         </td>
-        <td><p>Example Genomic targets to use with ctDNAtools package</p></td>
+        <td><p>Get names of the reads showing alternative allele of a mutation</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="test_ctDNA.html">test_ctDNA()</a></code> </p>
+          <p><code><a href="create_background_panel_instance.html">create_background_panel_instance()</a></code> </p>
         </td>
-        <td><p>Tests the ctDNA positivity of a sample</p></td>
+        <td><p>Create a background panel instance from a bam file (e.g. healthy samples)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_bam_chr.html">get_bam_chr()</a></code> </p>
+        </td>
+        <td><p>Helper function to extract chromosome names from a bam file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_bam_SM.html">get_bam_SM()</a></code> </p>
+        </td>
+        <td><p>Helper function to extract SM from a bam file</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="verify_tag.html">verify_tag()</a></code> </p>
         </td>
         <td><p>Helper function to verify a tag exists</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_hist_bins.html">get_hist_bins()</a></code> </p>
+        </td>
+        <td><p>Helper function to bin a variable</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compare_simulated_observed.html">compare_simulated_observed()</a></code> </p>
+        </td>
+        <td><p>Compares simulated and observed variant allele counts</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-data" class="hasAnchor"><a href="#section-data" class="anchor"></a>Data</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="mutations.html">mutations</a></code> </p>
+        </td>
+        <td><p>Example mutations data to use with ctDNAtools package</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="targets.html">targets</a></code> </p>
+        </td>
+        <td><p>Example Genomic targets to use with ctDNAtools package</p></td>
       </tr>
     </tbody>
     </table>
@@ -288,7 +309,11 @@
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#section-minimal-residual-disease-testing">Minimal Residual Disease testing</a></li>
+      <li><a href="#section-fragmentation">Fragmentation</a></li>
+      <li><a href="#section-other">Other</a></li>
+      <li><a href="#section-internals">Internals</a></li>
+      <li><a href="#section-data">Data</a></li>
     </ul>
   </div>
 </div>
