@@ -2,6 +2,8 @@
 title: "Analysis of ctDNA sequencing data with ctDNAtools"
 author: "Amjad Alkodsi"
 date: "`r Sys.Date()`"
+pkgdown:
+  as_is: true
 output:  
   rmdformats::readthedown:
     df_print: kable
