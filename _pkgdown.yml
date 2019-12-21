@@ -23,6 +23,7 @@ reference:
     - bin_fragment_size
     - summarize_fragment_size
     - analyze_fragmentation
+    - get_mutations_fragment_size
   
   - title: Other
     contents:

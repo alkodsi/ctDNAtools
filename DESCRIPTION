@@ -1,5 +1,5 @@
 Package: ctDNAtools
-Title: Tools to analyze ctDNA mutation data
+Title: Tools to analyze ctDNA sequencing data
 Version: 0.3.0
 Authors@R: 
     person(given = "Amjad",
@@ -37,7 +37,6 @@ Suggests:
     knitr,
     rmarkdown,
     covr,
-    rmdformats,
     pkgdown
 Encoding: UTF-8
 LazyData: true

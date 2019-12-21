@@ -5,7 +5,8 @@ date: "`r Sys.Date()`"
 pkgdown:
   as_is: true
 output:  
-  rmdformats::readthedown:
+  html_document:
+    theme: flatly
     df_print: kable
     number_sections: true
 vignette: >
