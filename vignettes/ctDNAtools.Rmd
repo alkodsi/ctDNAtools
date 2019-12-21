@@ -9,6 +9,8 @@ output:
     theme: flatly
     df_print: kable
     number_sections: true
+    toc: true
+    toc_float: true
 vignette: >
   %\VignetteIndexEntry{Analysis of ctDNA sequencing data with ctDNAtools}
   %\VignetteEngine{knitr::rmarkdown}
