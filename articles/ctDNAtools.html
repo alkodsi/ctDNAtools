@@ -91,7 +91,7 @@
     
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a><span class="header-section-number">1</span> Introduction</h1>
+<a href="#introduction" class="anchor"></a>Introduction</h1>
 <p>The ctDNAtools package is built on the Rsamtools and the GenomicAlignments R packages providing functionalities to analyze circulating tumor DNA sequencing data. In particular, the ctDNAtools can be used to:</p>
 <ol style="list-style-type: decimal">
 <li><p>Test minimal residual disease by tracking a set of pre-detected mutations referred to as reporter mutations in a follow-up ctDNA sample.</p></li>
@@ -100,8 +100,8 @@
 </div>
 <div id="minimal-residual-disease-testing" class="section level1">
 <h1 class="hasAnchor">
-<a href="#minimal-residual-disease-testing" class="anchor"></a><span class="header-section-number">2</span> Minimal residual disease testing</h1>
-<p>The amount of ctDNA in plasma can drop dramatically after treatment to a level that makes genomic variants undetectable by conventional variant calling. The functionality of testing minimal residual disease (MRD) aims to track pre-detected mutations (e.g. detected in a pretreatment sample) in a follow-up sample, and determine whether the traces of these mutations can be expected by chance given the background mutation rate (ctDNA negative), or they are significantly higher than the background rate (ctDNA positive). This is implemented in the <code>test_ctDNA</code> function, which uses a set of reporter mutations, a bam file of the sample to be tested, reference genome in BSgenome format, and a target file containing the sequencing targets of the panel. See method details in <code><a href="https://rdrr.io/r/utils/help.html">help(test_ctDNA)</a></code></p>
+<a href="#minimal-residual-disease-testing" class="anchor"></a>Minimal residual disease testing</h1>
+<p>The amount of ctDNA in plasma can drop dramatically after treatment to a level that makes genomic variants undetectable by conventional variant calling. The functionality of testing minimal residual disease (MRD) aims to track pre-detected mutations (e.g. detected in a pretreatment sample) in a follow-up sample, and determine whether the traces of these mutations can be expected by chance given the background mutation rate (ctDNA negative), or they are significantly higher than the background rate (ctDNA positive). This is implemented in the <code><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA()</a></code> function, which uses a set of reporter mutations, a bam file of the sample to be tested, reference genome in BSgenome format, and a target file containing the sequencing targets of the panel. The output is a p-value from a Monte-Carlo sampling based test. This approach is adapted from this <a href="https://www.nature.com/articles/nbt.3520">study</a> <span class="citation">(Newman et al. 2016)</span>. See method details in <code><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA()</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ctDNAtools)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(purrr)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)</a>
@@ -236,7 +236,7 @@
 <a class="sourceLine" id="cb3-12" data-line-number="12"><span class="kw"><a href="https://rdrr.io/r/base/message.html">suppressMessages</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(BSgenome.Hsapiens.UCSC.hg19))</a></code></pre></div>
 <div id="basic-usage" class="section level2">
 <h2 class="hasAnchor">
-<a href="#basic-usage" class="anchor"></a><span class="header-section-number">2.1</span> Basic usage</h2>
+<a href="#basic-usage" class="anchor"></a>Basic usage</h2>
 <p>In the basic usage, the read counts for reference and variant alleles of the reporter mutations will be quantified, the background rate of the tested sample will be estimated, and a Monte Carlo based sampling test will determine an emperical p-value. The p-value will only be used to determine positivity if the number of informative reads (number of all unique reads covering the mutations) exceed the specified threshold. Otherwise, the sample will be considered undetermined. Note that the test only accepts single nucleotide variants, and indels are not supported.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">test1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations,</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">          <span class="dt">bam =</span> bamT1,</a>
@@ -389,13 +389,13 @@
 </div>
 <div id="using-a-black-list" class="section level2">
 <h2 class="hasAnchor">
-<a href="#using-a-black-list" class="anchor"></a><span class="header-section-number">2.2</span> Using a black list</h2>
-<p>A black list of genomic loci or genomic variants can be constructed from a list of bam files corresponding to samples from healthy subjects. The black list can be plugged in the <code>test_ctDNA</code> function to achieve two goals:</p>
+<a href="#using-a-black-list" class="anchor"></a>Using a black list</h2>
+<p>A black list of genomic loci or genomic variants can be constructed from a list of bam files corresponding to samples from healthy subjects. The black list can be plugged in the <code><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA()</a></code> function to achieve two goals:</p>
 <ol style="list-style-type: decimal">
 <li><p>It will filter out variants that are likely false positives, limiting false positive ctDNA tests.</p></li>
 <li><p>The black listed (often noisy) loci are excluded when computing the background rate, which lowers the background rate against which the observed traces of mutations are tested, and thereby enhancing sensitivity.</p></li>
 </ol>
-<p>The ctDNAtools package provides two functions (<code>create_background_panel</code> and <code>create_black_list</code>) to build a black list of genomic loci (chr_pos regardless of substitutions) or variants (chr_pos_ref_alt). Both formats are recognized in <code>test_ctDNA</code> and controlled by the <code>substitution_specific</code> parameter.</p>
+<p>The ctDNAtools package provides two functions (<code><a href="https://rdrr.io/pkg/ctDNAtools/man/create_background_panel.html">create_background_panel()</a></code> and <code><a href="https://rdrr.io/pkg/ctDNAtools/man/create_black_list.html">create_black_list()</a></code>) to build a black list of genomic loci (chr_pos regardless of substitutions) or variants (chr_pos_ref_alt). Both formats are recognized in <code><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA()</a></code> and controlled by the <code>substitution_specific</code> parameter.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">## Black list by loci (substition_specific = FALSE)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">bg_panel1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/create_background_panel.html">create_background_panel</a></span>(<span class="dt">bam_list =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(bamN1, bamN2, bamN3), </a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">          <span class="dt">targets =</span> targets, </a>
@@ -521,14 +521,14 @@
 </tr></tbody>
 </table>
 </div>
-<p>The way how to determine the black list variants or loci is very crucial, so careful selection of the parameters in <code>create_black_list</code> is needed. You can also easily design your own more sophisticated criteria to create a black list from the output of <code>create_background_panel</code>, which reports the depths, variant allele frequency, and number of alternative allele reads for all loci in the targets across the input bam files.</p>
-<p>Since <code>create_background_panel</code> can take along time with a large number of bam files, multi-threading is supported. All you have to do is call <code>plan(multiprocess)</code> or other plan from the <code>furrr</code> package before calling <code>create_background_panel</code>.</p>
+<p>The way how to determine the black list variants or loci is very crucial, so careful selection of the parameters in <code><a href="https://rdrr.io/pkg/ctDNAtools/man/create_black_list.html">create_black_list()</a></code> is needed. You can also easily design your own more sophisticated criteria to create a black list from the output of <code><a href="https://rdrr.io/pkg/ctDNAtools/man/create_background_panel.html">create_background_panel()</a></code>, which reports the depths, variant allele frequency, and number of alternative allele reads for all loci in the targets across the input bam files.</p>
+<p>Since <code><a href="https://rdrr.io/pkg/ctDNAtools/man/create_background_panel.html">create_background_panel()</a></code> can take along time with a large number of bam files, multi-threading is supported. All you have to do is call <code>plan(multiprocess)</code> or other plan from the <code>furrr</code> package before calling <code><a href="https://rdrr.io/pkg/ctDNAtools/man/create_background_panel.html">create_background_panel()</a></code>.</p>
 </div>
 <div id="exploiting-variants-in-phase" class="section level2">
 <h2 class="hasAnchor">
-<a href="#exploiting-variants-in-phase" class="anchor"></a><span class="header-section-number">2.3</span> Exploiting variants in phase</h2>
+<a href="#exploiting-variants-in-phase" class="anchor"></a>Exploiting variants in phase</h2>
 <p>Variants in phase (aka phased variants) are variants that are exhibited by the same sequencing reads (same allele). They are very common in some types of cancer such as lymphomas, but also can be found in other cancers. Mutect2, for example, reports phased variants in the output vcf (note that they can be collapsed into multiple-nucleotide polymorphisms - MNPs, so make sure to have your variants in un-collapsed format for this function). Phased variants can be useful in MRD because we expect that the real traces of phased variants to show in both or all mutations in phase, whereas an artifact that matches one of the mutations in phase will be only exhibited in one variant.</p>
-<p>In the ctDNAtools package, you can supply the column name having an ID column in the <code>mutations</code> input, which contains a common ID for the variants in phase. When provided, the variants in phase will be collapsed and quantified jointly, reads that exhibit only one of the variants but not the others will be purified (mismatches removed), and the background rate will be adjusted according to the level of purification expected. See <code><a href="https://rdrr.io/r/utils/help.html">help(merge_mutations_in_phase)</a></code> and <code><a href="https://rdrr.io/r/utils/help.html">help(test_ctDNA)</a></code> for more details.</p>
+<p>In the ctDNAtools package, you can supply the column name having an ID column in the <code>mutations</code> input, which contains a common ID for the variants in phase. When provided, the variants in phase will be collapsed and quantified jointly, reads that exhibit only one of the variants but not the others will be purified (mismatches removed), and the background rate will be adjusted according to the level of purification expected. See <code><a href="https://rdrr.io/pkg/ctDNAtools/man/merge_mutations_in_phase.html">merge_mutations_in_phase()</a></code> and <code><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA()</a></code> for more details.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">## Exploiting phased variants in the test</a>
 <a class="sourceLine" id="cb9-2" data-line-number="2">test5 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations, </a>
 <a class="sourceLine" id="cb9-3" data-line-number="3">          <span class="dt">bam =</span> bamT1,</a>
@@ -580,24 +580,24 @@
 </div>
 <div id="useful-internal-functionalities" class="section level2">
 <h2 class="hasAnchor">
-<a href="#useful-internal-functionalities" class="anchor"></a><span class="header-section-number">2.4</span> Useful internal functionalities</h2>
-<p>The following functions are called internally by <code>test_ctDNA</code>, but are available for usage if you want to build your own framework:</p>
+<a href="#useful-internal-functionalities" class="anchor"></a>Useful internal functionalities</h2>
+<p>The following functions are called internally by <code><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA()</a></code>, but are available for usage if you want to build your own framework:</p>
 <ol style="list-style-type: decimal">
-<li><p><code>get_background_rate</code>: Computing the background rate using a bam file</p></li>
-<li><p><code>merge_mutations_in_phase</code>: To merge phased variants in single events, purify mismatches and compute the probability of purification.</p></li>
-<li><p><code>get_mutations_read_counts</code>: Useful for forced calling mutations.</p></li>
-<li><p><code>get_mutations_read_names</code>: Getting the read IDs covering a list of mutations.</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/ctDNAtools/man/get_background_rate.html">get_background_rate()</a></code>: Computing the background rate using a bam file</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/ctDNAtools/man/merge_mutations_in_phase.html">merge_mutations_in_phase()</a></code>: To merge phased variants in single events, purify mismatches and compute the probability of purification.</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/ctDNAtools/man/get_mutations_read_counts.html">get_mutations_read_counts()</a></code>: Useful for forced calling mutations.</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/ctDNAtools/man/get_mutations_read_names.html">get_mutations_read_names()</a></code>: Getting the read IDs covering a list of mutations.</p></li>
 </ol>
 </div>
 </div>
 <div id="analysis-of-fragmentation" class="section level1">
 <h1 class="hasAnchor">
-<a href="#analysis-of-fragmentation" class="anchor"></a><span class="header-section-number">3</span> Analysis of fragmentation</h1>
-<p>The fragment size distribution and fragmentation patterns of cfDNA and ctDNA is biologically relevant (see this nice <a href="https://www.sciencedirect.com/science/article/pii/S1535610819303861">review</a> by van der Pol and Mouliere to learn more). The ctDNAtools package provides functionalities to analyze fragment size histograms, fragment size profiles, and fragmentation patterns.</p>
+<a href="#analysis-of-fragmentation" class="anchor"></a>Analysis of fragmentation</h1>
+<p>The fragment size distribution and fragmentation patterns of cfDNA and ctDNA is biologically relevant (see this nice <a href="https://www.sciencedirect.com/science/article/pii/S1535610819303861">review</a> <span class="citation">(Van Der Pol and Mouliere 2019)</span> to learn more). The ctDNAtools package provides functionalities to analyze fragment size histograms, fragment size profiles, and fragmentation patterns.</p>
 <div id="extracting-fragment-size-from-a-bam-file" class="section level2">
 <h2 class="hasAnchor">
-<a href="#extracting-fragment-size-from-a-bam-file" class="anchor"></a><span class="header-section-number">3.1</span> Extracting fragment size from a bam file</h2>
-<p>Fragment size is extracted from the isize field in the bam file from informative reads. What makes an informative read is left to the user to customize in the available parameters. See <code><a href="https://rdrr.io/r/utils/help.html">help(get_fragment_size)</a></code> for details.</p>
+<a href="#extracting-fragment-size-from-a-bam-file" class="anchor"></a>Extracting fragment size from a bam file</h2>
+<p>Fragment size is extracted from the isize field in the bam file from informative reads. What makes an informative read is left to the user to customize in the available parameters. See <code><a href="https://rdrr.io/pkg/ctDNAtools/man/get_fragment_size.html">get_fragment_size()</a></code> for details.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb10-2" data-line-number="2">fs1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/get_fragment_size.html">get_fragment_size</a></span>(<span class="dt">bam =</span> bamT1, </a>
 <a class="sourceLine" id="cb10-3" data-line-number="3">      <span class="dt">mapqFilter =</span> <span class="dv">30</span>, </a>
@@ -814,8 +814,8 @@
 </div>
 <div id="fragment-size-histograms" class="section level2">
 <h2 class="hasAnchor">
-<a href="#fragment-size-histograms" class="anchor"></a><span class="header-section-number">3.2</span> Fragment size histograms</h2>
-<p>Getting a histogram of the fragment size can be done with the <code>bin_fragment_size</code> function. The function supports fixed bin size or custom bins, and can output the counts or normalized counts in each bin.</p>
+<a href="#fragment-size-histograms" class="anchor"></a>Fragment size histograms</h2>
+<p>Getting a histogram of the fragment size can be done with the <code><a href="https://rdrr.io/pkg/ctDNAtools/man/bin_fragment_size.html">bin_fragment_size()</a></code> function. The function supports fixed bin size or custom bins, and can output the counts or normalized counts in each bin.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">bfs1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/bin_fragment_size.html">bin_fragment_size</a></span>(<span class="dt">bam =</span> bamT1,</a>
 <a class="sourceLine" id="cb13-2" data-line-number="2">          <span class="dt">min_size =</span> <span class="dv">1</span>, </a>
 <a class="sourceLine" id="cb13-3" data-line-number="3">          <span class="dt">max_size =</span> <span class="dv">400</span>, </a>
@@ -1002,8 +1002,8 @@
 </div>
 <div id="fragment-size-profiles" class="section level2">
 <h2 class="hasAnchor">
-<a href="#fragment-size-profiles" class="anchor"></a><span class="header-section-number">3.3</span> Fragment size profiles</h2>
-<p>The function <code>summarize_fragment_size</code> provides the functionality to summarize the fragment size of reads in predefined genomic regions. You can use any summary function of your choosing, and several of them simultaneously.</p>
+<a href="#fragment-size-profiles" class="anchor"></a>Fragment size profiles</h2>
+<p>The function <code><a href="https://rdrr.io/pkg/ctDNAtools/man/summarize_fragment_size.html">summarize_fragment_size()</a></code> provides the functionality to summarize the fragment size of reads in predefined genomic regions. You can use any summary function of your choosing, and several of them simultaneously.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">## create some regions from the targets</a>
 <a class="sourceLine" id="cb18-2" data-line-number="2"> regions &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">chr =</span> targets<span class="op">$</span>chr,</a>
 <a class="sourceLine" id="cb18-3" data-line-number="3">         <span class="dt">start =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dt">from =</span> targets<span class="op">$</span>start <span class="op">-</span><span class="st"> </span><span class="dv">50</span>, <span class="dt">to =</span> targets<span class="op">$</span>end <span class="op">+</span><span class="st"> </span><span class="dv">50</span>, <span class="dt">by =</span> <span class="dv">30</span>),</a>
@@ -1128,8 +1128,8 @@
 </div>
 <div id="fragmentation-patterns" class="section level2">
 <h2 class="hasAnchor">
-<a href="#fragmentation-patterns" class="anchor"></a><span class="header-section-number">3.4</span> Fragmentation patterns</h2>
-<p>Fragmentations patterns in a running genomic tiles (overlapping or non-overlapping bins) within target regions can be computed with the <code>analyze_fragmentation</code> function. It will compute the number of fragment ends, the Windowed Protection Score (WPS), and the total number of fragments in each bin. WPS is defined as the number of fragments completely spanning a window (bin) minus the number of fragments with an endpoint within the same window as reported by <a href="https://www.cell.com/fulltext/S0092-8674(15)01569-X">Snyder et al., Cell 2016</a>.</p>
+<a href="#fragmentation-patterns" class="anchor"></a>Fragmentation patterns</h2>
+<p>Fragmentations patterns in a running genomic tiles (overlapping or non-overlapping bins) within target regions can be computed with the <code><a href="https://rdrr.io/pkg/ctDNAtools/man/analyze_fragmentation.html">analyze_fragmentation()</a></code> function. It will compute the number of fragment ends, the Windowed Protection Score (WPS), and the total number of fragments in each bin. WPS is defined as the number of fragments completely spanning a window (bin) minus the number of fragments with an endpoint within the same window as reported in this <a href="https://www.cell.com/fulltext/S0092-8674(15)01569-X">study</a> <span class="citation">(Snyder et al. 2016)</span>.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">af &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/analyze_fragmentation.html">analyze_fragmentation</a></span>(<span class="dt">bam =</span> bamT1, </a>
 <a class="sourceLine" id="cb20-2" data-line-number="2">          <span class="dt">targets =</span> targets, </a>
 <a class="sourceLine" id="cb20-3" data-line-number="3">          <span class="dt">window_size =</span> <span class="dv">120</span>, </a>
@@ -1228,11 +1228,50 @@
 <a class="sourceLine" id="cb21-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="dt">x =</span> <span class="st">"Chromosome 14"</span>, <span class="dt">y =</span> <span class="st">""</span>)</a></code></pre></div>
 <p><img src="ctDNAtools_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
 </div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h2>
+<div id="refs" class="references">
+<div id="ref-newman2016integrated">
+<p>Newman, Aaron M, Alexander F Lovejoy, Daniel M Klass, David M Kurtz, Jacob J Chabon, Florian Scherer, Henning Stehr, et al. 2016. “Integrated Digital Error Suppression for Improved Detection of Circulating Tumor DNA.” <em>Nature Biotechnology</em> 34 (5). Nature Publishing Group: 547.</p>
+</div>
+<div id="ref-snyder2016cell">
+<p>Snyder, Matthew W, Martin Kircher, Andrew J Hill, Riza M Daza, and Jay Shendure. 2016. “Cell-Free DNA Comprises an in Vivo Nucleosome Footprint That Informs Its Tissues-of-Origin.” <em>Cell</em> 164 (1-2). Elsevier: 57–68.</p>
+</div>
+<div id="ref-van2019toward">
+<p>Van Der Pol, Ymke, and Florent Mouliere. 2019. “Toward the Early Detection of Cancer by Decoding the Epigenetic and Environmental Fingerprints of Cell-Free DNA.” <em>Cancer Cell</em> 36 (4). Elsevier: 350–68.</p>
+</div>
+</div>
+</div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
 
+        <div id="tocnav">
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+<li><a href="#introduction">Introduction</a></li>
+      <li>
+<a href="#minimal-residual-disease-testing">Minimal residual disease testing</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#basic-usage">Basic usage</a></li>
+      <li><a href="#using-a-black-list">Using a black list</a></li>
+      <li><a href="#exploiting-variants-in-phase">Exploiting variants in phase</a></li>
+      <li><a href="#useful-internal-functionalities">Useful internal functionalities</a></li>
+      </ul>
+</li>
+      <li>
+<a href="#analysis-of-fragmentation">Analysis of fragmentation</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#extracting-fragment-size-from-a-bam-file">Extracting fragment size from a bam file</a></li>
+      <li><a href="#fragment-size-histograms">Fragment size histograms</a></li>
+      <li><a href="#fragment-size-profiles">Fragment size profiles</a></li>
+      <li><a href="#fragmentation-patterns">Fragmentation patterns</a></li>
+      <li><a href="#references">References</a></li>
+      </ul>
+</li>
+      </ul>
+</div>
       </div>
 
 </div>
