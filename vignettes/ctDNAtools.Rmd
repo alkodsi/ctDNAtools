@@ -8,8 +8,9 @@ output:
   html_document:
     theme: flatly
     df_print: kable
-    number_sections: true
-    toc_float: true
+    toc: true
+  
+bibliography: bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Analysis of ctDNA sequencing data with ctDNAtools}
   %\VignetteEngine{knitr::rmarkdown}
@@ -34,7 +35,7 @@ In particular, the ctDNAtools can be used to:
 
 # Minimal residual disease testing
 
-The amount of ctDNA in plasma can drop dramatically after treatment to a level that makes genomic variants undetectable by conventional variant calling. The functionality of testing minimal residual disease (MRD) aims to track pre-detected mutations (e.g. detected in a pretreatment sample) in a follow-up sample, and determine whether the traces of these mutations can be expected by chance given the background mutation rate (ctDNA negative), or they are significantly higher than the background rate (ctDNA positive). This is implemented in the ```test_ctDNA``` function, which uses a set of reporter mutations, a bam file of the sample to be tested, reference genome in BSgenome format, and a target file containing the sequencing targets of the panel. See method details in ```help(test_ctDNA)```
+The amount of ctDNA in plasma can drop dramatically after treatment to a level that makes genomic variants undetectable by conventional variant calling. The functionality of testing minimal residual disease (MRD) aims to track pre-detected mutations (e.g. detected in a pretreatment sample) in a follow-up sample, and determine whether the traces of these mutations can be expected by chance given the background mutation rate (ctDNA negative), or they are significantly higher than the background rate (ctDNA positive). This is implemented in the ```test_ctDNA()``` function, which uses a set of reporter mutations, a bam file of the sample to be tested, reference genome in BSgenome format, and a target file containing the sequencing targets of the panel. The output is a p-value from a Monte-Carlo sampling based test. This approach is adapted from this [study](https://www.nature.com/articles/nbt.3520) [@newman2016integrated]. See method details in ```test_ctDNA()```.
 
 
 ```{r setup}
@@ -107,13 +108,13 @@ tests
 
 ## Using a black list
 
-A black list of genomic loci or genomic variants can be constructed from a list of bam files corresponding to samples from healthy subjects. The black list can be plugged in the ```test_ctDNA``` function to achieve two goals:
+A black list of genomic loci or genomic variants can be constructed from a list of bam files corresponding to samples from healthy subjects. The black list can be plugged in the ```test_ctDNA()``` function to achieve two goals:
 
 1. It will filter out variants that are likely false positives, limiting false positive ctDNA tests.
 
 2. The black listed (often noisy) loci are excluded when computing the background rate, which lowers the background rate against which the observed traces of mutations are tested, and thereby enhancing sensitivity.
 
-The ctDNAtools package provides two functions (```create_background_panel``` and ```create_black_list```) to build a black list of genomic loci (chr_pos regardless of substitutions) or variants (chr_pos_ref_alt). Both formats are recognized in ```test_ctDNA``` and controlled by the ```substitution_specific``` parameter.
+The ctDNAtools package provides two functions (```create_background_panel()``` and ```create_black_list()```) to build a black list of genomic loci (chr_pos regardless of substitutions) or variants (chr_pos_ref_alt). Both formats are recognized in ```test_ctDNA()``` and controlled by the ```substitution_specific``` parameter.
 
 ```{r blacklist}
 ## Black list by loci (substition_specific = FALSE)
@@ -159,15 +160,15 @@ test4 <- test_ctDNA(mutations = mutations,
 test4
 ```
 
-The way how to determine the black list variants or loci is very crucial, so careful selection of the parameters in ```create_black_list``` is needed. You can also easily design your own more sophisticated criteria to create a black list from the output of ```create_background_panel```, which reports the depths, variant allele frequency, and number of alternative allele reads for all loci in the targets across the input bam files.
+The way how to determine the black list variants or loci is very crucial, so careful selection of the parameters in ```create_black_list()``` is needed. You can also easily design your own more sophisticated criteria to create a black list from the output of ```create_background_panel()```, which reports the depths, variant allele frequency, and number of alternative allele reads for all loci in the targets across the input bam files.
 
-Since ```create_background_panel``` can take along time with a large number of bam files, multi-threading is supported. All you have to do is call ```plan(multiprocess)``` or other plan from the ```furrr``` package before calling ```create_background_panel```.
+Since ```create_background_panel()``` can take along time with a large number of bam files, multi-threading is supported. All you have to do is call ```plan(multiprocess)``` or other plan from the ```furrr``` package before calling ```create_background_panel()```.
 
 ## Exploiting variants in phase
 
 Variants in phase (aka phased variants) are variants that are exhibited by the same sequencing reads (same allele). They are very common in some types of cancer such as lymphomas, but also can be found in other cancers. Mutect2, for example, reports phased variants in the output vcf (note that they can be collapsed into multiple-nucleotide polymorphisms - MNPs, so make sure to have your variants in un-collapsed format for this function). Phased variants can be useful in MRD because we expect that the real traces of phased variants to show in both or all mutations in phase, whereas an artifact that matches one of the mutations in phase will be only exhibited in one variant. 
 
-In the ctDNAtools package, you can supply the column name having an ID column in the ```mutations``` input, which contains a common ID for the variants in phase. When provided, the variants in phase will be collapsed and quantified jointly, reads that exhibit only one of the variants but not the others will be purified (mismatches removed), and the background rate will be adjusted according to the level of purification expected. See ```help(merge_mutations_in_phase)``` and ```help(test_ctDNA)``` for more details.
+In the ctDNAtools package, you can supply the column name having an ID column in the ```mutations``` input, which contains a common ID for the variants in phase. When provided, the variants in phase will be collapsed and quantified jointly, reads that exhibit only one of the variants but not the others will be purified (mismatches removed), and the background rate will be adjusted according to the level of purification expected. See ```merge_mutations_in_phase()``` and ```test_ctDNA()``` for more details.
 
 ```{r phasing}
 ## Exploiting phased variants in the test
@@ -186,24 +187,24 @@ Notice how using phased variants above led to significant reduction in the backg
 
 ## Useful internal functionalities
 
-The following functions are called internally by ```test_ctDNA```, but are available for usage if you want to build your own framework:
+The following functions are called internally by ```test_ctDNA()```, but are available for usage if you want to build your own framework:
 
-1. ```get_background_rate```: Computing the background rate using a bam file
+1. ```get_background_rate()```: Computing the background rate using a bam file
 
-2. ```merge_mutations_in_phase```: To merge phased variants in single events, purify mismatches and compute the probability of purification.
+2. ```merge_mutations_in_phase()```: To merge phased variants in single events, purify mismatches and compute the probability of purification.
 
-3. ```get_mutations_read_counts```: Useful for forced calling mutations.
+3. ```get_mutations_read_counts()```: Useful for forced calling mutations.
 
-4. ```get_mutations_read_names```: Getting the read IDs covering a list of mutations.
+4. ```get_mutations_read_names()```: Getting the read IDs covering a list of mutations.
 
 
 # Analysis of fragmentation
 
-The fragment size distribution and fragmentation patterns of cfDNA and ctDNA is biologically relevant (see this nice [review](https://www.sciencedirect.com/science/article/pii/S1535610819303861) by van der Pol and Mouliere to learn more). The ctDNAtools package provides functionalities to analyze fragment size histograms, fragment size profiles, and fragmentation patterns.
+The fragment size distribution and fragmentation patterns of cfDNA and ctDNA is biologically relevant (see this nice [review](https://www.sciencedirect.com/science/article/pii/S1535610819303861) [@van2019toward] to learn more). The ctDNAtools package provides functionalities to analyze fragment size histograms, fragment size profiles, and fragmentation patterns.
 
 ## Extracting fragment size from a bam file
 
-Fragment size is extracted from the isize field in the bam file from informative reads. What makes an informative read is left to the user to customize in the available parameters. See ```help(get_fragment_size)``` for details. 
+Fragment size is extracted from the isize field in the bam file from informative reads. What makes an informative read is left to the user to customize in the available parameters. See ```get_fragment_size()``` for details. 
 
 ```{r fragments1}
 
@@ -235,7 +236,7 @@ head(fs3)
 
 ## Fragment size histograms
 
-Getting a histogram of the fragment size can be done with the ```bin_fragment_size``` function. The function supports fixed bin size or custom bins, and can output the counts or normalized counts in each bin.
+Getting a histogram of the fragment size can be done with the ```bin_fragment_size()``` function. The function supports fixed bin size or custom bins, and can output the counts or normalized counts in each bin.
 
 ```{r histograms}
 bfs1 <- bin_fragment_size(bam = bamT1,
@@ -284,7 +285,7 @@ bfs2
 
 ## Fragment size profiles
 
-The function ```summarize_fragment_size``` provides the functionality to summarize the fragment size of reads in predefined genomic regions. You can use any summary function of your choosing, and several of them simultaneously.
+The function ```summarize_fragment_size()``` provides the functionality to summarize the fragment size of reads in predefined genomic regions. You can use any summary function of your choosing, and several of them simultaneously.
 
 ```{r profiles}
 ## create some regions from the targets
@@ -310,7 +311,7 @@ head(sfs)
 
 ## Fragmentation patterns
 
-Fragmentations patterns in a running genomic tiles (overlapping or non-overlapping bins) within target regions can be computed with the ```analyze_fragmentation``` function. It will compute the number of fragment ends, the Windowed Protection Score (WPS), and the total number of fragments in each bin. WPS is defined as the number of fragments completely spanning a window (bin) minus the number of fragments with an endpoint within the same window as reported by [Snyder et al., Cell 2016](https://www.cell.com/fulltext/S0092-8674(15)01569-X).
+Fragmentations patterns in a running genomic tiles (overlapping or non-overlapping bins) within target regions can be computed with the ```analyze_fragmentation()``` function. It will compute the number of fragment ends, the Windowed Protection Score (WPS), and the total number of fragments in each bin. WPS is defined as the number of fragments completely spanning a window (bin) minus the number of fragments with an endpoint within the same window as reported in this [study](https://www.cell.com/fulltext/S0092-8674(15)01569-X) [@snyder2016cell].
 
 ```{r}
 af <- analyze_fragmentation(bam = bamT1, 
@@ -336,3 +337,4 @@ af %>% tidyr::pivot_longer(
 
 ```
 
+## References
