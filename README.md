@@ -3,7 +3,7 @@
 
 <!-- badges: start -->
 [![Lifecycle: Maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-[![Travis build status](https://travis-ci.org/alkodsi/ctDNAtools.svg?branch=master)](https://travis-ci.org/alkodsi/ctDNAtools)
+[![Travis build status](https://travis-ci.com/alkodsi/ctDNAtools.svg?branch=master)](https://travis-ci.com/alkodsi/ctDNAtools)
 [![Codecov test coverage](https://codecov.io/gh/alkodsi/ctDNAtools/branch/master/graph/badge.svg)](https://codecov.io/gh/alkodsi/ctDNAtools?branch=master)
 <!-- badges: end -->
 
