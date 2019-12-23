@@ -136,8 +136,11 @@ get_fragment_size <- function(bam, mutations = NULL, targets = NULL, tag = "", i
     if(!is.null(targets)) {
 
         assertthat::assert_that(assertthat::has_name(targets, c("chr", "start", "end")),
-            is.data.frame(targets), assertthat::not_empty(targets),
-            is.numeric(targets$start), is.numeric(targets$end))
+            is.data.frame(targets), assertthat::not_empty(targets))
+
+        assertthat::assert_that(is.numeric(targets$start), assertthat::noNA(targets$start),
+            all(targets$start > 0), assertthat::noNA(targets$end),
+            is.numeric(targets$end), all(targets$end > 0))
 
         gr <- GenomicRanges::reduce(GenomicRanges::GRanges(targets$chr, IRanges::IRanges(targets$start, targets$end)))
     

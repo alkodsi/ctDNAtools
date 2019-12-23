@@ -23,11 +23,24 @@
 get_mutations_fragment_size <- function(bam, mutations, tag = "", min_base_quality = 20,
     min_mapq = 30, ...) {
     
-    assertthat::assert_that(!missing(mutations), !missing(bam))
+    assertthat::assert_that(!missing(bam), is.character(bam),
+        length(bam) == 1, file.exists(bam))
     
+
     assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
-        
-    assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
+        assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT")))
+    
+    assertthat::assert_that(all(nchar(mutations$REF) == 1), all(nchar(mutations$ALT) == 1),
+        msg = "Only SNVs are supported")
+
+    assertthat::assert_that(is.character(mutations$REF), is.character(mutations$ALT), 
+        all(mutations$REF %in% c("A", "C", "T", "G")), 
+        all(mutations$ALT %in% c("A", "C", "T", "G")),
+        msg = "REF and ALT in mutations should be characters having basepairs")
+    
+    assertthat::assert_that(is.numeric(mutations$POS), all(mutations$POS > 0))
+    
+    assertthat::assert_that(all(mutations$CHROM %in% get_bam_chr(bam)))
 
     ellipsis::check_dots_used()
 
