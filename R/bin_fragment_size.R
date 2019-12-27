@@ -7,7 +7,7 @@
 
 #' @param bam path to bam file.
 #' @param mutations An optional data frame with mutations. Must have the columns CHROM, POS, REF, ALT.
-#' @param tag the RG tag if the bam has more than one samplee.
+#' @param tag the RG tag if the bam has more than one sample.
 #' @param targets a data frame with the target regions to restrict the reads in the bam. Must have three columns: chr, start and end
 #' @param bin_size the width of the bin (breaks) of the histogram.
 #' @param custom_bins A numeric vector for custom breaks to bin the histogram of fragment length. Over-rides bin_size.

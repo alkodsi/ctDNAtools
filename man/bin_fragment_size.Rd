@@ -15,7 +15,7 @@ bin_fragment_size(bam, mutations = NULL, targets = NULL, tag = "",
 
 \item{targets}{a data frame with the target regions to restrict the reads in the bam. Must have three columns: chr, start and end}
 
-\item{tag}{the RG tag if the bam has more than one samplee.}
+\item{tag}{the RG tag if the bam has more than one sample.}
 
 \item{bin_size}{the width of the bin (breaks) of the histogram.}
 

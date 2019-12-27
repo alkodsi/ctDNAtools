@@ -10,9 +10,9 @@ summarize_fragment_size(bam, regions, tag = "",
 \arguments{
 \item{bam}{the input bam file}
 
-\item{regions}{data frame contatining the genomic regions. Must have the columns chr, start and end.}
+\item{regions}{data frame containing the genomic regions. Must have the columns chr, start and end.}
 
-\item{tag}{the RG tag if the bam has more than one samplee.}
+\item{tag}{the RG tag if the bam has more than one sample.}
 
 \item{summary_functions}{a named list containing the R functions used for summarization, e.g. mean, sd.}
 

@@ -16,9 +16,9 @@ get_fragment_size(bam, mutations = NULL, targets = NULL, tag = "",
 
 \item{targets}{a data frame with the target regions to restrict the reads in the bam. Must have three columns: chr, start and end}
 
-\item{tag}{the RG tag if the bam has more than one samplee.}
+\item{tag}{the RG tag if the bam has more than one sample.}
 
-\item{isProperPair}{a logical wheter to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).}
+\item{isProperPair}{a logical whether to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).}
 
 \item{mapqFilter}{mapping quality threshold for considering reads.}
 

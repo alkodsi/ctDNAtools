@@ -19,7 +19,7 @@
 #' \code{\link{create_black_list}} in order to extract a black listed loci according to defined criteria
 #'
 #' The function support two modes, either loci-specific regardless of the basepair substitution, or substitution-specific where each
-#' substitution class (e.g. C>T, C>G) are quantified separately. This behaviour is controlled by the substitution_specific parameter.
+#' substitution class (e.g. C>T, C>G) are quantified separately. This behavior is controlled by the substitution_specific parameter.
 #'
 #' VAF above vaf_threshold parameters are masked with NA, to exclude real SNPs/mutations.
 #'

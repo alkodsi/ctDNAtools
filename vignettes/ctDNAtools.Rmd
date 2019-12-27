@@ -70,7 +70,7 @@ suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
 
 ## Basic usage
 
-In the basic usage, the read counts for reference and variant alleles of the reporter mutations will be quantified, the background rate of the tested sample will be estimated, and a Monte Carlo based sampling test will determine an emperical p-value. The p-value will only be used to determine positivity if the number of informative reads (number of all unique reads covering the mutations) exceed the specified threshold. Otherwise, the sample will be considered undetermined. Note that the test only accepts single nucleotide variants, and indels are not supported.
+In the basic usage, the read counts for reference and variant alleles of the reporter mutations will be quantified, the background rate of the tested sample will be estimated, and a Monte Carlo based sampling test will determine an empirical p-value. The p-value will only be used to determine positivity if the number of informative reads (number of all unique reads covering the mutations) exceed the specified threshold. Otherwise, the sample will be considered undetermined. Note that the test only accepts single nucleotide variants, and indels are not supported.
 
 ```{r basic1}
 test1 <- test_ctDNA(mutations = mutations,
@@ -311,7 +311,7 @@ head(sfs)
 
 ## Fragmentation patterns
 
-Fragmentations patterns in a running genomic tiles (overlapping or non-overlapping bins) within target regions can be computed with the ```analyze_fragmentation()``` function. It will compute the number of fragment ends, the Windowed Protection Score (WPS), and the total number of fragments in each bin. WPS is defined as the number of fragments completely spanning a window (bin) minus the number of fragments with an endpoint within the same window as reported in this [study](https://www.cell.com/fulltext/S0092-8674(15)01569-X) [@snyder2016cell].
+Fragmentation patterns in a running genomic tiles (overlapping or non-overlapping bins) within target regions can be computed with the ```analyze_fragmentation()``` function. It will compute the number of fragment ends, the Windowed Protection Score (WPS), and the total number of fragments in each bin. WPS is defined as the number of fragments completely spanning a window (bin) minus the number of fragments with an endpoint within the same window as reported in this [study](https://www.cell.com/fulltext/S0092-8674(15)01569-X) [@snyder2016cell].
 
 ```{r}
 af <- analyze_fragmentation(bam = bamT1, 

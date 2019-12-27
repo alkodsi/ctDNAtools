@@ -1,8 +1,8 @@
 #' Summarizes fragment size in defined genomic regions
 #'
 #' @param bam the input bam file
-#' @param regions data frame contatining the genomic regions. Must have the columns chr, start and end.
-#' @param tag  the RG tag if the bam has more than one samplee.
+#' @param regions data frame containing the genomic regions. Must have the columns chr, start and end.
+#' @param tag  the RG tag if the bam has more than one sample.
 #' @param summary_functions a named list containing the R functions used for summarization, e.g. mean, sd.
 #' @param ... Other parameters passed to \code{\link{get_fragment_size}}
 #' @return a data frame with the first column having the regions in the format of chr:start-end, and other columns correspond to summary_functions.

@@ -1,11 +1,11 @@
 #' Provides fragment ends analysis
 #'
-#' Caluclates the number of fragment ends and the Windowed Protection Score (WPS) in genomic tiles within targets
+#' Calculates the number of fragment ends and the Windowed Protection Score (WPS) in genomic tiles within targets
 #'
 #' @param bam the input bam file
 #' @param targets The targets to restrict the windows within. Must have the columns chr, start and end.
 #'  In case of whole-genome, specify full chromosomes targets.
-#' @param tag  the RG tag if the bam has more than one samplee.
+#' @param tag  the RG tag if the bam has more than one sample.
 #' @param window_size The window (bin) size to use within the targets
 #' @param step_size The step size to use in case of overlapping bins.
 #' @param min_size Restrict fragments to this minimum size.

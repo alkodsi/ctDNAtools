@@ -18,7 +18,7 @@ get_mutation_read_names(bam, chr, pos, ref, alt, tag = "",
 
 \item{alt}{The alternative allele of the mutation.}
 
-\item{tag}{the RG tag if the bam has more than one samplee.}
+\item{tag}{the RG tag if the bam has more than one sample.}
 
 \item{min_base_quality}{integer specifying the minimum base quality for reads to be included.}
 

@@ -51,7 +51,7 @@ this function merges these mutations into one event. The function will also remo
 this function is developed for the intent of minimal residual disease testing).
 
 The output will include the merged mutations, the probability of purification, which is defined as the number of
-reads covering at least two mutations in phase devided by the number of informative reads.
+reads covering at least two mutations in phase divided by the number of informative reads.
 Informative reads count is the total number of unique reads mapping to the mutations input
 (including both mutations in phase and other mutations).
 }

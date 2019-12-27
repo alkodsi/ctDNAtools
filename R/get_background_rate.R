@@ -1,6 +1,6 @@
 #' Compute the background mismatch rate from a bam file
 #'
-#' Runs through the target regions base by base counting the mismatches. Then it divides sum(msimatches)/sum(depths) for all bases in the targets
+#' Runs through the target regions base by base counting the mismatches. Then it divides sum(mismatches)/sum(depths) for all bases in the targets
 #' @param bam path to bam file
 #' @param targets a data frame with the target regions. Must have three columns: chr, start and end
 #' @param reference the reference genome in BSgenome format
@@ -19,7 +19,7 @@
 #'
 #' Genomic positions having non-reference allele frequency higher than vaf_threshold will be excluded (to exclude SNPs and real mutations).
 #'
-#' If a black_list is specified, the positions in the black_list (whether substituion_specific or not) will be excluded before computing the background rate.
+#' If a black_list is specified, the positions in the black_list (whether substitution_specific or not) will be excluded before computing the background rate.
 #' @export
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data

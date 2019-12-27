@@ -13,7 +13,7 @@ analyze_fragmentation(bam, targets, tag = "", window_size = 120,
 \item{targets}{The targets to restrict the windows within. Must have the columns chr, start and end.
 In case of whole-genome, specify full chromosomes targets.}
 
-\item{tag}{the RG tag if the bam has more than one samplee.}
+\item{tag}{the RG tag if the bam has more than one sample.}
 
 \item{window_size}{The window (bin) size to use within the targets}
 
@@ -30,7 +30,7 @@ a data frame with the first three columns having the bins coordinates and
 other columns having the WPS (raw and adjusted by coverage) and number of fragment ends (raw and adjusted by coverage).
 }
 \description{
-Caluclates the number of fragment ends and the Windowed Protection Score (WPS) in genomic tiles within targets
+Calculates the number of fragment ends and the Windowed Protection Score (WPS) in genomic tiles within targets
 }
 \details{
 Fragment length will extracted from the bam file according to the parameters passed to \code{\link{get_fragment_size}}, and the number of fragment ends,

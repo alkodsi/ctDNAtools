@@ -34,14 +34,14 @@ The background will be computed on the target regions after excluding black_list
 a list containing the general mismatch rate and substitution-specific rates
 }
 \description{
-Runs through the target regions base by base counting the mismatches. Then it divides sum(msimatches)/sum(depths) for all bases in the targets
+Runs through the target regions base by base counting the mismatches. Then it divides sum(mismatches)/sum(depths) for all bases in the targets
 }
 \details{
 Computes the background rate of the input bam file for all bases in the specified targets. Substitutions-specific rates are also calculated.
 
 Genomic positions having non-reference allele frequency higher than vaf_threshold will be excluded (to exclude SNPs and real mutations).
 
-If a black_list is specified, the positions in the black_list (whether substituion_specific or not) will be excluded before computing the background rate.
+If a black_list is specified, the positions in the black_list (whether substitution_specific or not) will be excluded before computing the background rate.
 }
 \examples{
 \dontrun{

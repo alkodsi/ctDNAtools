@@ -14,7 +14,7 @@ get_mutations_read_names(bam, mutations, min_base_quality = 20,
 
 \item{min_base_quality}{integer specifying the minimum base quality for reads to be included.}
 
-\item{tag}{the RG tag if the bam has more than one samplee}
+\item{tag}{the RG tag if the bam has more than one sample}
 
 \item{min_mapq}{integer specifying the minimum mapping quality for reads to be included}
 }

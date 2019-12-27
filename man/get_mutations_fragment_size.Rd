@@ -12,7 +12,7 @@ get_mutations_fragment_size(bam, mutations, tag = "",
 
 \item{mutations}{Data frame with mutations. Must have the columns CHROM, POS, REF, ALT.}
 
-\item{tag}{the RG tag if the bam has more than one samplee.}
+\item{tag}{the RG tag if the bam has more than one sample.}
 
 \item{min_base_quality}{minimum base quality when extracting reads covering mutations.}
 

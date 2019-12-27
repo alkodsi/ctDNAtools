@@ -68,7 +68,7 @@ a data frame with the following columns:
   \item informative_reads: The number of unique reads covering the mutations used.
   \item multi_support_reads: The number of reads that support more than one mutations in phase. Non-zero values is a sign of
    positivity not used in the p-value calculation.
-  \item pvalue: The emperical p-value from the Monte Carlo test.
+  \item pvalue: The empirical p-value from the Monte Carlo test.
   \item decision: The decision can be positive, negative or undetermined.
 }
 }
@@ -108,7 +108,7 @@ The workflow includes the following steps:
    \item  Count the number of simulations, where simulated data equal or exceed observed data in jointly two measurements: (1) the average VAF for the \eqn{N} mutations,
      and (2) the number of mutations with non-zero VAF.
 
-   \item  Compute an emperical p-value as (#successes + 1)/(#simulations + 1)
+   \item  Compute an empirical p-value as (#successes + 1)/(#simulations + 1)
    }}
 
 \item{6.}{Make a decision: If number of informative reads is lower than \code{informative_reads_threshold} parameter,

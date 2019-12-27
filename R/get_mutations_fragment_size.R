@@ -4,7 +4,7 @@
 #' in the mutations data frame.
 #' @param bam path to bam file.
 #' @param mutations Data frame with mutations. Must have the columns CHROM, POS, REF, ALT.
-#' @param tag the RG tag if the bam has more than one samplee.
+#' @param tag the RG tag if the bam has more than one sample.
 #' @param min_base_quality minimum base quality when extracting reads covering mutations.
 #' @param min_mapq minimum mapping quality when extracting reads covering mutations.
 #' @param ... Other parameters passed to get_fragment_size.
