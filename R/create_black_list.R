@@ -69,7 +69,7 @@ create_black_list <- function(background_panel, mean_vaf_quantile = 0.95,
     message("The quantile is zero, skipping this criterion")
   }
 
-  samples_one_read <- rowSums(background_panel$alt[, -1, drop = FALSE] >= 1, na.rm = T)
+  samples_one_read <- rowSums(background_panel$alt[, -1, drop = FALSE] >= 1, na.rm = TRUE)
   samples_one_read_idx <- which(samples_one_read >= min_samples_one_read)
   message(sprintf("%s loci added satisfying one read condition", length(samples_one_read_idx)))
 

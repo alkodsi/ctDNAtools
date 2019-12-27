@@ -48,7 +48,7 @@
 #' }
 #'
 bin_fragment_size <- function(bam, mutations = NULL, targets = NULL, tag = "", bin_size = 2, custom_bins = NULL,
-                              normalized = F, min_size = 1, max_size = 400, ...) {
+                              normalized = FALSE, min_size = 1, max_size = 400, ...) {
   assertthat::assert_that(is.logical(normalized), length(normalized) == 1)
 
   assertthat::assert_that(

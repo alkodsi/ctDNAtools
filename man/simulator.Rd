@@ -4,14 +4,14 @@
 \alias{simulator}
 \title{A function to sample from binomial distribution}
 \usage{
-simulator(depths, rate, altReads, seed)
+simulator(depths, rate, alt_reads, seed)
 }
 \arguments{
 \item{depths}{a vector with the depths of the variants}
 
 \item{rate}{A list containing mismatch rates as produced by get_background_rate function}
 
-\item{altReads}{the observed variant allele reads}
+\item{alt_reads}{the observed variant allele reads}
 
 \item{seed}{the random seed}
 }

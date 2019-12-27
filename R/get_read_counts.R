@@ -20,12 +20,12 @@ get_read_counts <- function(chr, pos, bam, tag = "", min_base_quality = 20, max_
     sbp <- Rsamtools::ScanBamParam(which = gr, tagFilter = list(RG = tag))
   }
 
-  pileupParam <- Rsamtools::PileupParam(
+  pileup_param <- Rsamtools::PileupParam(
     max_depth = max_depth, min_base_quality = min_base_quality,
-    min_mapq = min_mapq, distinguish_strands = F, include_deletions = F, include_insertions = F
+    min_mapq = min_mapq, distinguish_strands = FALSE, include_deletions = FALSE, include_insertions = FALSE
   )
 
-  p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam)
+  p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileup_param)
 
   cbase <- ifelse("C" %in% p$nucleotide, p[p$nucleotide == "C", "count"], 0)
   gbase <- ifelse("G" %in% p$nucleotide, p[p$nucleotide == "G", "count"], 0)

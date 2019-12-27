@@ -18,7 +18,7 @@ get_fragment_size(bam, mutations = NULL, targets = NULL, tag = "",
 
 \item{tag}{the RG tag if the bam has more than one sample.}
 
-\item{isProperPair}{a logical whether to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).}
+\item{isProperPair}{a logical whether to return only proper pairs (true), only improper pairs (false), or it does not matter (NA).}
 
 \item{mapqFilter}{mapping quality threshold for considering reads.}
 

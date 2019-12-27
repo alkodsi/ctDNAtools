@@ -1,7 +1,7 @@
 #' Example mutations data to use with ctDNAtools package
 #'
 #' Includes 10 mutations in chr14 immunoglobulin region.
-#' 
+#'
 #'
 #' @format A data frame with 10 rows and 5 columns:
 #' \describe{
@@ -17,7 +17,7 @@
 #' Example Genomic targets to use with ctDNAtools package
 #'
 #' Includes 1 target region in chr14.
-#' 
+#'
 #'
 #' @format A data frame with 1 row and 3 columns:
 #' \describe{

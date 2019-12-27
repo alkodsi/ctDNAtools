@@ -17,7 +17,7 @@
 #' extract_trinucleotide_context(mutations, BSgenome.Hsapiens.UCSC.hg19,
 #'   destrand = FALSE
 #' )
-extract_trinucleotide_context <- function(mutations, reference, destrand = T) {
+extract_trinucleotide_context <- function(mutations, reference, destrand = TRUE) {
   assertthat::assert_that(
     is.data.frame(mutations),
     assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT"))

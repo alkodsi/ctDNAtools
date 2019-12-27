@@ -26,12 +26,12 @@ create_background_panel_instance <- function(bam, targets, reference, vaf_thresh
     sbp <- Rsamtools::ScanBamParam(which = gr, tagFilter = list(RG = tag))
   }
 
-  pileupParam <- Rsamtools::PileupParam(
+  pileup_param <- Rsamtools::PileupParam(
     max_depth = max_depth, min_base_quality = min_base_quality,
     min_mapq = min_mapq, distinguish_strands = FALSE, include_deletions = FALSE, include_insertions = FALSE
   )
 
-  p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam) %>%
+  p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileup_param) %>%
     tidyr::pivot_wider(
       names_from = .data$nucleotide, values_from = .data$count,
       values_fill = list(count = 0)
@@ -44,8 +44,8 @@ create_background_panel_instance <- function(bam, targets, reference, vaf_thresh
     dplyr::mutate(depth = .data$A + .data$C + .data$G + .data$T)
 
   if (substitution_specific) {
-    
-    pAnn <- p %>%
+
+    p_ann <- p %>%
       dplyr::mutate(
         VAFC = .data$C / .data$depth,
         VAFT = .data$T / .data$depth,
@@ -63,7 +63,7 @@ create_background_panel_instance <- function(bam, targets, reference, vaf_thresh
 
   } else {
 
-    pAnn <- dplyr::mutate(p,
+    p_ann <- dplyr::mutate(p,
       refCount = purrr::map2_dbl(c(1:nrow(p)), p$ref, ~ p[.x, .y]),
       nonRefCount = .data$depth - .data$refCount, vaf = .data$nonRefCount / .data$depth
     ) %>%
@@ -77,9 +77,9 @@ create_background_panel_instance <- function(bam, targets, reference, vaf_thresh
   }
 
   out <- list(
-    depth = data.frame(Locus = pAnn$Locus, depth = pAnn$depth, stringsAsFactors = FALSE),
-    alt = data.frame(Locus = pAnn$Locus, alt = pAnn$nonRefCount, stringsAsFactors = FALSE),
-    vaf = data.frame(Locus = pAnn$Locus, vaf = pAnn$vaf, stringsAsFactors = FALSE)
+    depth = data.frame(Locus = p_ann$Locus, depth = p_ann$depth, stringsAsFactors = FALSE),
+    alt = data.frame(Locus = p_ann$Locus, alt = p_ann$nonRefCount, stringsAsFactors = FALSE),
+    vaf = data.frame(Locus = p_ann$Locus, vaf = p_ann$vaf, stringsAsFactors = FALSE)
   )
 
   return(out)

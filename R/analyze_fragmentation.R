@@ -72,7 +72,7 @@ analyze_fragmentation <- function(bam, targets, tag = "", window_size = 120,
     function(x, y, z) {
       data.frame(
         chr = x, start = seq(y - window_size + 1, z + window_size - 1, by = step_size),
-        stringsAsFactors = F) %>%
+        stringsAsFactors = FALSE) %>%
         dplyr::mutate(end = .data$start + window_size)
     }
   )

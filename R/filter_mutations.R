@@ -71,12 +71,12 @@ filter_mutations <- function(mutations, bams = NULL, black_list = NULL,
     assertthat::assert_that(length(bams) == length(tags))
 
 
-    altMatrix <- purrr::map2_dfc(bams, tags, ~ get_mutations_read_counts(
+    alt_matrix <- purrr::map2_dfc(bams, tags, ~ get_mutations_read_counts(
       mutations = mutations,
       bam = .x, tag = .y, min_base_quality = min_base_quality, min_mapq = min_mapq,
       max_depth = max_depth)$alt)
 
-    idx <- rowSums(altMatrix > min_alt_reads) > min_samples
+    idx <- rowSums(alt_matrix > min_alt_reads) > min_samples
   }
 
   message(paste("Dropped", sum(idx), "mutations"))

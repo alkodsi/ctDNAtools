@@ -5,8 +5,8 @@
 \title{Get histogram of fragment lengths from a bam file}
 \usage{
 bin_fragment_size(bam, mutations = NULL, targets = NULL, tag = "",
-  bin_size = 2, custom_bins = NULL, normalized = F, min_size = 1,
-  max_size = 400, ...)
+  bin_size = 2, custom_bins = NULL, normalized = FALSE,
+  min_size = 1, max_size = 400, ...)
 }
 \arguments{
 \item{bam}{path to bam file.}

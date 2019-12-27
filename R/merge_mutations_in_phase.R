@@ -75,7 +75,7 @@ merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phas
     n_reads_multi_mutation <- length(unique(all_reads[duplicated(all_reads)]))
 
     ## purify mismatches mapping only to one of the mutations in phase
-    alt <- alt[!alt %in% ref ]
+    alt <- alt[!alt %in% ref]
 
     ## count how many reads support more than one mutation
     multi_support <- length(unique(alt[duplicated(alt)]))

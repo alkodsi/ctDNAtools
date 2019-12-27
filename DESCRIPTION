@@ -27,7 +27,6 @@ Imports:
     rlang (>= 0.4.0),
     Biostrings,
     methods,
-    mclust,
     furrr (>= 0.1.0),
     ellipsis (>= 0.3.0)
 Suggests:

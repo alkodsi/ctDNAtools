@@ -2,13 +2,13 @@
 #'
 #' A function to determine ctDNA positivity with N repeated Monte Carlo simulations. Return a p-value based on Monte Carlo simulation test. Calls simulator function  n_simulations times.
 #' @param depths a vector with the depths of the variants
-#' @param altReads the observed variant allele reads
+#' @param alt_reads the observed variant allele reads
 #' @param rate  A named list containing mismatch rates as produced by get_background_rate function
 #' @param seed the random seed
 #' @param n_simulations the number of simulations to run.
 #' @return a scalar, simulation p-value.
 #' @seealso \code{\link{test_ctDNA}}
-positivity_test <- function(depths, altReads, rate, seed = 123,
+positivity_test <- function(depths, alt_reads, rate, seed = 123,
                             n_simulations = 10000) {
   set.seed(seed)
 
@@ -18,17 +18,17 @@ positivity_test <- function(depths, altReads, rate, seed = 123,
   )
 
   assertthat::assert_that(
-    assertthat::noNA(altReads), assertthat::not_empty(altReads),
-    is.numeric(altReads)
+    assertthat::noNA(alt_reads), assertthat::not_empty(alt_reads),
+    is.numeric(alt_reads)
   )
 
   assertthat::assert_that(is.numeric(depths), all(depths %% 1 == 0))
 
-  assertthat::assert_that(is.numeric(altReads), all(altReads %% 1 == 0))
+  assertthat::assert_that(is.numeric(alt_reads), all(alt_reads %% 1 == 0))
 
   assertthat::assert_that(
-    length(depths) == length(altReads),
-    all(depths - altReads >= 0)
+    length(depths) == length(alt_reads),
+    all(depths - alt_reads >= 0)
   )
 
   assertthat::assert_that(
@@ -50,7 +50,7 @@ positivity_test <- function(depths, altReads, rate, seed = 123,
 
   pvalue <- (sum(purrr::map_dbl(seeds, ~ simulator(
     depths = depths, rate = rate,
-    altReads = altReads, seed = .x))) + 1) / (n_simulations + 1)
+    alt_reads = alt_reads, seed = .x))) + 1) / (n_simulations + 1)
 
   return(pvalue)
 }

@@ -378,22 +378,24 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
   if (!is.null(ID_column)) {
     message("merging mutations in phase ...")
 
-    refAltReads <- merge_mutations_in_phase(
+    ref_alt_reads <- merge_mutations_in_phase(
       mutations = mutations, bam = bam,
       tag = tag, min_base_quality = min_base_quality, min_mapq = min_mapq, ID_column = ID_column
     )
 
-    prob_purification <- refAltReads$purification_prob
+    prob_purification <- ref_alt_reads$purification_prob
 
-    informative_reads <- refAltReads$informative_reads
+    informative_reads <- ref_alt_reads$informative_reads
 
-    multi_support_reads <- refAltReads$multi_support
+    multi_support_reads <- ref_alt_reads$multi_support
 
-    refAltReads <- refAltReads$out
+    ref_alt_reads <- ref_alt_reads$out
 
     bg$rate <- bg$rate * (1 - prob_purification)
+
   } else {
-    refAltReads <- get_mutations_read_counts(
+
+    ref_alt_reads <- get_mutations_read_counts(
       mutations = mutations, bam = bam, tag = tag,
       min_base_quality = min_base_quality, max_depth = max_depth, min_mapq = min_mapq
     )
@@ -411,22 +413,20 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
     multi_support_reads <- NA
   }
 
-  altReads <- refAltReads$alt
+  alt_reads <- ref_alt_reads$alt
 
-  refReads <- refAltReads$ref
-
-  refAlt <- data.frame(Ref = refReads, Alt = altReads)
+  ref_reads <- ref_alt_reads$ref
 
   message("Running Monte Carlo simulations")
 
-  posTest <- positivity_test(
-    depths = refReads + altReads, altReads = altReads,
+  pos_test <- positivity_test(
+    depths = ref_reads + alt_reads, alt_reads = alt_reads,
     rate = bg, seed = seed, n_simulations = n_simulations
   )
 
-  message(paste("Pvalue = ", posTest))
+  message(paste("Pvalue = ", pos_test))
 
-  decision <- ifelse(posTest < pvalue_threshold, "positive", "negative")
+  decision <- ifelse(pos_test < pvalue_threshold, "positive", "negative")
 
   decision <- ifelse(informative_reads < informative_reads_threshold, "undetermined", decision)
 
@@ -435,13 +435,13 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
   out <- data.frame(
     sample = sm,
     n_mutations = nrow(mutations),
-    n_nonzero_alt = sum(altReads > 0),
-    total_alt_reads = sum(altReads),
+    n_nonzero_alt = sum(alt_reads > 0),
+    total_alt_reads = sum(alt_reads),
     mutations_filtered = n_filtered,
     background_rate = bg$rate,
     informative_reads = informative_reads,
     multi_support_reads = multi_support_reads,
-    pvalue = posTest,
+    pvalue = pos_test,
     decision = factor(decision, levels = c("positive", "negative", "undetermined")),
     stringsAsFactors = FALSE
   )

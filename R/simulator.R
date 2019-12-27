@@ -22,16 +22,16 @@ compare_simulated_observed <- function(simulated, observed, depths) {
 #' Samples from binomial distribution N variants with different depths and fixed mismatch rate for one simulation. Return 1 if the simulation exceeds observed alt allele reads or 0 otherwise
 #' @param depths a vector with the depths of the variants
 #' @param rate A list containing mismatch rates as produced by get_background_rate function
-#' @param altReads the observed variant allele reads
+#' @param alt_reads the observed variant allele reads
 #' @param seed the random seed
 #' @return a scalar. Either 1 if the simulation exceeds observed variant alleles or 0 otherwise
 #' @importFrom stats C rbinom runif
 #' @seealso \code{\link{test_ctDNA}}
 
-simulator <- function(depths, rate, altReads, seed) {
-  assertthat::assert_that(length(depths) == length(altReads))
+simulator <- function(depths, rate, alt_reads, seed) {
+  assertthat::assert_that(length(depths) == length(alt_reads))
 
-  assertthat::assert_that(all(altReads <= depths))
+  assertthat::assert_that(all(alt_reads <= depths))
 
   assertthat::assert_that(is.list(rate),
     assertthat::has_name(rate, c("rate", "CT", "CA", "CG", "TA", "TC", "TG")),
@@ -43,7 +43,7 @@ simulator <- function(depths, rate, altReads, seed) {
   set.seed(seed)
 
   sim <- rbinom(n = n_variants, size = depths, prob = rate$rate / 3)
-  out <- compare_simulated_observed(simulated = sim, observed = altReads, depths = depths)
+  out <- compare_simulated_observed(simulated = sim, observed = alt_reads, depths = depths)
 
   return(out)
 }

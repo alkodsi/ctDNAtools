@@ -6,7 +6,7 @@
 #' @param mutations An optional data frame with mutations. Must have the columns CHROM, POS, REF, ALT.
 #' @param tag the RG tag if the bam has more than one sample.
 #' @param targets a data frame with the target regions to restrict the reads in the bam. Must have three columns: chr, start and end
-#' @param isProperPair a logical whether to return only proper pairs (T), only improper pairs (F), or it does not matter (NA).
+#' @param isProperPair a logical whether to return only proper pairs (true), only improper pairs (false), or it does not matter (NA).
 #' @param mapqFilter mapping quality threshold for considering reads.
 #' @param min_size Integer with the lowest fragment length.
 #' @param max_size Integer with the highest fragment length.
@@ -186,7 +186,7 @@ get_fragment_size <- function(bam, mutations = NULL, targets = NULL, tag = "", i
       start = pmin(.data$start.first, .data$end.first, .data$start.last, .data$end.last),
       end = pmax(.data$start.first, .data$end.first, .data$start.last, .data$end.last),
       size = abs(.data$isize.first),
-      stringsAsFactors = F
+      stringsAsFactors = FALSE
     ) %>%
     dplyr::select(
       .data$Sample, .data$ID, .data$chr,

@@ -4,7 +4,7 @@
 \alias{extract_trinucleotide_context}
 \title{A function to extract the trinucleotide context for a set of mutations}
 \usage{
-extract_trinucleotide_context(mutations, reference, destrand = T)
+extract_trinucleotide_context(mutations, reference, destrand = TRUE)
 }
 \arguments{
 \item{mutations}{A data frame having the mutations. Should have the columns CHROM, POS, REF, ALT.}

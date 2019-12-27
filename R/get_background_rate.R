@@ -61,7 +61,7 @@
 #' }
 #'
 get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, tag = "",
-                                black_list = NULL, substitution_specific = T, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
+                                black_list = NULL, substitution_specific = TRUE, min_base_quality = 20, max_depth = 1e+05, min_mapq = 30) {
   assertthat::assert_that(class(reference) == "BSgenome")
 
   assertthat::assert_that(
@@ -104,12 +104,12 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
     sbp <- Rsamtools::ScanBamParam(which = gr, tagFilter = list(RG = tag))
   }
 
-  pileupParam <- Rsamtools::PileupParam(
+  pileup_param <- Rsamtools::PileupParam(
     max_depth = max_depth, min_base_quality = min_base_quality,
     min_mapq = min_mapq, distinguish_strands = FALSE, include_deletions = FALSE, include_insertions = FALSE
   )
 
-  p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam) %>%
+  p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileup_param) %>%
     tidyr::pivot_wider(
       names_from = .data$nucleotide, values_from = .data$count,
       values_fill = list(count = 0)
@@ -121,7 +121,7 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
     ))) %>%
     dplyr::mutate(depth = .data$A + .data$C + .data$G + .data$T)
 
-  pAnn <- dplyr::mutate(p,
+  p_ann <- dplyr::mutate(p,
     refCount = purrr::map2_dbl(c(1:nrow(p)), p$ref, ~ p[.x, .y]),
     nonRefCount = .data$depth - .data$refCount
   ) %>%
@@ -140,19 +140,19 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
         dplyr::mutate(depth = .data$A + .data$C + .data$G + .data$T) %>%
         as.data.frame()
 
-      pAnn <- dplyr::mutate(p,
+      p_ann <- dplyr::mutate(p,
         refCount = purrr::map2_dbl(c(1:nrow(p)), p$ref, ~ p[.x, .y]),
         nonRefCount = .data$depth - .data$refCount
       ) %>%
         dplyr::filter((.data$nonRefCount / .data$depth) < vaf_threshold)
 
     } else {
-      pAnn <- pAnn %>%
+      p_ann <- p_ann %>%
         dplyr::filter(!paste(.data$seqnames, .data$pos, sep = "_") %in% black_list)
     }
   }
 
-  rate_by_sub <- pAnn %>%
+  rate_by_sub <- p_ann %>%
     dplyr::group_by(.data$ref) %>%
     dplyr::summarize(
       depth = sum(as.numeric(.data$depth)),
@@ -179,7 +179,7 @@ get_background_rate <- function(bam, targets, reference, vaf_threshold = 0.1, ta
   TG <- (rate_by_sub[rate_by_sub$ref == "T", "G"] + rate_by_sub[rate_by_sub$ref == "A", "C"]) /
     (rate_by_sub[rate_by_sub$ref == "T", "depth"] + rate_by_sub[rate_by_sub$ref == "A", "depth"])
 
-  rate <- sum(as.numeric(pAnn$nonRefCount)) / sum(as.numeric(pAnn$depth))
+  rate <- sum(as.numeric(p_ann$nonRefCount)) / sum(as.numeric(p_ann$depth))
 
   return(list(rate = rate, CA = CA, CG = CG, CT = CT, TA = TA, TC = TC, TG = TG))
 }

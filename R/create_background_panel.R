@@ -108,7 +108,7 @@ create_background_panel <- function(bam_list, targets, reference, vaf_threshold 
     )
 
     assertthat::assert_that(all(tag_verification),
-      msg = paste("specified tag for", paste(bam_list[bam_list_tags != ""][!tag_verification], collapse = " , "),"is not correct")
+      msg = paste("specified tag for", paste(bam_list[bam_list_tags != ""][!tag_verification], collapse = " , "), "is not correct")
     )
   }
 
@@ -118,7 +118,7 @@ create_background_panel <- function(bam_list, targets, reference, vaf_threshold 
       vaf_threshold = vaf_threshold, min_base_quality = min_base_quality, min_mapq = min_mapq,
       max_depth = max_depth, substitution_specific = substitution_specific
     ),
-    .progress = T
+    .progress = TRUE
   )
 
   sm <- make.unique(purrr::map_chr(bam_list, get_bam_SM))

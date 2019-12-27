@@ -31,44 +31,44 @@ get_mutation_read_names <- function(bam, chr, pos, ref, alt, tag = "", min_base_
   if (tag == "") {
     sbp <- Rsamtools::ScanBamParam(
       flag = Rsamtools::scanBamFlag(
-        isUnmappedQuery = FALSE, isSecondaryAlignment = FALSE, 
+        isUnmappedQuery = FALSE, isSecondaryAlignment = FALSE,
         isNotPassingQualityControls = FALSE, isDuplicate = FALSE
       ),
       which = gr, mapqFilter = min_mapq
     )
 
-    stackedStrings <- GenomicAlignments::stackStringsFromBam(bam,
-      use.names = T, param = sbp)
+    stacked_strings <- GenomicAlignments::stackStringsFromBam(bam,
+      use.names = TRUE, param = sbp)
 
-    stackedQuals <- GenomicAlignments::stackStringsFromBam(bam,
-      use.names = T, what = "qual", param = sbp)
+    stacked_qual <- GenomicAlignments::stackStringsFromBam(bam,
+      use.names = TRUE, what = "qual", param = sbp)
 
   } else {
     assertthat::assert_that(verify_tag(bam = bam, tag = tag), msg = "Specified tag not found")
 
     sbp <- Rsamtools::ScanBamParam(
       flag = Rsamtools::scanBamFlag(
-        isUnmappedQuery = F,
-        isSecondaryAlignment = F, isNotPassingQualityControls = F, isDuplicate = F
+        isUnmappedQuery = FALSE, isSecondaryAlignment = FALSE,
+        isNotPassingQualityControls = FALSE, isDuplicate = FALSE
       ),
       which = gr, tagFilter = list(RG = tag), mapqFilter = min_mapq
     )
 
-    stackedStrings <- GenomicAlignments::stackStringsFromBam(bam,
-      use.names = T, param = sbp)
+    stacked_strings <- GenomicAlignments::stackStringsFromBam(bam,
+      use.names = TRUE, param = sbp)
 
-    stackedQuals <- GenomicAlignments::stackStringsFromBam(bam,
-      use.names = T, what = "qual", param = sbp)
+    stacked_qual <- GenomicAlignments::stackStringsFromBam(bam,
+      use.names = TRUE, what = "qual", param = sbp)
   }
 
   sm <- get_bam_SM(bam = bam, tag = tag)
 
-  if (length(stackedStrings) != 0) {
+  if (length(stacked_strings) != 0) {
     out <- data.frame(
-      ID = paste(sm, names(stackedStrings), sep = "_"),
-      seq = as.data.frame(stackedStrings)[, 1],
-      qual = as.data.frame(methods::as(Biostrings::PhredQuality(stackedQuals), "IntegerList"))$value,
-      stringsAsFactors = F
+      ID = paste(sm, names(stacked_strings), sep = "_"),
+      seq = as.data.frame(stacked_strings)[, 1],
+      qual = as.data.frame(methods::as(Biostrings::PhredQuality(stacked_qual), "IntegerList"))$value,
+      stringsAsFactors = FALSE
     ) %>%
       dplyr::filter(.data$qual >= min_base_quality)
 

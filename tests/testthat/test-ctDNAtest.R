@@ -218,13 +218,13 @@ test_that("get_mutations_read_names works", {
 
 
 test_that("positivity_test works", {
-  expect_equal(simulator(depths = 5, rate = bgr$bgr1, altReads = 1, seed = 123), 0)
+  expect_equal(simulator(depths = 5, rate = bgr$bgr1, alt_reads = 1, seed = 123), 0)
 
-  expect_equal(simulator(depths = 5, rate = bgr$bgr1, altReads = 0, seed = 123), 1)
+  expect_equal(simulator(depths = 5, rate = bgr$bgr1, alt_reads = 0, seed = 123), 1)
 
-  expect_equal(positivity_test(depths = 5, rate = bgr$bgr1, altReads = 0, n_simulations = 100), 1)
+  expect_equal(positivity_test(depths = 5, rate = bgr$bgr1, alt_reads = 0, n_simulations = 100), 1)
 
-  expect_equal(positivity_test(depths = 5, rate = bgr$bgr1, altReads = 1, n_simulations = 100), 1 / 101)
+  expect_equal(positivity_test(depths = 5, rate = bgr$bgr1, alt_reads = 1, n_simulations = 100), 1 / 101)
 })
 
 bamNoSM <- system.file("extdata", "ex1.bam", package = "Rsamtools")
