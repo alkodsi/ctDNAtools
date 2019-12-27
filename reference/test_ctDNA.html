@@ -235,7 +235,7 @@ Mutations that have more than min_alt_reads in more than min_samples will be fil
 <li><p>informative_reads: The number of unique reads covering the mutations used.</p></li>
 <li><p>multi_support_reads: The number of reads that support more than one mutations in phase. Non-zero values is a sign of
    positivity not used in the p-value calculation.</p></li>
-<li><p>pvalue: The emperical p-value from the Monte Carlo test.</p></li>
+<li><p>pvalue: The empirical p-value from the Monte Carlo test.</p></li>
 <li><p>decision: The decision can be positive, negative or undetermined.</p></li>
 </ul>
 
@@ -267,7 +267,7 @@ and an optional black_list (recommended to use) computed from a list of bam file
 <li><p>Repeat <code>n_simuations</code> times.</p></li>
 <li><p>Count the number of simulations, where simulated data equal or exceed observed data in jointly two measurements: (1) the average VAF for the \(N\) mutations,
      and (2) the number of mutations with non-zero VAF.</p></li>
-<li><p>Compute an emperical p-value as (#successes + 1)/(#simulations + 1)</p></li>
+<li><p>Compute an empirical p-value as (#successes + 1)/(#simulations + 1)</p></li>
 </ul></p></dd>
 
 <dt>6.</dt><dd><p>Make a decision: If number of informative reads is lower than <code>informative_reads_threshold</code> parameter,

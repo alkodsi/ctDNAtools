@@ -43,7 +43,7 @@
 
 
 <meta property="og:title" content="Compute the background mismatch rate from a bam file — get_background_rate" />
-<meta property="og:description" content="Runs through the target regions base by base counting the mismatches. Then it divides sum(msimatches)/sum(depths) for all bases in the targets" />
+<meta property="og:description" content="Runs through the target regions base by base counting the mismatches. Then it divides sum(mismatches)/sum(depths) for all bases in the targets" />
 <meta property="og:image" content="https://alkodsi.github.io/ctDNAtools/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -122,7 +122,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Runs through the target regions base by base counting the mismatches. Then it divides sum(msimatches)/sum(depths) for all bases in the targets</p>
+    <p>Runs through the target regions base by base counting the mismatches. Then it divides sum(mismatches)/sum(depths) for all bases in the targets</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_background_rate</span>(<span class='no'>bam</span>, <span class='no'>targets</span>, <span class='no'>reference</span>, <span class='kw'>vaf_threshold</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
@@ -182,7 +182,7 @@ The background will be computed on the target regions after excluding black_list
 
     <p>Computes the background rate of the input bam file for all bases in the specified targets. Substitutions-specific rates are also calculated.</p>
 <p>Genomic positions having non-reference allele frequency higher than vaf_threshold will be excluded (to exclude SNPs and real mutations).</p>
-<p>If a black_list is specified, the positions in the black_list (whether substituion_specific or not) will be excluded before computing the background rate.</p>
+<p>If a black_list is specified, the positions in the black_list (whether substitution_specific or not) will be excluded before computing the background rate.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code>create_black_list</code> <code>test_ctDNA</code> <code>create_background_panel</code></p></div>
