@@ -31,25 +31,25 @@ bin_fragment_size(bam, mutations = NULL, targets = NULL, tag = "",
 }
 \value{
 A data frame with one column for the used breaks and one having the histogram (normalized) counts. If mutations is supplied, the output will have one breaks column and three columns
-corresponding to variant allele reads, reference allele reads, and other reads. 
+corresponding to variant allele reads, reference allele reads, and other reads.
 Each row has the count of fragment lengths within the bin and optionally normalized by the total number of reads.
 }
 \description{
-The function first extracts fragment length from a bam file then computes the histogram over defined bins. If normalized is TRUE, 
+The function first extracts fragment length from a bam file then computes the histogram over defined bins. If normalized is TRUE,
 the counts per bin will be normalized to the total read counts. Optionally,
 it can computes the histogram of fragment lengths only for mutated reads (confirmed ctDNA molecules).
 }
 \details{
 Fragment length will extracted from the bam file according to the parameters passed to \code{\link{get_fragment_size}}, and histogram counts (optionally normalized to total counts)
-are computed. Both equal histogram bins via bin_size and manually customized bins via custom_bins are supported. 
+are computed. Both equal histogram bins via bin_size and manually customized bins via custom_bins are supported.
 
 By using an input mutations, the function will bin separately the reads that support variant alleles, reference alleles and other reads.
 }
 \examples{
 \dontrun{
-data('targets',package = 'ctDNAtools')
-data('mutations',package = 'ctDNAtools')
-bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+data("targets", package = "ctDNAtools")
+data("mutations", package = "ctDNAtools")
+bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")
 
 ## basic usage
 bin_fragment_size(bam = bamT1)
@@ -64,6 +64,7 @@ bin_fragment_size(bam = bamT1, mutations = mutations)
 ## Restrict to reads into targets
 bin_fragment_size(bam = bamT1, targets = targets)
 }
+
 }
 \seealso{
 \code{\link{get_fragment_size}} \code{\link{analyze_fragmentation}} \code{\link{summarize_fragment_size}}

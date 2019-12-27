@@ -2,9 +2,7 @@
 #' @param bam the path to bam file
 
 get_bam_chr <- function(bam) {
-    
-    chr <- GenomeInfoDb::seqnames(GenomeInfoDb::seqinfo(Rsamtools::BamFile(bam)))
+  chr <- GenomeInfoDb::seqnames(GenomeInfoDb::seqinfo(Rsamtools::BamFile(bam)))
 
-    return(chr)
-    
+  return(chr)
 }

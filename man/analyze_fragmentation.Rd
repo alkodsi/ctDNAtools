@@ -26,7 +26,7 @@ In case of whole-genome, specify full chromosomes targets.}
 \item{...}{Other parameters passed to get_fragment_size}
 }
 \value{
-a data frame with the first three columns having the bins coordinates and 
+a data frame with the first three columns having the bins coordinates and
 other columns having the WPS (raw and adjusted by coverage) and number of fragment ends (raw and adjusted by coverage).
 }
 \description{
@@ -36,7 +36,7 @@ Caluclates the number of fragment ends and the Windowed Protection Score (WPS) i
 Fragment length will extracted from the bam file according to the parameters passed to \code{\link{get_fragment_size}}, and the number of fragment ends,
 and the Windowed Protection Score (WPS) will be computed in the binned input targets. Binning is done according to the window_size and step_size parameters.
 
-WPS is defined as the number of fragments completely spanning a window (bin) minus 
+WPS is defined as the number of fragments completely spanning a window (bin) minus
 the number of fragments with an endpoint within the same window as reported by Snyder et al., Cell 2016.
 
 The output include both the fragment end counts and the WPS in their raw format as well as after adjustment by coverage in the bin.
@@ -45,16 +45,19 @@ Minimum and maximum bounds of the fragment size are applied before computing WPS
 }
 \examples{
 \dontrun{
-data('targets',package = 'ctDNAtools')
-bamN1 <- system.file('extdata', 'N1.bam', package = 'ctDNAtools')
+data("targets", package = "ctDNAtools")
+bamN1 <- system.file("extdata", "N1.bam", package = "ctDNAtools")
 
 ## basic usage
 analyze_fragmentation(bam = bamN1, targets = targets)
 
 ## more options
-analyze_fragmentation(bam = bamN1, targets = targets,
-   step_size = 10, window_size = 50)
+analyze_fragmentation(
+  bam = bamN1, targets = targets,
+  step_size = 10, window_size = 50
+)
 }
+
 }
 \seealso{
 \code{\link{get_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{summarize_fragment_size}}

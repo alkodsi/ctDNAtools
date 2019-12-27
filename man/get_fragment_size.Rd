@@ -35,24 +35,24 @@ get_fragment_size(bam, mutations = NULL, targets = NULL, tag = "",
 \value{
 A data frame with the columns:
  \itemize{
-   
+
    \item Sample: The SM tag in bam or file name
-   
+
    \item ID: the read ID
-    
-   \item chr: chromosome 
-   
+
+   \item chr: chromosome
+
    \item start: the left most end of either the read or mate
 
    \item end: the right most end of either the read or mate.
 
    \item size:  the fragment size
-    
+
    \item category (only if mutations is provided): either ref, alt, or other
    }
 }
 \description{
-A function to extract fragment lengths from a bam file. Optionally, given a mutation data frame, it can categorize read lengths 
+A function to extract fragment lengths from a bam file. Optionally, given a mutation data frame, it can categorize read lengths
 in mutated vs non-mutated reads.
 }
 \details{
@@ -84,17 +84,19 @@ a separate column.
 }
 \examples{
 \dontrun{
-data('mutations',package = 'ctDNAtools')
-data('targets',package = 'ctDNAtools')
-bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
+data("mutations", package = "ctDNAtools")
+data("targets", package = "ctDNAtools")
+bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")
 
 ## basic usage
 fs <- get_fragment_size(bam = bamT1)
 
 ## More options
-fs1 <- get_fragment_size(bam = bamT1, isProperPair = TRUE, min_size = 70,
-    max_size = 200, ignore_trimmed = FALSE, different_strands = FALSE, 
-    simple_cigar = TRUE)
+fs1 <- get_fragment_size(
+  bam = bamT1, isProperPair = TRUE, min_size = 70,
+  max_size = 200, ignore_trimmed = FALSE, different_strands = FALSE,
+  simple_cigar = TRUE
+)
 
 ## with mutations input
 fs2 <- get_fragment_size(bam = bamT1, mutations = mutations)
@@ -102,6 +104,7 @@ fs2 <- get_fragment_size(bam = bamT1, mutations = mutations)
 ## using targets
 fs3 <- get_fragment_size(bam = bamT1, targets = targets)
 }
+
 }
 \seealso{
 \code{\link{summarize_fragment_size}} \code{\link{bin_fragment_size}} \code{\link{analyze_fragmentation}} \code{\link{get_mutations_fragment_size}}

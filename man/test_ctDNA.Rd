@@ -39,7 +39,7 @@ chr_pos_ref_alt if substitution_specific is true. If given, will override \code{
 
 \item{min_mapq}{the minimum mapping quality for a read to be counted}
 
-\item{bam_list}{A vector containing the paths to bam files used to filter mutations. 
+\item{bam_list}{A vector containing the paths to bam files used to filter mutations.
 Mutations that have more than min_alt_reads in more than min_samples will be filtered. Using black_list is more recommended.}
 
 \item{bam_list_tags}{the RG tags for the bams included in bams list.}
@@ -66,14 +66,14 @@ a data frame with the following columns:
   \item mutations_filtered: The number of filtered mutations.
   \item background_rate: The background rate of the tested sample (after all adjustments)
   \item informative_reads: The number of unique reads covering the mutations used.
-  \item multi_support_reads: The number of reads that support more than one mutations in phase. Non-zero values is a sign of 
+  \item multi_support_reads: The number of reads that support more than one mutations in phase. Non-zero values is a sign of
    positivity not used in the p-value calculation.
   \item pvalue: The emperical p-value from the Monte Carlo test.
   \item decision: The decision can be positive, negative or undetermined.
 }
 }
 \description{
-Given a set of reporter mutation, this functions counts the reads matching the reporter mutations in the sample to be tested, 
+Given a set of reporter mutation, this functions counts the reads matching the reporter mutations in the sample to be tested,
 estimates the mismatch rate for the sample to be tested, and then runs a Monte Carlo simulation test to determine whether the tested sample is positive or negative.
 }
 \details{
@@ -92,16 +92,16 @@ The workflow includes the following steps:
 
 \item{3.}{Counting reference and alternative alleles of the reporter mutations in the bam file.}
 
-\item{4.}{Merging mutations in phase (optional but recommended): If the ID_column is specified in the mutations input, mutations with the same ID (in phase) will be merged. 
+\item{4.}{Merging mutations in phase (optional but recommended): If the ID_column is specified in the mutations input, mutations with the same ID (in phase) will be merged.
    While doing so, it is expected that real traces of mutations will be exhibited in the mutations in phase, while artifacts will manifest only in one of the mutations
    in phase. Therefore, the mismatches that map only to one of the mutations in phase but not the others (the others are covered and show reference allele) will be removed.
-   This will lead to reduction of the observed mismatches, and therefore, the computed background rate will be adjusted accordingly: 
+   This will lead to reduction of the observed mismatches, and therefore, the computed background rate will be adjusted accordingly:
    new rate = old rate * (1 - purification_probability). See \code{\link{merge_mutations_in_phase}}.}
 
 \item{5.}{Monte Carlo test: this approach was used by Newman et al., Nature Biotechnology 2016.
    \itemize{
-   \item  Given \eqn{N} reporter mutations each with depth \ifelse{html}{\out{D<sub>i</sub>}}{\eqn{D_i}}, randomly sample variant allele reads \ifelse{html}{\out{X<sub>i</sub>}}{\eqn{X_i}} 
-   under the background rate \eqn{p} using binomial distribution \ifelse{html}{\out{X<sub>i</sub>}}{\eqn{X_i}} ~ Binom(\ifelse{html}{\out{D<sub>i</sub>}}{\eqn{D_i}}, \eqn{p}). 
+   \item  Given \eqn{N} reporter mutations each with depth \ifelse{html}{\out{D<sub>i</sub>}}{\eqn{D_i}}, randomly sample variant allele reads \ifelse{html}{\out{X<sub>i</sub>}}{\eqn{X_i}}
+   under the background rate \eqn{p} using binomial distribution \ifelse{html}{\out{X<sub>i</sub>}}{\eqn{X_i}} ~ Binom(\ifelse{html}{\out{D<sub>i</sub>}}{\eqn{D_i}}, \eqn{p}).
 
    \item  Repeat \code{n_simuations} times.
 
@@ -111,69 +111,85 @@ The workflow includes the following steps:
    \item  Compute an emperical p-value as (#successes + 1)/(#simulations + 1)
    }}
 
-\item{6.}{Make a decision: If number of informative reads is lower than \code{informative_reads_threshold} parameter, 
+\item{6.}{Make a decision: If number of informative reads is lower than \code{informative_reads_threshold} parameter,
  the decision will be undetermined. Otherwise, the \code{pvalue_threshold}
    parameters will be used to determine positivity or negativity.}
 }
 }
 \examples{
 ## Load example data
-data('mutations',package = 'ctDNAtools')
-data('targets', package = 'ctDNAtools')
-bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
-bamT2 <- system.file('extdata', 'T2.bam', package = 'ctDNAtools')
-bamN1 <- system.file('extdata', 'N1.bam', package = 'ctDNAtools')
-bamN2 <- system.file('extdata', 'N2.bam', package = 'ctDNAtools')
-bamN3 <- system.file('extdata', 'N3.bam', package = 'ctDNAtools')
+data("mutations", package = "ctDNAtools")
+data("targets", package = "ctDNAtools")
+bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")
+bamT2 <- system.file("extdata", "T2.bam", package = "ctDNAtools")
+bamN1 <- system.file("extdata", "N1.bam", package = "ctDNAtools")
+bamN2 <- system.file("extdata", "N2.bam", package = "ctDNAtools")
+bamN3 <- system.file("extdata", "N3.bam", package = "ctDNAtools")
 
 ## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library
 suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
-
 \dontrun{
 ## basic usage
-test_ctDNA(mutations = mutations, bam = bamT1, 
-    targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
-    n_simulation = 100)
+test_ctDNA(
+  mutations = mutations, bam = bamT1,
+  targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+  n_simulation = 100
+)
 
 ## More options
-test_ctDNA(mutations = mutations, bam = bamT1, 
-    targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
-    n_simulation = 100, min_base_quality = 20, min_mapq = 30,
-    vaf_threshold = 0.05)
+test_ctDNA(
+  mutations = mutations, bam = bamT1,
+  targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+  n_simulation = 100, min_base_quality = 20, min_mapq = 30,
+  vaf_threshold = 0.05
+)
 
 ## Use phasing information
-test_ctDNA(mutations = mutations, bam = bamT2, 
-    targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
-    n_simulation = 100, ID_column = "PHASING")
+test_ctDNA(
+  mutations = mutations, bam = bamT2,
+  targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+  n_simulation = 100, ID_column = "PHASING"
+)
 
 ## Use a black list based on loci
-bg_panel <- create_background_panel(bam_list = c(bamN1, bamN2, bamN3),
+bg_panel <- create_background_panel(
+  bam_list = c(bamN1, bamN2, bamN3),
   targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
-  substitution_specific = FALSE)
+  substitution_specific = FALSE
+)
 
-bl1 <- create_black_list(bg_panel, mean_vaf_quantile = 0.99, 
-    min_samples_one_read = 2, min_samples_two_reads = 1)
+bl1 <- create_black_list(bg_panel,
+  mean_vaf_quantile = 0.99,
+  min_samples_one_read = 2, min_samples_two_reads = 1
+)
 
-test_ctDNA(mutations = mutations, bam = bamT1, 
-    targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
-    n_simulation = 100, ID_column = "PHASING", black_list = bl1,
-    substitution_specific = FALSE)
+test_ctDNA(
+  mutations = mutations, bam = bamT1,
+  targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+  n_simulation = 100, ID_column = "PHASING", black_list = bl1,
+  substitution_specific = FALSE
+)
 }
 ## Use a substitution-specific black list
-bg_panel <- create_background_panel(bam_list = c(bamN1, bamN2, bamN3),
+bg_panel <- create_background_panel(
+  bam_list = c(bamN1, bamN2, bamN3),
   targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
-  substitution_specific = TRUE)
+  substitution_specific = TRUE
+)
 
-bl2 <- create_black_list(bg_panel, mean_vaf_quantile = 0.99,
-    min_samples_one_read = 2, min_samples_two_reads = 1)
+bl2 <- create_black_list(bg_panel,
+  mean_vaf_quantile = 0.99,
+  min_samples_one_read = 2, min_samples_two_reads = 1
+)
 
-test_ctDNA(mutations = mutations, bam = bamT1, 
-    targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
-    n_simulation = 100, ID_column = "PHASING", black_list = bl2,
-    substitution_specific = TRUE)
-
+test_ctDNA(
+  mutations = mutations, bam = bamT1,
+  targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
+  n_simulation = 100, ID_column = "PHASING", black_list = bl2,
+  substitution_specific = TRUE
+)
 }
 \seealso{
-\code{\link{get_background_rate}} \code{\link{merge_mutations_in_phase}} \code{\link{create_black_list}} \code{\link{create_background_panel}} 
+\code{\link{get_background_rate}} \code{\link{merge_mutations_in_phase}} \code{\link{create_black_list}} \code{\link{create_background_panel}}
    \code{\link{filter_mutations}}
 }

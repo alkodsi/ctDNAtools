@@ -31,10 +31,9 @@ Counts ref and alt reads for a set of mutations in a bam file
 Quantifies the reference and variant alleles for the input mutations in the input bam file. Useful for forced calling mutations.
 }
 \examples{
-data('mutations',package = 'ctDNAtools')
-bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
-get_mutations_read_counts(mutations = mutations[1:3,], bam = bamT1)
-
+data("mutations", package = "ctDNAtools")
+bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")
+get_mutations_read_counts(mutations = mutations[1:3, ], bam = bamT1)
 }
 \seealso{
 \code{\link{get_mutations_read_names}} \code{\link{test_ctDNA}} \code{\link{get_mutations_fragment_size}}

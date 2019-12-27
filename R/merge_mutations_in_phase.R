@@ -34,72 +34,81 @@
 #' this function merges these mutations into one event. The function will also remove the mismatches that are exhibited in only one of the mutations in phase (since
 #' this function is developed for the intent of minimal residual disease testing).
 #'
-#' The output will include the merged mutations, the probability of purification, which is defined as the number of 
-#' reads covering at least two mutations in phase devided by the number of informative reads. 
+#' The output will include the merged mutations, the probability of purification, which is defined as the number of
+#' reads covering at least two mutations in phase devided by the number of informative reads.
 #' Informative reads count is the total number of unique reads mapping to the mutations input
 #' (including both mutations in phase and other mutations).
 
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 #' @examples
-#' data('mutations',package = 'ctDNAtools')
-#' bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
-#' merge_mutations_in_phase(mutations = mutations[5:10,], bam = bamT1, ID_column = "PHASING")
-#'
+#' data("mutations", package = "ctDNAtools")
+#' bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")
+#' merge_mutations_in_phase(mutations = mutations[5:10, ], bam = bamT1, ID_column = "PHASING")
 merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phasingID", min_base_quality = 20, min_mapq = 30) {
-	
-	assertthat::assert_that(is.data.frame(mutations), assertthat::not_empty(mutations), 
-       assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT", ID_column)))
-    
-    mutation_id <- paste0(mutations$CHROM, ":",mutations$POS, "_", mutations$REF, "_", mutations$ALT)
-    mutations[,ID_column] <- as.character(ifelse(is.na(mutations[,ID_column]), mutation_id, mutations[,ID_column]))
+  assertthat::assert_that(
+    is.data.frame(mutations), assertthat::not_empty(mutations),
+    assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT", ID_column))
+  )
 
-    IDs <- data.frame(mutations_id = mutation_id, phasing_id = mutations[,ID_column], stringsAsFactors = FALSE)
-    IDs_list <- purrr::map(unique(IDs$phasing_id), ~ IDs[IDs$phasing_id == .x, "mutations_id"])
+  mutation_id <- paste0(mutations$CHROM, ":", mutations$POS, "_", mutations$REF, "_", mutations$ALT)
+  mutations[, ID_column] <- as.character(ifelse(is.na(mutations[, ID_column]), mutation_id, mutations[, ID_column]))
 
-    read_names <- get_mutations_read_names(mutations = mutations, bam = bam,
-        tag = tag, min_base_quality = min_base_quality, min_mapq = min_mapq)
+  IDs <- data.frame(mutations_id = mutation_id, phasing_id = mutations[, ID_column], stringsAsFactors = FALSE)
+  IDs_list <- purrr::map(unique(IDs$phasing_id), ~ IDs[IDs$phasing_id == .x, "mutations_id"])
 
-    out <- purrr::map(IDs_list, function(.x) {
-    	## extract mutations belonging to the phase ID
-    	read_names_to_merge <- read_names[.x]  
+  read_names <- get_mutations_read_names(
+    mutations = mutations, bam = bam,
+    tag = tag, min_base_quality = min_base_quality, min_mapq = min_mapq
+  )
 
-    	## get the ref and alt reads
-    	alt <- unlist(purrr::map(read_names_to_merge, "alt"))	
-    	ref <- unlist(purrr::map(read_names_to_merge, "ref"))
-    	
-        ## number of reads that map to more than one mutation
-        all_reads <- c(ref, alt)
-        n_reads_multi_mutation <- length(unique(all_reads[duplicated(all_reads)]))
+  out <- purrr::map(IDs_list, function(.x) {
+    ## extract mutations belonging to the phase ID
+    read_names_to_merge <- read_names[.x]
 
-        ## purify mismatches mapping only to one of the mutations in phase
-    	alt <- alt[! alt %in% ref ]
+    ## get the ref and alt reads
+    alt <- unlist(purrr::map(read_names_to_merge, "alt"))
+    ref <- unlist(purrr::map(read_names_to_merge, "ref"))
 
-    	## count how many reads support more than one mutation
-    	multi_support <- length(unique(alt[duplicated(alt)]))
+    ## number of reads that map to more than one mutation
+    all_reads <- c(ref, alt)
+    n_reads_multi_mutation <- length(unique(all_reads[duplicated(all_reads)]))
 
-        ## put the counts together
-    	df <- data.frame(ref = length(unique(ref)),
-    		alt = length(unique(alt)),
-            n_reads_multi_mutation = n_reads_multi_mutation,
-            all_reads = length(unique(all_reads)),
-    		multi_support = multi_support)
-    	ref <- unique(ref)
-    	alt <- unique(alt)
-        list(df = df, ref = ref, alt = alt)    
-    })
-    
-    informative_reads <- length(unique(c(unlist(purrr::map(read_names, "ref")), 
-    	unlist(purrr::map(read_names, "alt")))))
+    ## purify mismatches mapping only to one of the mutations in phase
+    alt <- alt[!alt %in% ref ]
 
-    df <- purrr::map_dfr(out,"df")
+    ## count how many reads support more than one mutation
+    multi_support <- length(unique(alt[duplicated(alt)]))
 
-    purification_prob <- sum(df$n_reads_multi_mutation)/sum(df$all_reads) 
-    
-    out <- data.frame(Phasing_id = unique(IDs$phasing_id),
-  	    df, stringsAsFactors = F)
+    ## put the counts together
+    df <- data.frame(
+      ref = length(unique(ref)),
+      alt = length(unique(alt)),
+      n_reads_multi_mutation = n_reads_multi_mutation,
+      all_reads = length(unique(all_reads)),
+      multi_support = multi_support
+    )
+    ref <- unique(ref)
+    alt <- unique(alt)
+    list(df = df, ref = ref, alt = alt)
+  })
 
-    return(list(out = out, purification_prob = purification_prob, multi_support = sum(df$multi_support),
-    	informative_reads = informative_reads))
+  informative_reads <- length(unique(c(
+    unlist(purrr::map(read_names, "ref")),
+    unlist(purrr::map(read_names, "alt"))
+  )))
 
+  df <- purrr::map_dfr(out, "df")
+
+  purification_prob <- sum(df$n_reads_multi_mutation) / sum(df$all_reads)
+
+  out <- data.frame(
+    Phasing_id = unique(IDs$phasing_id),
+    df, stringsAsFactors = FALSE
+  )
+
+  return(list(
+    out = out, purification_prob = purification_prob, multi_support = sum(df$multi_support),
+    informative_reads = informative_reads
+  ))
 }

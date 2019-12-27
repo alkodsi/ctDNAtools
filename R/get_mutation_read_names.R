@@ -14,65 +14,68 @@
 #' @importFrom rlang .data
 
 get_mutation_read_names <- function(bam, chr, pos, ref, alt, tag = "", min_base_quality = 20, min_mapq = 30) {
-    
-    assertthat::assert_that(!missing(bam), is.character(bam), length(bam) == 1, file.exists(bam))
-    
-    assertthat::assert_that(is.character(tag), length(tag) == 1)
-    
-    assertthat::assert_that(is.numeric(pos), pos > 0, pos%%1 == 0, length(pos) == 1)
-    
-    assertthat::assert_that(is.character(chr), length(chr) == 1, chr %in% get_bam_chr(bam))
-    
-    assertthat::assert_that(is.character(ref), length(ref) == 1, ref %in% c("C", "T", "G", "A"))
-    
-    assertthat::assert_that(is.character(alt), length(alt) == 1, alt %in% c("C", "T", "G", "A"))
+  assertthat::assert_that(!missing(bam), is.character(bam), length(bam) == 1, file.exists(bam))
 
-    gr <- GenomicRanges::GRanges(chr, IRanges::IRanges(pos, pos))
-    
-    if (tag == "") {
-        
-        sbp <- Rsamtools::ScanBamParam(flag = Rsamtools::scanBamFlag(isUnmappedQuery = F, 
-            isSecondaryAlignment = F, isNotPassingQualityControls = F, isDuplicate = F),
-            which = gr, mapqFilter = min_mapq)
+  assertthat::assert_that(is.character(tag), length(tag) == 1)
 
-        stackedStrings <- GenomicAlignments::stackStringsFromBam(bam, use.names = T, 
-            param = sbp)
+  assertthat::assert_that(is.numeric(pos), pos > 0, pos %% 1 == 0, length(pos) == 1)
 
-         stackedQuals <- GenomicAlignments::stackStringsFromBam(bam, use.names = T,
-             what = "qual", param = sbp)
-        
-    } else {
-        
-        assertthat::assert_that(verify_tag(bam = bam, tag = tag), msg = "Specified tag not found")
-        
-        sbp <- Rsamtools::ScanBamParam(flag = Rsamtools::scanBamFlag(isUnmappedQuery = F, 
-            isSecondaryAlignment = F, isNotPassingQualityControls = F, isDuplicate = F),
-            which = gr, tagFilter = list(RG = tag), mapqFilter = min_mapq)
+  assertthat::assert_that(is.character(chr), length(chr) == 1, chr %in% get_bam_chr(bam))
 
-        stackedStrings <- GenomicAlignments::stackStringsFromBam(bam, use.names = T, 
-            param = sbp)
-        
-        stackedQuals <- GenomicAlignments::stackStringsFromBam(bam, use.names = T, 
-            what = "qual", param = sbp)
-    }
-    
-    sm <- get_bam_SM(bam = bam, tag = tag)
+  assertthat::assert_that(is.character(ref), length(ref) == 1, ref %in% c("C", "T", "G", "A"))
 
-    if (length(stackedStrings) != 0) {
-        
-        out <- data.frame(ID = paste(sm, names(stackedStrings), sep = "_"), 
-            seq = as.data.frame(stackedStrings)[, 1],
-            qual = as.data.frame(methods::as(Biostrings::PhredQuality(stackedQuals), "IntegerList"))$value,
-            stringsAsFactors = F) %>%
-            dplyr::filter(.data$qual >= min_base_quality)
-        
-        alt <- unique(out[out$seq == alt, "ID"])
-        ref <- unique(out[out$seq == ref, "ID"])
-        return(list(ref = ref, alt = alt))
-        
-    } else {
-        
-        return(list(ref = character(0), alt = character(0)))
-        
-    }
+  assertthat::assert_that(is.character(alt), length(alt) == 1, alt %in% c("C", "T", "G", "A"))
+
+  gr <- GenomicRanges::GRanges(chr, IRanges::IRanges(pos, pos))
+
+  if (tag == "") {
+    sbp <- Rsamtools::ScanBamParam(
+      flag = Rsamtools::scanBamFlag(
+        isUnmappedQuery = FALSE, isSecondaryAlignment = FALSE, 
+        isNotPassingQualityControls = FALSE, isDuplicate = FALSE
+      ),
+      which = gr, mapqFilter = min_mapq
+    )
+
+    stackedStrings <- GenomicAlignments::stackStringsFromBam(bam,
+      use.names = T, param = sbp)
+
+    stackedQuals <- GenomicAlignments::stackStringsFromBam(bam,
+      use.names = T, what = "qual", param = sbp)
+
+  } else {
+    assertthat::assert_that(verify_tag(bam = bam, tag = tag), msg = "Specified tag not found")
+
+    sbp <- Rsamtools::ScanBamParam(
+      flag = Rsamtools::scanBamFlag(
+        isUnmappedQuery = F,
+        isSecondaryAlignment = F, isNotPassingQualityControls = F, isDuplicate = F
+      ),
+      which = gr, tagFilter = list(RG = tag), mapqFilter = min_mapq
+    )
+
+    stackedStrings <- GenomicAlignments::stackStringsFromBam(bam,
+      use.names = T, param = sbp)
+
+    stackedQuals <- GenomicAlignments::stackStringsFromBam(bam,
+      use.names = T, what = "qual", param = sbp)
+  }
+
+  sm <- get_bam_SM(bam = bam, tag = tag)
+
+  if (length(stackedStrings) != 0) {
+    out <- data.frame(
+      ID = paste(sm, names(stackedStrings), sep = "_"),
+      seq = as.data.frame(stackedStrings)[, 1],
+      qual = as.data.frame(methods::as(Biostrings::PhredQuality(stackedQuals), "IntegerList"))$value,
+      stringsAsFactors = F
+    ) %>%
+      dplyr::filter(.data$qual >= min_base_quality)
+
+    alt <- unique(out[out$seq == alt, "ID"])
+    ref <- unique(out[out$seq == ref, "ID"])
+    return(list(ref = ref, alt = alt))
+  } else {
+    return(list(ref = character(0), alt = character(0)))
+  }
 }

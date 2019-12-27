@@ -10,26 +10,27 @@
 #' @param min_mapq the minimum mapping quality for a read to be counted
 #' @return a list, number of reads for each of the four basepairs
 
-get_read_counts <- function(chr, pos, bam, tag = "", min_base_quality = 20, max_depth = 1e+05, 
-    min_mapq = 30) {
-    
-    gr <- GenomicRanges::GRanges(chr, IRanges::IRanges(pos, pos))
-    
-    if (tag == "") {
-        sbp <- Rsamtools::ScanBamParam(which = gr)
-    } else {
-        sbp <- Rsamtools::ScanBamParam(which = gr, tagFilter = list(RG = tag))
-    }
-    
-    pileupParam <- Rsamtools::PileupParam(max_depth = max_depth, min_base_quality = min_base_quality, 
-        min_mapq = min_mapq, distinguish_strands = F, include_deletions = F, include_insertions = F)
-    
-    p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam)
-    
-    cbase <- ifelse("C" %in% p$nucleotide, p[p$nucleotide == "C", "count"], 0)
-    gbase <- ifelse("G" %in% p$nucleotide, p[p$nucleotide == "G", "count"], 0)
-    abase <- ifelse("A" %in% p$nucleotide, p[p$nucleotide == "A", "count"], 0)
-    tbase <- ifelse("T" %in% p$nucleotide, p[p$nucleotide == "T", "count"], 0)
-    
-    return(list(A = abase, C = cbase, G = gbase, T = tbase))
+get_read_counts <- function(chr, pos, bam, tag = "", min_base_quality = 20, max_depth = 1e+05,
+                            min_mapq = 30) {
+  gr <- GenomicRanges::GRanges(chr, IRanges::IRanges(pos, pos))
+
+  if (tag == "") {
+    sbp <- Rsamtools::ScanBamParam(which = gr)
+  } else {
+    sbp <- Rsamtools::ScanBamParam(which = gr, tagFilter = list(RG = tag))
+  }
+
+  pileupParam <- Rsamtools::PileupParam(
+    max_depth = max_depth, min_base_quality = min_base_quality,
+    min_mapq = min_mapq, distinguish_strands = F, include_deletions = F, include_insertions = F
+  )
+
+  p <- Rsamtools::pileup(bam, scanBamParam = sbp, pileupParam = pileupParam)
+
+  cbase <- ifelse("C" %in% p$nucleotide, p[p$nucleotide == "C", "count"], 0)
+  gbase <- ifelse("G" %in% p$nucleotide, p[p$nucleotide == "G", "count"], 0)
+  abase <- ifelse("A" %in% p$nucleotide, p[p$nucleotide == "A", "count"], 0)
+  tbase <- ifelse("T" %in% p$nucleotide, p[p$nucleotide == "T", "count"], 0)
+
+  return(list(A = abase, C = cbase, G = gbase, T = tbase))
 }

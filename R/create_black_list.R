@@ -16,67 +16,71 @@
 #' @examples
 #' \dontrun{
 #' ## Load example data
-#' data('targets', package = 'ctDNAtools')
-#' bamN1 <- system.file('extdata', 'N1.bam', package = 'ctDNAtools')
-#' bamN2 <- system.file('extdata', 'N2.bam', package = 'ctDNAtools')
-#' bamN3 <- system.file('extdata', 'N3.bam', package = 'ctDNAtools')
+#' data("targets", package = "ctDNAtools")
+#' bamN1 <- system.file("extdata", "N1.bam", package = "ctDNAtools")
+#' bamN2 <- system.file("extdata", "N2.bam", package = "ctDNAtools")
+#' bamN3 <- system.file("extdata", "N3.bam", package = "ctDNAtools")
 #'
 #' ## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library
 #' suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
 #'
 #' ## Use a black list based on loci
-#' bg_panel <- create_background_panel(bam_list = c(bamN1, bamN2, bamN3),
+#' bg_panel <- create_background_panel(
+#'   bam_list = c(bamN1, bamN2, bamN3),
 #'   targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
-#'   substitution_specific = FALSE)
+#'   substitution_specific = FALSE
+#' )
 #'
-#' bl1 <- create_black_list(bg_panel, mean_vaf_quantile = 0.99, 
-#'     min_samples_one_read = 2, min_samples_two_reads = 1)
+#' bl1 <- create_black_list(bg_panel,
+#'   mean_vaf_quantile = 0.99,
+#'   min_samples_one_read = 2, min_samples_two_reads = 1
+#' )
 #'
 #' ## Use a substitution-specific black list
-#' bg_panel <- create_background_panel(bam_list = c(bamN1, bamN2, bamN3),
+#' bg_panel <- create_background_panel(
+#'   bam_list = c(bamN1, bamN2, bamN3),
 #'   targets = targets, reference = BSgenome.Hsapiens.UCSC.hg19,
-#'   substitution_specific = TRUE)
+#'   substitution_specific = TRUE
+#' )
 #'
-#' bl2 <- create_black_list(bg_panel, mean_vaf_quantile = 0.99,
-#'     min_samples_one_read = 2, min_samples_two_reads = 1)
+#' bl2 <- create_black_list(bg_panel,
+#'   mean_vaf_quantile = 0.99,
+#'   min_samples_one_read = 2, min_samples_two_reads = 1
+#' )
 #' }
+#'
+create_black_list <- function(background_panel, mean_vaf_quantile = 0.95,
+                              min_samples_one_read = max(2, ceiling(ncol(background_panel$vaf) * 0.75)),
+                              min_samples_two_reads = max(2, ceiling(ncol(background_panel$vaf) * 0.2))) {
+  assertthat::assert_that(is.list(background_panel),
+    assertthat::has_name(background_panel, c("depth", "alt", "vaf")),
+    msg = "background_panel should be a list as produced by create_background_panel"
+  )
 
-create_black_list <- function(background_panel, mean_vaf_quantile = 0.95, 
-    min_samples_one_read = max(2, ceiling(ncol(background_panel$vaf) * 0.75)), 
-    min_samples_two_reads = max(2, ceiling(ncol(background_panel$vaf) * 0.2))) {
+  mean_vaf <- rowMeans(background_panel$vaf[, -1, drop = FALSE], na.rm = TRUE)
 
-    assertthat::assert_that(is.list(background_panel), 
-        assertthat::has_name(background_panel, c("depth","alt","vaf")),
-        msg = "background_panel should be a list as produced by create_background_panel")
-    
-    mean_vaf <- rowMeans(background_panel$vaf[, -1, drop = FALSE], na.rm = TRUE)
-    
-    quant <- quantile(mean_vaf, mean_vaf_quantile, na.rm = TRUE)
-    
-    if(quant > 0) {
-       
-       mean_vaf_idx <- which(mean_vaf >= quantile(mean_vaf, mean_vaf_quantile, na.rm = TRUE))
-       message(sprintf("%s loci added satisfying Mean VAF condition", length(mean_vaf_idx)))
-  
-    } else {
+  quant <- quantile(mean_vaf, mean_vaf_quantile, na.rm = TRUE)
 
-        mean_vaf_idx <- c()
-        message("The quantile is zero, skipping this criterion")
-    
-    }
-    
-    samples_one_read <- rowSums(background_panel$alt[, -1, drop = FALSE] >= 1, na.rm =T)
-    samples_one_read_idx <- which(samples_one_read >= min_samples_one_read)
-    message(sprintf("%s loci added satisfying one read condition", length(samples_one_read_idx)))
+  if (quant > 0) {
+    mean_vaf_idx <- which(mean_vaf >= quantile(mean_vaf, mean_vaf_quantile, na.rm = TRUE))
+    message(sprintf("%s loci added satisfying Mean VAF condition", length(mean_vaf_idx)))
+  } else {
+    mean_vaf_idx <- c()
+    message("The quantile is zero, skipping this criterion")
+  }
 
-    samples_two_reads <- rowSums(background_panel$alt[, -1, drop = FALSE] >=2, na.rm = TRUE)
-    samples_two_reads_idx <- which(samples_two_reads >= min_samples_two_reads)
-    message(sprintf("%s loci added satisfying two reads condition", length(samples_two_reads_idx)))
+  samples_one_read <- rowSums(background_panel$alt[, -1, drop = FALSE] >= 1, na.rm = T)
+  samples_one_read_idx <- which(samples_one_read >= min_samples_one_read)
+  message(sprintf("%s loci added satisfying one read condition", length(samples_one_read_idx)))
 
-    idx <- unique(c(mean_vaf_idx, samples_one_read_idx, samples_two_reads_idx))
-    message(sprintf("Black list has %s loci", length(idx)))
+  samples_two_reads <- rowSums(background_panel$alt[, -1, drop = FALSE] >= 2, na.rm = TRUE)
+  samples_two_reads_idx <- which(samples_two_reads >= min_samples_two_reads)
+  message(sprintf("%s loci added satisfying two reads condition", length(samples_two_reads_idx)))
 
-    black_list <- background_panel$depth$Locus[idx]
-    
-    return(black_list)
+  idx <- unique(c(mean_vaf_idx, samples_one_read_idx, samples_two_reads_idx))
+  message(sprintf("Black list has %s loci", length(idx)))
+
+  black_list <- background_panel$depth$Locus[idx]
+
+  return(black_list)
 }

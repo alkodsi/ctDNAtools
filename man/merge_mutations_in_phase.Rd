@@ -50,16 +50,15 @@ Since two or more mutations can be supported by the same evidence,
 this function merges these mutations into one event. The function will also remove the mismatches that are exhibited in only one of the mutations in phase (since
 this function is developed for the intent of minimal residual disease testing).
 
-The output will include the merged mutations, the probability of purification, which is defined as the number of 
-reads covering at least two mutations in phase devided by the number of informative reads. 
+The output will include the merged mutations, the probability of purification, which is defined as the number of
+reads covering at least two mutations in phase devided by the number of informative reads.
 Informative reads count is the total number of unique reads mapping to the mutations input
 (including both mutations in phase and other mutations).
 }
 \examples{
-data('mutations',package = 'ctDNAtools')
-bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
-merge_mutations_in_phase(mutations = mutations[5:10,], bam = bamT1, ID_column = "PHASING")
-
+data("mutations", package = "ctDNAtools")
+bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")
+merge_mutations_in_phase(mutations = mutations[5:10, ], bam = bamT1, ID_column = "PHASING")
 }
 \seealso{
 \code{\link{test_ctDNA}} \code{\link{get_mutations_read_names}}

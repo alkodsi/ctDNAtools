@@ -10,33 +10,24 @@
 #' @return A numeric vector having counts within bins normalized by the sum of the variable
 #' @importFrom graphics hist
 
-get_hist_bins <- function(x, from, to, by, normalized,  custom_bins = NULL) {
-    
-    assertthat::assert_that(is.numeric(x))
-    
-    if(!is.null(custom_bins)){
+get_hist_bins <- function(x, from, to, by, normalized, custom_bins = NULL) {
+  assertthat::assert_that(is.numeric(x))
 
-        breaks <- unique(sort(c(from, custom_bins, to)))
-    
-    } else {
+  if (!is.null(custom_bins)) {
+    breaks <- unique(sort(c(from, custom_bins, to)))
+  } else {
+    breaks <- seq(from = from, to = to, by = by)
+  }
 
-       breaks <- seq(from = from, to = to, by = by)
-    
-    }
-    
-    if (breaks[length(breaks)] != to) {
-        
-        breaks <- c(breaks, to)
-        
-    }
-    
-    h <- hist(x, breaks = breaks, plot = FALSE)
-    
-    if (normalized) {
-        
-        h$counts <- h$counts/sum(h$counts)
-        
-    } 
-        
-    return(list(counts = h$counts, breaks = paste(h$breaks[-length(h$breaks)], h$breaks[-1], sep = "_")))    
+  if (breaks[length(breaks)] != to) {
+    breaks <- c(breaks, to)
+  }
+
+  h <- hist(x, breaks = breaks, plot = FALSE)
+
+  if (normalized) {
+    h$counts <- h$counts / sum(h$counts)
+  }
+
+  return(list(counts = h$counts, breaks = paste(h$breaks[-length(h$breaks)], h$breaks[-1], sep = "_")))
 }

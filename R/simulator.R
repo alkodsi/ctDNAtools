@@ -3,19 +3,17 @@
 #' Compares simulated and observed variant allele counts
 #' @param simulated the simulated variant allele counts
 #' @param observed the observed variant allele counts
-#' @param depths the total depths 
+#' @param depths the total depths
 compare_simulated_observed <- function(simulated, observed, depths) {
-    
-    observed_vaf <- mean(observed/depths, na.rm = TRUE)
-    observed_nonzero <- sum(observed > 0)
+  observed_vaf <- mean(observed / depths, na.rm = TRUE)
+  observed_nonzero <- sum(observed > 0)
 
-    simulated_vaf <- mean(simulated/depths, na.rm = TRUE)
-    simulated_nonzero <- sum(simulated > 0)
+  simulated_vaf <- mean(simulated / depths, na.rm = TRUE)
+  simulated_nonzero <- sum(simulated > 0)
 
-    out <- ifelse((simulated_vaf >= observed_vaf) & 
-                  (simulated_nonzero >= observed_nonzero), 1, 0)
-    return(out)
-    
+  out <- ifelse((simulated_vaf >= observed_vaf) &
+    (simulated_nonzero >= observed_nonzero), 1, 0)
+  return(out)
 }
 
 
@@ -31,21 +29,21 @@ compare_simulated_observed <- function(simulated, observed, depths) {
 #' @seealso \code{\link{test_ctDNA}}
 
 simulator <- function(depths, rate, altReads, seed) {
-    
-    assertthat::assert_that(length(depths) == length(altReads))
+  assertthat::assert_that(length(depths) == length(altReads))
 
-    assertthat::assert_that(all(altReads <= depths))
+  assertthat::assert_that(all(altReads <= depths))
 
-    assertthat::assert_that(is.list(rate), 
-    	assertthat::has_name(rate, c("rate", "CT", "CA", "CG", "TA", "TC", "TG")),
-    	msg = "rate must be a list as produced by get_background_rate")
-    
-    n_variants <- length(depths)
-    
-    set.seed(seed)
-          
-    sim <- rbinom(n = n_variants, size = depths, prob = rate$rate/3)
-        out <- compare_simulated_observed(simulated = sim, observed = altReads, depths = depths)
-           
-    return(out)
+  assertthat::assert_that(is.list(rate),
+    assertthat::has_name(rate, c("rate", "CT", "CA", "CG", "TA", "TC", "TG")),
+    msg = "rate must be a list as produced by get_background_rate"
+  )
+
+  n_variants <- length(depths)
+
+  set.seed(seed)
+
+  sim <- rbinom(n = n_variants, size = depths, prob = rate$rate / 3)
+  out <- compare_simulated_observed(simulated = sim, observed = altReads, depths = depths)
+
+  return(out)
 }

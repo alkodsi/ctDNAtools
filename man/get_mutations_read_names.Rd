@@ -28,10 +28,9 @@ Extract the names of the reads in a bam file that support the variant and refere
 Returns the IDs of the read that cover the input mutations (ref and alt alleles).
 }
 \examples{
-data('mutations',package = 'ctDNAtools')
-bamT1 <- system.file('extdata', 'T1.bam', package = 'ctDNAtools')
-get_mutations_read_names(bam = bamT1, mutations = mutations[1:3,])
-
+data("mutations", package = "ctDNAtools")
+bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")
+get_mutations_read_names(bam = bamT1, mutations = mutations[1:3, ])
 }
 \seealso{
 \code{\link{get_mutations_read_counts}} \code{\link{get_mutations_fragment_size}} \code{\link{test_ctDNA}}

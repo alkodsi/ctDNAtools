@@ -7,7 +7,7 @@
 filter_mutations(mutations, bams = NULL, black_list = NULL,
   tags = rep("", length(bams)), min_alt_reads = 2, min_samples = 2,
   min_base_quality = 20, max_depth = 1e+05, min_mapq = 30,
-  substitution_specific = T)
+  substitution_specific = TRUE)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}
@@ -32,14 +32,14 @@ will be scanned for mismatches in the mutations loci and the specified threshold
 \item{substitution_specific}{logical, whether to have the loci of black_list by substitutions.}
 }
 \value{
-a named list contains: 
+a named list contains:
  \itemize{
   \item ref: vector of read counts of the reference alleles
   \item alt: vector of read counts of the alternative allele
 }
 }
 \description{
-Filter a set of mutations given the input black list or the prevalence of their mismatches in a set of bam files. Mutations that 
+Filter a set of mutations given the input black list or the prevalence of their mismatches in a set of bam files. Mutations that
 have more than min_alt_reads in more than min_samples will be removed when no black list is given.
 }
 \details{
@@ -56,7 +56,7 @@ Filter a set of mutations using one of two options:
 This function is called internally in \code{\link{test_ctDNA}} so you likely won't need to use it yourself.
 }
 \examples{
-data('mutations',package = 'ctDNAtools')
+data("mutations", package = "ctDNAtools")
 filter_mutations(mutations, black_list = "chr14_106327474_C_G")
 }
 \seealso{

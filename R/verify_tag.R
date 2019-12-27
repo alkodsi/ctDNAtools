@@ -5,11 +5,9 @@
 #' @return logical, whether tag in bam
 
 verify_tag <- function(bam, tag) {
-    
-    header <- Rsamtools::scanBamHeader(bam)
-    header_text <- header[[1]]$text
-    rg <- header_text[names(header_text) == "@RG"]
-    tags <- gsub("ID:", "", purrr::map_chr(rg, 1))
-    return(tag %in% tags)
-    
+  header <- Rsamtools::scanBamHeader(bam)
+  header_text <- header[[1]]$text
+  rg <- header_text[names(header_text) == "@RG"]
+  tags <- gsub("ID:", "", purrr::map_chr(rg, 1))
+  return(tag %in% tags)
 }
