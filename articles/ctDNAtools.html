@@ -238,6 +238,7 @@
 <h2 class="hasAnchor">
 <a href="#basic-usage" class="anchor"></a>Basic usage</h2>
 <p>In the basic usage, the read counts for reference and variant alleles of the reporter mutations will be quantified, the background rate of the tested sample will be estimated, and a Monte Carlo based sampling test will determine an empirical p-value. The p-value will only be used to determine positivity if the number of informative reads (number of all unique reads covering the mutations) exceed the specified threshold. Otherwise, the sample will be considered undetermined. Note that the test only accepts single nucleotide variants, and indels are not supported.</p>
+<p>If you have your variants in a VCF file, you can read it into a data.frame with compatible format using the <code><a href="https://rdrr.io/pkg/ctDNAtools/man/vcf_to_mutations_df.html">vcf_to_mutations_df()</a></code> function.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">test1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/ctDNAtools/man/test_ctDNA.html">test_ctDNA</a></span>(<span class="dt">mutations =</span> mutations,</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">          <span class="dt">bam =</span> bamT1,</a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">          <span class="dt">reference =</span> BSgenome.Hsapiens.UCSC.hg19, </a>
@@ -1228,9 +1229,10 @@
 <a class="sourceLine" id="cb21-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span>(<span class="dt">x =</span> <span class="st">"Chromosome 14"</span>, <span class="dt">y =</span> <span class="st">""</span>)</a></code></pre></div>
 <p><img src="ctDNAtools_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
 </div>
-<div id="references" class="section level2 unnumbered">
-<h2 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h2>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h1>
 <div id="refs" class="references">
 <div id="ref-newman2016integrated">
 <p>Newman, Aaron M, Alexander F Lovejoy, Daniel M Klass, David M Kurtz, Jacob J Chabon, Florian Scherer, Henning Stehr, et al. 2016. “Integrated Digital Error Suppression for Improved Detection of Circulating Tumor DNA.” <em>Nature Biotechnology</em> 34 (5). Nature Publishing Group: 547.</p>
@@ -1240,7 +1242,6 @@
 </div>
 <div id="ref-van2019toward">
 <p>Van Der Pol, Ymke, and Florent Mouliere. 2019. “Toward the Early Detection of Cancer by Decoding the Epigenetic and Environmental Fingerprints of Cell-Free DNA.” <em>Cancer Cell</em> 36 (4). Elsevier: 350–68.</p>
-</div>
 </div>
 </div>
 </div>
@@ -1267,9 +1268,9 @@
       <li><a href="#fragment-size-histograms">Fragment size histograms</a></li>
       <li><a href="#fragment-size-profiles">Fragment size profiles</a></li>
       <li><a href="#fragmentation-patterns">Fragmentation patterns</a></li>
-      <li><a href="#references">References</a></li>
       </ul>
 </li>
+      <li><a href="#references">References</a></li>
       </ul>
 </div>
       </div>
