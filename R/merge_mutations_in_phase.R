@@ -51,6 +51,10 @@ merge_mutations_in_phase <- function(mutations, bam, tag = "", ID_column = "phas
     assertthat::has_name(mutations, c("CHROM", "POS", "REF", "ALT", ID_column))
   )
 
+  assertthat::assert_that(
+    !any(duplicated(mutations[,c("CHROM", "POS", "REF", "ALT")])),
+    msg = "mutations input has duplicates")
+  
   mutation_id <- paste0(mutations$CHROM, ":", mutations$POS, "_", mutations$REF, "_", mutations$ALT)
   mutations[, ID_column] <- as.character(ifelse(is.na(mutations[, ID_column]), mutation_id, mutations[, ID_column]))
 

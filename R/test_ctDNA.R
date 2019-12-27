@@ -191,6 +191,10 @@ test_ctDNA <- function(mutations, bam, targets, reference, tag = "", ID_column =
   )
 
   assertthat::assert_that(
+    !any(duplicated(mutations[,c("CHROM", "POS", "REF", "ALT")])),
+    msg = "mutations input has duplicates")
+  
+  assertthat::assert_that(
     is.numeric(targets$start), assertthat::noNA(targets$start),
     all(targets$start > 0), assertthat::noNA(targets$end),
     is.numeric(targets$end), all(targets$end > 0)

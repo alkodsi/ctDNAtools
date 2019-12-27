@@ -38,6 +38,10 @@ get_mutations_read_names <- function(bam, mutations, min_base_quality = 20, tag 
     msg = "REF and ALT in mutations should be characters having basepairs"
   )
 
+  assertthat::assert_that(
+    !any(duplicated(mutations[,c("CHROM", "POS", "REF", "ALT")])),
+    msg = "mutations input has duplicates")
+  
   assertthat::assert_that(is.numeric(mutations$POS), all(mutations$POS > 0))
 
   assertthat::assert_that(all(mutations$CHROM %in% get_bam_chr(bam)))

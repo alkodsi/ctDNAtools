@@ -27,6 +27,10 @@ extract_trinucleotide_context <- function(mutations, reference, destrand = TRUE)
     msg = "Chromosomes in mutations and/or targets don't match the specified reference"
   )
 
+  assertthat::assert_that(
+    !any(duplicated(mutations[,c("CHROM", "POS", "REF", "ALT")])),
+    msg = "mutations input has duplicates")
+  
   assertthat::assert_that(class(reference) == "BSgenome")
 
   assertthat::assert_that(all(nchar(mutations$REF) == 1), all(nchar(mutations$ALT) == 1),

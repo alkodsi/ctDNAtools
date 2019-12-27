@@ -1,6 +1,6 @@
 Package: ctDNAtools
 Title: Tools to analyze ctDNA sequencing data
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: 
     person(given = "Amjad",
            family = "Alkodsi",

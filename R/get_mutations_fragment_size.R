@@ -41,6 +41,10 @@ get_mutations_fragment_size <- function(bam, mutations, tag = "", min_base_quali
     msg = "REF and ALT in mutations should be characters having basepairs"
   )
 
+  assertthat::assert_that(
+    !any(duplicated(mutations[,c("CHROM", "POS", "REF", "ALT")])),
+    msg = "mutations input has duplicates")
+  
   assertthat::assert_that(is.numeric(mutations$POS), all(mutations$POS > 0))
 
   assertthat::assert_that(all(mutations$CHROM %in% get_bam_chr(bam)))
