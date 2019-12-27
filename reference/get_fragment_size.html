@@ -43,7 +43,7 @@
 
 
 <meta property="og:title" content="Get fragment lengths from bam — get_fragment_size" />
-<meta property="og:description" content="A function to extract fragment lengths from a bam file. Optionally, given a mutation data frame, it can categorize read lengths 
+<meta property="og:description" content="A function to extract fragment lengths from a bam file. Optionally, given a mutation data frame, it can categorize read lengths
 in mutated vs non-mutated reads." />
 <meta property="og:image" content="https://alkodsi.github.io/ctDNAtools/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -123,7 +123,7 @@ in mutated vs non-mutated reads." />
     </div>
 
     <div class="ref-description">
-    <p>A function to extract fragment lengths from a bam file. Optionally, given a mutation data frame, it can categorize read lengths 
+    <p>A function to extract fragment lengths from a bam file. Optionally, given a mutation data frame, it can categorize read lengths
 in mutated vs non-mutated reads.</p>
     </div>
 
@@ -216,17 +216,19 @@ a separate column.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'mutations'</span>,<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'targets'</span>,<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
-<span class='no'>bamT1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>'extdata'</span>, <span class='st'>'T1.bam'</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"mutations"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"targets"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
+<span class='no'>bamT1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"T1.bam"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
 
 <span class='co'>## basic usage</span>
 <span class='no'>fs</span> <span class='kw'>&lt;-</span> <span class='fu'>get_fragment_size</span>(<span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>)
 
 <span class='co'>## More options</span>
-<span class='no'>fs1</span> <span class='kw'>&lt;-</span> <span class='fu'>get_fragment_size</span>(<span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>, <span class='kw'>isProperPair</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>min_size</span> <span class='kw'>=</span> <span class='fl'>70</span>,
-    <span class='kw'>max_size</span> <span class='kw'>=</span> <span class='fl'>200</span>, <span class='kw'>ignore_trimmed</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>different_strands</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-    <span class='kw'>simple_cigar</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>fs1</span> <span class='kw'>&lt;-</span> <span class='fu'>get_fragment_size</span>(
+  <span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>, <span class='kw'>isProperPair</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>min_size</span> <span class='kw'>=</span> <span class='fl'>70</span>,
+  <span class='kw'>max_size</span> <span class='kw'>=</span> <span class='fl'>200</span>, <span class='kw'>ignore_trimmed</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>different_strands</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>simple_cigar</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)
 
 <span class='co'>## with mutations input</span>
 <span class='no'>fs2</span> <span class='kw'>&lt;-</span> <span class='fu'>get_fragment_size</span>(<span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>, <span class='kw'>mutations</span> <span class='kw'>=</span> <span class='no'>mutations</span>)

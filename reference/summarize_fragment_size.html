@@ -159,32 +159,38 @@
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Fragment size for reads that are paired (optionally properly paired), whose both mates are mapped,
-not secondary or supplementary alignment, not duplicates, passed quality control, and satisfy mapq threshold will be used for summarization. 
-The reads that overlap the specified regions will be summarized by the specified summary_functions. Overlaps consider fragments to span the 
+not secondary or supplementary alignment, not duplicates, passed quality control, and satisfy mapq threshold will be used for summarization.
+The reads that overlap the specified regions will be summarized by the specified summary_functions. Overlaps consider fragments to span the
 left most to the right most coordinate from either the read or the mate. Minimum and maximum bounds of the fragment size will be applied before summarization.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code>get_fragment_size</code> <code>bin_fragment_size</code> <code>analyze_fragmentation</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'targets'</span>,<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
-<span class='no'>bamT1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>'extdata'</span>, <span class='st'>'T1.bam'</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"targets"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
+<span class='no'>bamT1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"T1.bam"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
 
 <span class='co'>## binning the target in arbitrary way</span>
-<span class='co'>## Note that regions don't need to be bins, </span>
+<span class='co'>## Note that regions don't need to be bins,</span>
 <span class='co'>## they can be any regions in the genome</span>
-<span class='no'>regions</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>chr</span> <span class='kw'>=</span> <span class='no'>targets</span>$<span class='no'>chr</span>,
-    <span class='kw'>start</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span>(<span class='kw'>from</span> <span class='kw'>=</span> <span class='no'>targets</span>$<span class='no'>start</span> - <span class='fl'>200</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='no'>targets</span>$<span class='no'>end</span> + <span class='fl'>200</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='fl'>30</span>),
-    <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>regions</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
+  <span class='kw'>chr</span> <span class='kw'>=</span> <span class='no'>targets</span>$<span class='no'>chr</span>,
+  <span class='kw'>start</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span>(<span class='kw'>from</span> <span class='kw'>=</span> <span class='no'>targets</span>$<span class='no'>start</span> - <span class='fl'>200</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='no'>targets</span>$<span class='no'>end</span> + <span class='fl'>200</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='fl'>30</span>),
+  <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)
 <span class='no'>regions</span>$<span class='no'>end</span> <span class='kw'>&lt;-</span> <span class='no'>regions</span>$<span class='no'>start</span> + <span class='fl'>50</span>
 
 <span class='co'>## basic usage</span>
 <span class='no'>sfs</span> <span class='kw'>&lt;-</span> <span class='fu'>summarize_fragment_size</span>(<span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>, <span class='kw'>regions</span> <span class='kw'>=</span> <span class='no'>regions</span>)
 
 <span class='co'>## different summary functions</span>
-<span class='no'>sfs</span> <span class='kw'>&lt;-</span> <span class='fu'>summarize_fragment_size</span>(<span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>, <span class='kw'>regions</span> <span class='kw'>=</span> <span class='no'>regions</span>,
-    <span class='kw'>summary_functions</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>Var</span> <span class='kw'>=</span> <span class='no'>var</span>, <span class='kw'>SD</span> <span class='kw'>=</span> <span class='no'>sd</span>,
-    <span class='kw'>meanSD</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>)<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>x</span>)/<span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span>(<span class='no'>x</span>)))</div></pre>
+<span class='no'>sfs</span> <span class='kw'>&lt;-</span> <span class='fu'>summarize_fragment_size</span>(
+  <span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>, <span class='kw'>regions</span> <span class='kw'>=</span> <span class='no'>regions</span>,
+  <span class='kw'>summary_functions</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
+    <span class='kw'>Var</span> <span class='kw'>=</span> <span class='no'>var</span>, <span class='kw'>SD</span> <span class='kw'>=</span> <span class='no'>sd</span>,
+    <span class='kw'>meanSD</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>x</span>) / <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span>(<span class='no'>x</span>)
+  )
+)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

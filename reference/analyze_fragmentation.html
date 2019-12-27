@@ -168,13 +168,13 @@ In case of whole-genome, specify full chromosomes targets.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a data frame with the first three columns having the bins coordinates and 
+    <p>a data frame with the first three columns having the bins coordinates and
 other columns having the WPS (raw and adjusted by coverage) and number of fragment ends (raw and adjusted by coverage).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Fragment length will extracted from the bam file according to the parameters passed to <code>get_fragment_size</code>, and the number of fragment ends,
 and the Windowed Protection Score (WPS) will be computed in the binned input targets. Binning is done according to the window_size and step_size parameters.</p>
-<p>WPS is defined as the number of fragments completely spanning a window (bin) minus 
+<p>WPS is defined as the number of fragments completely spanning a window (bin) minus
 the number of fragments with an endpoint within the same window as reported by Snyder et al., Cell 2016.</p>
 <p>The output include both the fragment end counts and the WPS in their raw format as well as after adjustment by coverage in the bin.</p>
 <p>Minimum and maximum bounds of the fragment size are applied before computing WPS and fragment ends counts.</p>
@@ -184,15 +184,17 @@ the number of fragments with an endpoint within the same window as reported by S
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'targets'</span>,<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
-<span class='no'>bamN1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>'extdata'</span>, <span class='st'>'N1.bam'</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"targets"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
+<span class='no'>bamN1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"N1.bam"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
 
 <span class='co'>## basic usage</span>
 <span class='fu'>analyze_fragmentation</span>(<span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamN1</span>, <span class='kw'>targets</span> <span class='kw'>=</span> <span class='no'>targets</span>)
 
 <span class='co'>## more options</span>
-<span class='fu'>analyze_fragmentation</span>(<span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamN1</span>, <span class='kw'>targets</span> <span class='kw'>=</span> <span class='no'>targets</span>,
-   <span class='kw'>step_size</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>window_size</span> <span class='kw'>=</span> <span class='fl'>50</span>)
+<span class='fu'>analyze_fragmentation</span>(
+  <span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamN1</span>, <span class='kw'>targets</span> <span class='kw'>=</span> <span class='no'>targets</span>,
+  <span class='kw'>step_size</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>window_size</span> <span class='kw'>=</span> <span class='fl'>50</span>
+)
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

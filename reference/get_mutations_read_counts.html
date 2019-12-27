@@ -169,15 +169,14 @@
     <div class='dont-index'><p><code>get_mutations_read_names</code> <code>test_ctDNA</code> <code>get_mutations_fragment_size</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'mutations'</span>,<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
-<span class='no'>bamT1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>'extdata'</span>, <span class='st'>'T1.bam'</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
-<span class='fu'>get_mutations_read_counts</span>(<span class='kw'>mutations</span> <span class='kw'>=</span> <span class='no'>mutations</span>[<span class='fl'>1</span>:<span class='fl'>3</span>,], <span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>)</div><div class='output co'>#&gt; $ref
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"mutations"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
+<span class='no'>bamT1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"T1.bam"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
+<span class='fu'>get_mutations_read_counts</span>(<span class='kw'>mutations</span> <span class='kw'>=</span> <span class='no'>mutations</span>[<span class='fl'>1</span>:<span class='fl'>3</span>, ], <span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>)</div><div class='output co'>#&gt; $ref
 #&gt; [1] 445 447 373
 #&gt; 
 #&gt; $alt
 #&gt; [1] 2 3 1
-#&gt; </div><div class='input'>
-</div></pre>
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

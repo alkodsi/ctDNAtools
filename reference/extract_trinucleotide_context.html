@@ -149,7 +149,7 @@
     <p>A data frame with two columns having the substitutions and the trinucleotide context</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'mutations'</span>,<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"mutations"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
 <span class='co'>## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library</span>
 <span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressMessages</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>))
 
@@ -167,7 +167,8 @@
 #&gt; 10           CT     T_T</div><div class='input'>
 <span class='co'>## without destranding</span>
 <span class='fu'>extract_trinucleotide_context</span>(<span class='no'>mutations</span>, <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>,
-   <span class='kw'>destrand</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;    substitution context
+  <span class='kw'>destrand</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</div><div class='output co'>#&gt;    substitution context
 #&gt; 1            CG     A_A
 #&gt; 2            GT     A_C
 #&gt; 3            AT     A_T

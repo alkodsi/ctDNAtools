@@ -43,7 +43,7 @@
 
 
 <meta property="og:title" content="Filter a set of mutations — filter_mutations" />
-<meta property="og:description" content="Filter a set of mutations given the input black list or the prevalence of their mismatches in a set of bam files. Mutations that 
+<meta property="og:description" content="Filter a set of mutations given the input black list or the prevalence of their mismatches in a set of bam files. Mutations that
 have more than min_alt_reads in more than min_samples will be removed when no black list is given." />
 <meta property="og:image" content="https://alkodsi.github.io/ctDNAtools/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -123,14 +123,14 @@ have more than min_alt_reads in more than min_samples will be removed when no bl
     </div>
 
     <div class="ref-description">
-    <p>Filter a set of mutations given the input black list or the prevalence of their mismatches in a set of bam files. Mutations that 
+    <p>Filter a set of mutations given the input black list or the prevalence of their mismatches in a set of bam files. Mutations that
 have more than min_alt_reads in more than min_samples will be removed when no black list is given.</p>
     </div>
 
     <pre class="usage"><span class='fu'>filter_mutations</span>(<span class='no'>mutations</span>, <span class='kw'>bams</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>black_list</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>tags</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='st'>""</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>bams</span>)), <span class='kw'>min_alt_reads</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>min_samples</span> <span class='kw'>=</span> <span class='fl'>2</span>,
   <span class='kw'>min_base_quality</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>max_depth</span> <span class='kw'>=</span> <span class='fl'>1e+05</span>, <span class='kw'>min_mapq</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-  <span class='kw'>substitution_specific</span> <span class='kw'>=</span> <span class='no'>T</span>)</pre>
+  <span class='kw'>substitution_specific</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -203,7 +203,7 @@ will be scanned for mismatches in the mutations loci and the specified threshold
     <div class='dont-index'><p><code>create_black_list</code> <code>test_ctDNA</code> <code>create_background_panel</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'mutations'</span>,<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"mutations"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
 <span class='fu'>filter_mutations</span>(<span class='no'>mutations</span>, <span class='kw'>black_list</span> <span class='kw'>=</span> <span class='st'>"chr14_106327474_C_G"</span>)</div><div class='output co'>#&gt; <span class='message'>Filtering mutations ...</span></div><div class='output co'>#&gt; <span class='message'>Dropped 1 mutations</span></div><div class='output co'>#&gt;    CHROM       POS REF ALT       PHASING
 #&gt; 2  chr14 106327649   G   T          &lt;NA&gt;
 #&gt; 3  chr14 106327759   A   T          &lt;NA&gt;

@@ -43,7 +43,7 @@
 
 
 <meta property="og:title" content="Get histogram of fragment lengths from a bam file — bin_fragment_size" />
-<meta property="og:description" content="The function first extracts fragment length from a bam file then computes the histogram over defined bins. If normalized is TRUE, 
+<meta property="og:description" content="The function first extracts fragment length from a bam file then computes the histogram over defined bins. If normalized is TRUE,
 the counts per bin will be normalized to the total read counts. Optionally,
 it can computes the histogram of fragment lengths only for mutated reads (confirmed ctDNA molecules)." />
 <meta property="og:image" content="https://alkodsi.github.io/ctDNAtools/logo.png" />
@@ -124,7 +124,7 @@ it can computes the histogram of fragment lengths only for mutated reads (confir
     </div>
 
     <div class="ref-description">
-    <p>The function first extracts fragment length from a bam file then computes the histogram over defined bins. If normalized is TRUE, 
+    <p>The function first extracts fragment length from a bam file then computes the histogram over defined bins. If normalized is TRUE,
 the counts per bin will be normalized to the total read counts. Optionally,
 it can computes the histogram of fragment lengths only for mutated reads (confirmed ctDNA molecules).</p>
     </div>
@@ -181,7 +181,7 @@ it can computes the histogram of fragment lengths only for mutated reads (confir
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A data frame with one column for the used breaks and one having the histogram (normalized) counts. If mutations is supplied, the output will have one breaks column and three columns
-corresponding to variant allele reads, reference allele reads, and other reads. 
+corresponding to variant allele reads, reference allele reads, and other reads.
 Each row has the count of fragment lengths within the bin and optionally normalized by the total number of reads.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -194,9 +194,9 @@ are computed. Both equal histogram bins via bin_size and manually customized bin
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'targets'</span>,<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'mutations'</span>,<span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
-<span class='no'>bamT1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>'extdata'</span>, <span class='st'>'T1.bam'</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'ctDNAtools'</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"targets"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"mutations"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
+<span class='no'>bamT1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"T1.bam"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
 
 <span class='co'>## basic usage</span>
 <span class='fu'>bin_fragment_size</span>(<span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>)
