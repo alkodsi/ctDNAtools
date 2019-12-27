@@ -28,6 +28,7 @@ reference:
   - title: Other
     contents:
     - extract_trinucleotide_context
+    - vcf_to_mutations_df
 
   - title: Internals
     contents:

@@ -72,6 +72,8 @@ suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
 
 In the basic usage, the read counts for reference and variant alleles of the reporter mutations will be quantified, the background rate of the tested sample will be estimated, and a Monte Carlo based sampling test will determine an empirical p-value. The p-value will only be used to determine positivity if the number of informative reads (number of all unique reads covering the mutations) exceed the specified threshold. Otherwise, the sample will be considered undetermined. Note that the test only accepts single nucleotide variants, and indels are not supported.
 
+If you have your variants in a VCF file, you can read it into a data.frame with compatible format using the ```vcf_to_mutations_df()``` function.
+
 ```{r basic1}
 test1 <- test_ctDNA(mutations = mutations,
           bam = bamT1,
@@ -337,4 +339,4 @@ af %>% tidyr::pivot_longer(
 
 ```
 
-## References
+# References

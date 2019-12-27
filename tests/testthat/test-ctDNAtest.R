@@ -240,3 +240,11 @@ test_that("bamutils works", {
 
   expect_true(all(paste0("chr", c(1:22)) %in% get_bam_chr(bamT1)))
 })
+
+test_that("vcf_to_mutations_df works", {
+  
+  vcf <- system.file("extdata", "chr22.vcf.gz", package="VariantAnnotation")
+  df <- vcf_to_mutations_df(vcf, sample_name = "HG00096")
+  
+  expect_is(df, "data.frame")
+})
