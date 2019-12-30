@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_background_rate.R
 \name{get_background_rate}
 \alias{get_background_rate}
-\title{Compute the background mismatch rate from a bam file}
+\title{Computes the background mismatch rate from a bam file}
 \usage{
 get_background_rate(bam, targets, reference, vaf_threshold = 0.1,
   tag = "", black_list = NULL, substitution_specific = TRUE,

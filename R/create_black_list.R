@@ -1,5 +1,5 @@
 
-#' A function to create a black list of genomic loci based on a background panel created from a list of bam files (e.g. healthy samples)
+#' Creates a black list of genomic loci based on a background panel created from a list of bam files (e.g. healthy samples)
 #'
 #' The function applies criteria on the background panel to extract the noisy genomic loci. Criteria include minimum number of samples having
 #' at least one and at least two non-reference allele. Additionally the quantile of mean VAF above which the loci are considered noisy

@@ -93,8 +93,8 @@ The workflow includes the following steps:
 \item{3.}{Counting reference and alternative alleles of the reporter mutations in the bam file.}
 
 \item{4.}{Merging mutations in phase (optional but recommended): If the ID_column is specified in the mutations input, mutations with the same ID (in phase) will be merged.
-   While doing so, it is expected that real traces of mutations will be exhibited in the mutations in phase, while artifacts will manifest only in one of the mutations
-   in phase. Therefore, the mismatches that map only to one of the mutations in phase but not the others (the others are covered and show reference allele) will be removed.
+   While doing so, it is expected that real traces of mutations will be exhibited jointly in the reads spanning phased mutations, whereas artifacts will not show in all the covered
+   mutations in phase. Therefore, the mismatches that map only to a subset of the mutations in phase but not the others (which are covered and show reference allele) will be removed.
    This will lead to reduction of the observed mismatches, and therefore, the computed background rate will be adjusted accordingly:
    new rate = old rate * (1 - purification_probability). See \code{\link{merge_mutations_in_phase}}.}
 

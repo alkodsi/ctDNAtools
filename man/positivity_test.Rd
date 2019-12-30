@@ -2,7 +2,7 @@
 % Please edit documentation in R/positivity_test.R
 \name{positivity_test}
 \alias{positivity_test}
-\title{Compute a p-value of ctDNA positivity}
+\title{Computes a p-value of ctDNA positivity with a Monte-Carlo based sampling test}
 \usage{
 positivity_test(depths, alt_reads, rate, seed = 123,
   n_simulations = 10000)

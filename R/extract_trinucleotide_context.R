@@ -1,4 +1,4 @@
-#' A function to extract the trinucleotide context for a set of mutations
+#' Extracts the trinucleotide context for a set of mutations
 
 #' @param mutations A data frame having the mutations. Should have the columns CHROM, POS, REF, ALT.
 #' @param reference the reference genome in BSgenome format

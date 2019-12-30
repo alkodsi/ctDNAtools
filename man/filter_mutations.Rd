@@ -2,7 +2,7 @@
 % Please edit documentation in R/filter_mutations.R
 \name{filter_mutations}
 \alias{filter_mutations}
-\title{Filter a set of mutations}
+\title{Filters a set of mutations}
 \usage{
 filter_mutations(mutations, bams = NULL, black_list = NULL,
   tags = rep("", length(bams)), min_alt_reads = 2, min_samples = 2,
@@ -39,7 +39,7 @@ a named list contains:
 }
 }
 \description{
-Filter a set of mutations given the input black list or the prevalence of their mismatches in a set of bam files. Mutations that
+This function Filters a set of mutations given the input black list or the prevalence of their mismatches in a set of bam files. Mutations that
 have more than min_alt_reads in more than min_samples will be removed when no black list is given.
 }
 \details{

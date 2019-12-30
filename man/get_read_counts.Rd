@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_read_counts.R
 \name{get_read_counts}
 \alias{get_read_counts}
-\title{Get read counts for a specific base in the genome}
+\title{Gets read counts for a specific locus in the genome}
 \usage{
 get_read_counts(chr, pos, bam, tag = "", min_base_quality = 20,
   max_depth = 1e+05, min_mapq = 30)

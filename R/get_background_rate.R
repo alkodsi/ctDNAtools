@@ -1,4 +1,4 @@
-#' Compute the background mismatch rate from a bam file
+#' Computes the background mismatch rate from a bam file
 #'
 #' Runs through the target regions base by base counting the mismatches. Then it divides sum(mismatches)/sum(depths) for all bases in the targets
 #' @param bam path to bam file

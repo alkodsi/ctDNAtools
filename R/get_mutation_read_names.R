@@ -1,5 +1,5 @@
 
-#' Get names of the reads showing alternative allele of a mutation
+#' Gets names of the reads showing reference and alternative alleles of a mutation
 #'
 #' Extract the names of the reads in a bam file that support the variant allele of a single mutation
 #' @param bam path to bam file.

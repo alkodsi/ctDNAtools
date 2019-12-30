@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_black_list.R
 \name{create_black_list}
 \alias{create_black_list}
-\title{A function to create a black list of genomic loci based on a background panel created from a list of bam files (e.g. healthy samples)}
+\title{Creates a black list of genomic loci based on a background panel created from a list of bam files (e.g. healthy samples)}
 \usage{
 create_black_list(background_panel, mean_vaf_quantile = 0.95,
   min_samples_one_read = max(2, ceiling(ncol(background_panel$vaf) *

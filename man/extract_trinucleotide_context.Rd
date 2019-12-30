@@ -2,7 +2,7 @@
 % Please edit documentation in R/extract_trinucleotide_context.R
 \name{extract_trinucleotide_context}
 \alias{extract_trinucleotide_context}
-\title{A function to extract the trinucleotide context for a set of mutations}
+\title{Extracts the trinucleotide context for a set of mutations}
 \usage{
 extract_trinucleotide_context(mutations, reference, destrand = TRUE)
 }
@@ -17,7 +17,7 @@ extract_trinucleotide_context(mutations, reference, destrand = TRUE)
 A data frame with two columns having the substitutions and the trinucleotide context
 }
 \description{
-A function to extract the trinucleotide context for a set of mutations
+Extracts the trinucleotide context for a set of mutations
 }
 \examples{
 data("mutations", package = "ctDNAtools")

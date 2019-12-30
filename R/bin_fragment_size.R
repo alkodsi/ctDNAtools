@@ -1,5 +1,5 @@
 
-#' Get histogram of fragment lengths from a bam file
+#' Gets histogram of fragment lengths from a bam file
 #'
 #' The function first extracts fragment length from a bam file then computes the histogram over defined bins. If normalized is TRUE,
 #' the counts per bin will be normalized to the total read counts. Optionally,

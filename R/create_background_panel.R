@@ -1,5 +1,5 @@
 
-#' Create a background panel from a list of bam files
+#' Creates a background panel from a list of bam files
 #'
 #' This function scans the targets regions in the list of bam files, and reports the number of reference, non-reference reads for each loci
 #' in addition to the non-reference (VAF) allele frequency. Loci with VAF higher than vaf_threshold are masked with NA.

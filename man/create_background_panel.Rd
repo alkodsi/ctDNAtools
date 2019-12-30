@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_background_panel.R
 \name{create_background_panel}
 \alias{create_background_panel}
-\title{Create a background panel from a list of bam files}
+\title{Creates a background panel from a list of bam files}
 \usage{
 create_background_panel(bam_list, targets, reference,
   vaf_threshold = 0.05, bam_list_tags = rep("", length(bam_list)),

@@ -47,7 +47,7 @@ Mutations in phase are those that are supported by the same reads (same allele).
 an ID column in the input whose name is specified by ID_column to tell which mutations are in phase.
 
 Since two or more mutations can be supported by the same evidence,
-this function merges these mutations into one event. The function will also remove the mismatches that are exhibited in only one of the mutations in phase (since
+this function merges these mutations into one event. The function will also remove the mismatches that are not exhibited in all the covered phased mutations (since
 this function is developed for the intent of minimal residual disease testing).
 
 The output will include the merged mutations, the probability of purification, which is defined as the number of

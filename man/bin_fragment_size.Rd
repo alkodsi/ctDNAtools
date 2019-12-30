@@ -2,7 +2,7 @@
 % Please edit documentation in R/bin_fragment_size.R
 \name{bin_fragment_size}
 \alias{bin_fragment_size}
-\title{Get histogram of fragment lengths from a bam file}
+\title{Gets histogram of fragment lengths from a bam file}
 \usage{
 bin_fragment_size(bam, mutations = NULL, targets = NULL, tag = "",
   bin_size = 2, custom_bins = NULL, normalized = FALSE,

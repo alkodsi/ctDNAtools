@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_fragment_size.R
 \name{get_fragment_size}
 \alias{get_fragment_size}
-\title{Get fragment lengths from bam}
+\title{Gets fragment lengths from a bam file}
 \usage{
 get_fragment_size(bam, mutations = NULL, targets = NULL, tag = "",
   isProperPair = NA, mapqFilter = 30, min_size = 1, max_size = 400,

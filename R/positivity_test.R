@@ -1,4 +1,4 @@
-#' Compute a p-value of ctDNA positivity
+#' Computes a p-value of ctDNA positivity with a Monte-Carlo based sampling test
 #'
 #' A function to determine ctDNA positivity with N repeated Monte Carlo simulations. Return a p-value based on Monte Carlo simulation test. Calls simulator function  n_simulations times.
 #' @param depths a vector with the depths of the variants

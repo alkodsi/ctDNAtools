@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_background_panel_instance.R
 \name{create_background_panel_instance}
 \alias{create_background_panel_instance}
-\title{Create a background panel instance from a bam file (e.g. healthy samples)}
+\title{Creates a background panel instance from a bam file (e.g. healthy samples)}
 \usage{
 create_background_panel_instance(bam, targets, reference,
   vaf_threshold = 0.05, tag = "", min_base_quality = 20,

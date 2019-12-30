@@ -1,6 +1,6 @@
-#' Get names of the reads showing alternative allele of a mutation
+#' Gets names of the reads showing reference and alternative allele of a list of mutations
 #'
-#' Extract the names of the reads in a bam file that support the variant and reference alleles of the input mutations
+#' This function extracts the names of the reads in a bam file that support the variant and reference alleles of the input mutations
 #' @param bam path to bam file
 #' @param mutations A data frame containing the mutations. Must have the columns CHROM, POS, REF, ALT.
 #' @param tag the RG tag if the bam has more than one sample

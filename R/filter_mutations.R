@@ -1,6 +1,6 @@
-#' Filter a set of mutations
+#' Filters a set of mutations
 #'
-#' Filter a set of mutations given the input black list or the prevalence of their mismatches in a set of bam files. Mutations that
+#' This function Filters a set of mutations given the input black list or the prevalence of their mismatches in a set of bam files. Mutations that
 #' have more than min_alt_reads in more than min_samples will be removed when no black list is given.
 #' @param mutations A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.
 #' @param bams a vector of paths to bam files

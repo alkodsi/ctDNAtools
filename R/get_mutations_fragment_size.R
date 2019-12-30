@@ -1,4 +1,4 @@
-#' Get reads fragment lengths for a list of mutations
+#' Gets reads fragment lengths for a list of mutations
 #'
 #' The function extracts the fragment lengths for the reads holding alternative allele for each mutation
 #' in the mutations data frame.

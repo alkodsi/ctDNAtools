@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_mutations_fragment_size.R
 \name{get_mutations_fragment_size}
 \alias{get_mutations_fragment_size}
-\title{Get reads fragment lengths for a list of mutations}
+\title{Gets reads fragment lengths for a list of mutations}
 \usage{
 get_mutations_fragment_size(bam, mutations, tag = "",
   min_base_quality = 20, min_mapq = 30, ...)

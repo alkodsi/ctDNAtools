@@ -1,4 +1,4 @@
-#' Get read counts for a specific base in the genome
+#' Gets read counts for a specific locus in the genome
 #'
 #' Uses samtools pileup to get the read counts for each base in the genomic position specified
 #' @param chr chromosome name

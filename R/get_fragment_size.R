@@ -1,4 +1,4 @@
-#' Get fragment lengths from bam
+#' Gets fragment lengths from a bam file
 #'
 #' A function to extract fragment lengths from a bam file. Optionally, given a mutation data frame, it can categorize read lengths
 #' in mutated vs non-mutated reads.

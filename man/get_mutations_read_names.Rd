@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_mutations_read_names.R
 \name{get_mutations_read_names}
 \alias{get_mutations_read_names}
-\title{Get names of the reads showing alternative allele of a mutation}
+\title{Gets names of the reads showing reference and alternative allele of a list of mutations}
 \usage{
 get_mutations_read_names(bam, mutations, min_base_quality = 20,
   tag = "", min_mapq = 30)
@@ -22,7 +22,7 @@ get_mutations_read_names(bam, mutations, min_base_quality = 20,
 A list with length equal to the number of mutations. Each element is a character vector with the read names.
 }
 \description{
-Extract the names of the reads in a bam file that support the variant and reference alleles of the input mutations
+This function extracts the names of the reads in a bam file that support the variant and reference alleles of the input mutations
 }
 \details{
 Returns the IDs of the read that cover the input mutations (ref and alt alleles).
