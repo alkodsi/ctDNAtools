@@ -183,7 +183,7 @@ NA values will be filled automatically by unique mutation identifiers.</p></td>
     <p>Mutations in phase are those that are supported by the same reads (same allele). The function doesn't identify mutations in phase, but rather use
 an ID column in the input whose name is specified by ID_column to tell which mutations are in phase.</p>
 <p>Since two or more mutations can be supported by the same evidence,
-this function merges these mutations into one event. The function will also remove the mismatches that are exhibited in only one of the mutations in phase (since
+this function merges these mutations into one event. The function will also remove the mismatches that are not exhibited in all the covered phased mutations (since
 this function is developed for the intent of minimal residual disease testing).</p>
 <p>The output will include the merged mutations, the probability of purification, which is defined as the number of
 reads covering at least two mutations in phase divided by the number of informative reads.
