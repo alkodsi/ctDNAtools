@@ -174,7 +174,7 @@ chr_pos_ref_alt if substitution_specific is true. If given, will override <code>
     </tr>
     <tr>
       <th>vaf_threshold</th>
-      <td><p>the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)</p></td>
+      <td><p>When calculating the background rate, the bases with higher than this VAF threshold will be ignored (real mutations/SNPs).</p></td>
     </tr>
     <tr>
       <th>min_base_quality</th>
@@ -207,7 +207,7 @@ Mutations that have more than min_alt_reads in more than min_samples will be fil
     </tr>
     <tr>
       <th>n_simulations</th>
-      <td><p>the number of simulations.</p></td>
+      <td><p>the number of Monte Carlo simulations.</p></td>
     </tr>
     <tr>
       <th>pvalue_threshold</th>
@@ -215,7 +215,7 @@ Mutations that have more than min_alt_reads in more than min_samples will be fil
     </tr>
     <tr>
       <th>seed</th>
-      <td><p>the random seed.</p></td>
+      <td><p>the random seed to make the Monte Carlo simulations reproducible.</p></td>
     </tr>
     <tr>
       <th>informative_reads_threshold</th>
