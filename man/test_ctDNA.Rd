@@ -31,7 +31,7 @@ chr_pos_ref_alt if substitution_specific is true. If given, will override \code{
 
 \item{substitution_specific}{logical, whether to have the loci of black_list by substitutions.}
 
-\item{vaf_threshold}{the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)}
+\item{vaf_threshold}{When calculating the background rate, the bases with higher than this VAF threshold will be ignored (real mutations/SNPs).}
 
 \item{min_base_quality}{minimum base quality for a read to be counted}
 
@@ -48,11 +48,11 @@ Mutations that have more than min_alt_reads in more than min_samples will be fil
 
 \item{min_samples}{When number of samples having more than \code{min_alt_reads} exceeds this number, the mutation will be filtered.}
 
-\item{n_simulations}{the number of simulations.}
+\item{n_simulations}{the number of Monte Carlo simulations.}
 
 \item{pvalue_threshold}{the p-value threshold used to decide positivity or negativity.}
 
-\item{seed}{the random seed.}
+\item{seed}{the random seed to make the Monte Carlo simulations reproducible.}
 
 \item{informative_reads_threshold}{the number of informative reads (unique reads mapping to specified mutations) under which the test will be undetermined.}
 }

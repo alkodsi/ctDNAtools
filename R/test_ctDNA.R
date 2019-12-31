@@ -6,7 +6,7 @@
 #' @param bam path to bam file
 #' @param targets a data frame with the target regions. Must have three columns: chr, start and end
 #' @param reference the reference genome in BSgenome format
-#' @param vaf_threshold the bases with higher than this VAF threshold will be ignored in the calculation (real mutations)
+#' @param vaf_threshold When calculating the background rate, the bases with higher than this VAF threshold will be ignored (real mutations/SNPs). 
 #' @param tag the RG tag if the bam has more than one sample
 #' @param ID_column The name of the column that contains the ID of mutations in phase. All mutations in Phase should have the same ID in that column.
 #' @param black_list a character vector of genomic loci to filter. The format is chr_pos if substitution_specific is false or
@@ -20,9 +20,9 @@
 #' @param bam_list_tags the RG tags for the bams included in bams list.
 #' @param min_alt_reads When bam_list is provided, this sets the minimum number of alternative allele reads for a sample to be counted.
 #' @param min_samples When number of samples having more than \code{min_alt_reads} exceeds this number, the mutation will be filtered.
-#' @param n_simulations the number of simulations.
+#' @param n_simulations the number of Monte Carlo simulations.
 #' @param pvalue_threshold the p-value threshold used to decide positivity or negativity.
-#' @param seed the random seed.
+#' @param seed the random seed to make the Monte Carlo simulations reproducible.
 #' @param informative_reads_threshold the number of informative reads (unique reads mapping to specified mutations) under which the test will be undetermined.
 #' @return a data frame with the following columns:
 #' \itemize{
