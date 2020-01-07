@@ -117,8 +117,7 @@ create_background_panel <- function(bam_list, targets, reference, vaf_threshold 
       bam = .x, tag = .y, targets = targets, reference = reference,
       vaf_threshold = vaf_threshold, min_base_quality = min_base_quality, min_mapq = min_mapq,
       max_depth = max_depth, substitution_specific = substitution_specific
-    ),
-    .progress = TRUE
+    )
   )
 
   sm <- make.unique(purrr::map_chr(bam_list, get_bam_SM))
