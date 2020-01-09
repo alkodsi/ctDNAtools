@@ -44,7 +44,7 @@
 
 <meta property="og:title" content="Creates a black list of genomic loci based on a background panel created from a list of bam files (e.g. healthy samples) — create_black_list" />
 <meta property="og:description" content="The function applies criteria on the background panel to extract the noisy genomic loci. Criteria include minimum number of samples having
-at least one and at least two non-reference allele. Additionally the quantile of mean VAF above which the loci are considered noisy" />
+at least one, at least two, or at least n (n_reads parameter) non-reference allele. Additionally the quantile of mean VAF above which the loci are considered noisy" />
 <meta property="og:image" content="https://alkodsi.github.io/ctDNAtools/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -124,13 +124,14 @@ at least one and at least two non-reference allele. Additionally the quantile of
 
     <div class="ref-description">
     <p>The function applies criteria on the background panel to extract the noisy genomic loci. Criteria include minimum number of samples having
-at least one and at least two non-reference allele. Additionally the quantile of mean VAF above which the loci are considered noisy</p>
+at least one, at least two, or at least n (<code>n_reads</code> parameter) non-reference allele. Additionally the quantile of mean VAF above which the loci are considered noisy</p>
     </div>
 
     <pre class="usage"><span class='fu'>create_black_list</span>(<span class='no'>background_panel</span>, <span class='kw'>mean_vaf_quantile</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
   <span class='kw'>min_samples_one_read</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>2</span>, <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>background_panel</span>$<span class='no'>vaf</span>) *
   <span class='fl'>0.75</span>)), <span class='kw'>min_samples_two_reads</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>2</span>,
-  <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>background_panel</span>$<span class='no'>vaf</span>) * <span class='fl'>0.2</span>)))</pre>
+  <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>background_panel</span>$<span class='no'>vaf</span>) * <span class='fl'>0.2</span>)), <span class='kw'>min_samples_n_reads</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>n_reads</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -141,15 +142,23 @@ at least one and at least two non-reference allele. Additionally the quantile of
     </tr>
     <tr>
       <th>mean_vaf_quantile</th>
-      <td><p>The quantile of mean VAF above which the loci are considered noisy</p></td>
+      <td><p>The quantile of mean VAF above which the loci are considered noisy. Use NA to skip this criteriion.</p></td>
     </tr>
     <tr>
       <th>min_samples_one_read</th>
-      <td><p>Loci that at least this number of samples exhibit at least one non-reference reads are considered noisy.</p></td>
+      <td><p>Loci that at least this number of samples exhibit at least one non-reference reads are considered noisy. Use NA to skip this criteriion.</p></td>
     </tr>
     <tr>
       <th>min_samples_two_reads</th>
-      <td><p>Loci that at least this number of samples exhibit at least two non-reference reads are considered noisy.</p></td>
+      <td><p>Loci that at least this number of samples exhibit at least two non-reference reads are considered noisy. Use NA to skip this criteriion.</p></td>
+    </tr>
+    <tr>
+      <th>min_samples_n_reads</th>
+      <td><p>Loci that at least this number of samples exhibit at least n non-reference reads (<code>n_reads</code> parameter) are considered noisy. Use NA to skip this criteriion.</p></td>
+    </tr>
+    <tr>
+      <th>n_reads</th>
+      <td><p>the number of reads to use in the <code>min_samples_n_reads</code> parameter</p></td>
     </tr>
     </table>
 
@@ -180,7 +189,8 @@ at least one and at least two non-reference allele. Additionally the quantile of
 
 <span class='no'>bl1</span> <span class='kw'>&lt;-</span> <span class='fu'>create_black_list</span>(<span class='no'>bg_panel</span>,
   <span class='kw'>mean_vaf_quantile</span> <span class='kw'>=</span> <span class='fl'>0.99</span>,
-  <span class='kw'>min_samples_one_read</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>min_samples_two_reads</span> <span class='kw'>=</span> <span class='fl'>1</span>
+  <span class='kw'>min_samples_one_read</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>min_samples_two_reads</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>min_samples_n_reads</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>n_reads</span> <span class='kw'>=</span> <span class='fl'>3</span>
 )
 
 <span class='co'>## Use a substitution-specific black list</span>
@@ -192,7 +202,8 @@ at least one and at least two non-reference allele. Additionally the quantile of
 
 <span class='no'>bl2</span> <span class='kw'>&lt;-</span> <span class='fu'>create_black_list</span>(<span class='no'>bg_panel</span>,
   <span class='kw'>mean_vaf_quantile</span> <span class='kw'>=</span> <span class='fl'>0.99</span>,
-  <span class='kw'>min_samples_one_read</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>min_samples_two_reads</span> <span class='kw'>=</span> <span class='fl'>1</span>
+  <span class='kw'>min_samples_one_read</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>min_samples_two_reads</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>min_samples_n_read</span> <span class='kw'>=</span> <span class='fl'>NA</span>
 )
 }</div></pre>
   </div>
