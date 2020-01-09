@@ -7,23 +7,28 @@
 create_black_list(background_panel, mean_vaf_quantile = 0.95,
   min_samples_one_read = max(2, ceiling(ncol(background_panel$vaf) *
   0.75)), min_samples_two_reads = max(2,
-  ceiling(ncol(background_panel$vaf) * 0.2)))
+  ceiling(ncol(background_panel$vaf) * 0.2)), min_samples_n_reads = NA,
+  n_reads = NA)
 }
 \arguments{
 \item{background_panel}{A list produced by create_background panel function}
 
-\item{mean_vaf_quantile}{The quantile of mean VAF above which the loci are considered noisy}
+\item{mean_vaf_quantile}{The quantile of mean VAF above which the loci are considered noisy. Use NA to skip this criteriion.}
 
-\item{min_samples_one_read}{Loci that at least this number of samples exhibit at least one non-reference reads are considered noisy.}
+\item{min_samples_one_read}{Loci that at least this number of samples exhibit at least one non-reference reads are considered noisy. Use NA to skip this criteriion.}
 
-\item{min_samples_two_reads}{Loci that at least this number of samples exhibit at least two non-reference reads are considered noisy.}
+\item{min_samples_two_reads}{Loci that at least this number of samples exhibit at least two non-reference reads are considered noisy. Use NA to skip this criteriion.}
+
+\item{min_samples_n_reads}{Loci that at least this number of samples exhibit at least n non-reference reads (\code{n_reads} parameter) are considered noisy. Use NA to skip this criteriion.}
+
+\item{n_reads}{the number of reads to use in the \code{min_samples_n_reads} parameter}
 }
 \value{
 a character vector of the loci in the black list
 }
 \description{
 The function applies criteria on the background panel to extract the noisy genomic loci. Criteria include minimum number of samples having
-at least one and at least two non-reference allele. Additionally the quantile of mean VAF above which the loci are considered noisy
+at least one, at least two, or at least n (\code{n_reads} parameter) non-reference allele. Additionally the quantile of mean VAF above which the loci are considered noisy
 }
 \examples{
 \dontrun{
@@ -45,7 +50,8 @@ bg_panel <- create_background_panel(
 
 bl1 <- create_black_list(bg_panel,
   mean_vaf_quantile = 0.99,
-  min_samples_one_read = 2, min_samples_two_reads = 1
+  min_samples_one_read = 2, min_samples_two_reads = 1,
+  min_samples_n_reads = 1, n_reads = 3
 )
 
 ## Use a substitution-specific black list
@@ -57,7 +63,8 @@ bg_panel <- create_background_panel(
 
 bl2 <- create_black_list(bg_panel,
   mean_vaf_quantile = 0.99,
-  min_samples_one_read = 2, min_samples_two_reads = 1
+  min_samples_one_read = 2, min_samples_two_reads = 1,
+  min_samples_n_read = NA
 )
 }
 

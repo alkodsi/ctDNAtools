@@ -144,7 +144,7 @@ test_that("create_background_panel works", {
 
   expect_is(create_black_list(bgp$bgp2), "character")
 
-  expect_is(create_black_list(bgp$bgp1, mean_vaf_quantile = 0.5), "character")
+  expect_is(create_black_list(bgp$bgp1, mean_vaf_quantile = 0.5, min_samples_n_reads = 1, n_reads = 3), "character")
 })
 
 phase <- merge_mutations_in_phase(mutations, bamT1, ID_column = "PHASING")
