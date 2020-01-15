@@ -26,10 +26,6 @@ extract_trinucleotide_context <- function(mutations, reference, destrand = TRUE)
   assertthat::assert_that(all(mutations$CHROM %in% GenomeInfoDb::seqnames(reference)),
     msg = "Chromosomes in mutations and/or targets don't match the specified reference"
   )
-
-  assertthat::assert_that(
-    !any(duplicated(mutations[,c("CHROM", "POS", "REF", "ALT")])),
-    msg = "mutations input has duplicates")
   
   assertthat::assert_that(class(reference) == "BSgenome")
 
