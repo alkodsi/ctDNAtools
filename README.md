@@ -10,7 +10,10 @@
 The ctDNAtools package provides functionalities to analyze circulating tumor DNA (ctDNA)/ cell-free DNA (cfDNA) sequencing data.
 The tools cover analysis of ctDNA/cfDNA fragmentation and analysis of cancer minimal residual disease.
 
-<a href='https:/alkodsi.github.io/ctDNAtools'><img src='man/figures/ctDNAtools_overview.png' align="center" height="780" /></a>
+## Package overview
+
+<a href='https:/alkodsi.github.io/ctDNAtools'><img src='man/figures/ctDNAtools_overview.png' align="center" height="680" /></a>
+
 ## Installation
 
 
