@@ -15,10 +15,12 @@
 #' @seealso \code{\link{get_fragment_size}}
 #' @export
 #' @examples
+#' \dontrun{
 #' data("mutations", package = "ctDNAtools")
 #' bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")
 #'
 #' mfs <- get_mutations_fragment_size(bam = bamT1, mutations = mutations[1:2, ])
+#' }
 get_mutations_fragment_size <- function(bam, mutations, tag = "", min_base_quality = 20,
                                         min_mapq = 30, ...) {
   assertthat::assert_that(

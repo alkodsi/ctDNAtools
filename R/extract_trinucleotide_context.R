@@ -6,6 +6,7 @@
 #' @return A data frame with two columns having the substitutions and the trinucleotide context
 #' @export
 #' @examples
+#' \dontrun{
 #' data("mutations", package = "ctDNAtools")
 #' ## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library
 #' suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
@@ -17,6 +18,7 @@
 #' extract_trinucleotide_context(mutations, BSgenome.Hsapiens.UCSC.hg19,
 #'   destrand = FALSE
 #' )
+#' }
 extract_trinucleotide_context <- function(mutations, reference, destrand = TRUE) {
   assertthat::assert_that(
     is.data.frame(mutations),
