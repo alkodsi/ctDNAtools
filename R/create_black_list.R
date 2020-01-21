@@ -5,10 +5,10 @@
 #' at least one, at least two, or at least n (\code{n_reads} parameter) non-reference allele. Additionally the quantile of mean VAF above which the loci are considered noisy
 
 #' @param background_panel A list produced by create_background panel function
-#' @param mean_vaf_quantile The quantile of mean VAF above which the loci are considered noisy. Use NA to skip this criteriion.
-#' @param min_samples_one_read Loci that at least this number of samples exhibit at least one non-reference reads are considered noisy. Use NA to skip this criteriion.
-#' @param min_samples_two_reads Loci that at least this number of samples exhibit at least two non-reference reads are considered noisy. Use NA to skip this criteriion.
-#' @param min_samples_n_reads Loci that at least this number of samples exhibit at least n non-reference reads (\code{n_reads} parameter) are considered noisy. Use NA to skip this criteriion.
+#' @param mean_vaf_quantile The quantile of mean VAF above which the loci are considered noisy. Use NA to skip this criterion.
+#' @param min_samples_one_read Loci that at least this number of samples exhibit at least one non-reference reads are considered noisy. Use NA to skip this criterion.
+#' @param min_samples_two_reads Loci that at least this number of samples exhibit at least two non-reference reads are considered noisy. Use NA to skip this criterion.
+#' @param min_samples_n_reads Loci that at least this number of samples exhibit at least n non-reference reads (\code{n_reads} parameter) are considered noisy. Use NA to skip this criterion.
 #' @param n_reads the number of reads to use in the \code{min_samples_n_reads} parameter
 #' @return a character vector of the loci in the black list
 #' @seealso \code{\link{create_background_panel}}  \code{\link{test_ctDNA}}
