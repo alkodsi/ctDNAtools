@@ -1,5 +1,5 @@
 Package: ctDNAtools
-Title: Tools to Analyze ctDNA Sequencing Data
+Title: Tools to Analyze circulating tumor DNA Sequencing Data
 Version: 0.3.1
 Authors@R: 
     person(given = "Amjad",
@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "amjad.alkodsi@gmail.com",
            comment = c(ORCID = "0000-0003-3528-4683"))
-Description: Contains tools to analyze minimal residual disease and cfDNA fragmentation from aligned sequencing data.
+Description: Contains tools to analyze minimal residual disease and cell-free DNA fragmentation from aligned sequencing data.
 License: MIT + file LICENSE
 Depends: 
     R (>= 3.6.0),
