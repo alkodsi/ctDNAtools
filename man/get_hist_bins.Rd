@@ -25,3 +25,4 @@ A numeric vector having counts within bins normalized by the sum of the variable
 \description{
 Helper function to bin a variable
 }
+\keyword{internal}

@@ -12,3 +12,4 @@ get_bam_chr(bam)
 \description{
 Helper function to extract chromosome names from a bam file
 }
+\keyword{internal}

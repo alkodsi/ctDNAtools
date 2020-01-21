@@ -8,6 +8,8 @@
 #' @param n_simulations the number of simulations to run.
 #' @return a scalar, simulation p-value.
 #' @seealso \code{\link{test_ctDNA}}
+#' @keywords internal
+
 positivity_test <- function(depths, alt_reads, rate, seed = 123,
                             n_simulations = 10000) {
   set.seed(seed)

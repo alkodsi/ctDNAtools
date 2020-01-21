@@ -28,3 +28,4 @@ a list, number of reads for each of the four basepairs
 \description{
 Uses samtools pileup to get the read counts for each base in the genomic position specified
 }
+\keyword{internal}

@@ -1,6 +1,7 @@
 #' Helper function to extract SM from a bam file
 #' @param bam Path to the bam file
 #' @param tag The RG tag for the bam file
+#' @keywords internal
 
 get_bam_SM <- function(bam, tag = "") {
   header <- Rsamtools::scanBamHeader(bam)

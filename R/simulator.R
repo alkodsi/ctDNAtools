@@ -4,6 +4,7 @@
 #' @param simulated the simulated variant allele counts
 #' @param observed the observed variant allele counts
 #' @param depths the total depths
+#' @keywords internal
 compare_simulated_observed <- function(simulated, observed, depths) {
   observed_vaf <- mean(observed / depths, na.rm = TRUE)
   observed_nonzero <- sum(observed > 0)
@@ -27,6 +28,7 @@ compare_simulated_observed <- function(simulated, observed, depths) {
 #' @return a scalar. Either 1 if the simulation exceeds observed variant alleles or 0 otherwise
 #' @importFrom stats C rbinom runif
 #' @seealso \code{\link{test_ctDNA}}
+#' @keywords internal
 
 simulator <- function(depths, rate, alt_reads, seed) {
   assertthat::assert_that(length(depths) == length(alt_reads))

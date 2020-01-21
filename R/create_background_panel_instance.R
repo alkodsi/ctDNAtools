@@ -15,6 +15,7 @@
 #' @param min_mapq The minimum mapping quality to count a read for a loci
 #' @param substitution_specific logical, whether to have the loci by substitutions.
 #' @return A named list having depth, alt and vaf data frames. Each has the same order of loci in rows and the input sample in columns.
+#' @keywords internal
 
 create_background_panel_instance <- function(bam, targets, reference, vaf_threshold = 0.05, tag = "",
                                              min_base_quality = 20, max_depth = 1e+05, min_mapq = 30, substitution_specific = TRUE) {

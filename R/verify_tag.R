@@ -3,6 +3,7 @@
 #' @param bam path to bam file
 #' @param tag the RG tag if the bam has more than one sample
 #' @return logical, whether tag in bam
+#' @keywords internal
 
 verify_tag <- function(bam, tag) {
   header <- Rsamtools::scanBamHeader(bam)

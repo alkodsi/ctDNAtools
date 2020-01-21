@@ -24,3 +24,4 @@ Samples from binomial distribution N variants with different depths and fixed mi
 \seealso{
 \code{\link{test_ctDNA}}
 }
+\keyword{internal}

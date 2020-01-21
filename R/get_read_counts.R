@@ -9,6 +9,7 @@
 #' @param max_depth maximum depth above which sampling will happen
 #' @param min_mapq the minimum mapping quality for a read to be counted
 #' @return a list, number of reads for each of the four basepairs
+#' @keywords internal
 
 get_read_counts <- function(chr, pos, bam, tag = "", min_base_quality = 20, max_depth = 1e+05,
                             min_mapq = 30) {

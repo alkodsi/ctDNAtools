@@ -27,3 +27,4 @@ A function to determine ctDNA positivity with N repeated Monte Carlo simulations
 \seealso{
 \code{\link{test_ctDNA}}
 }
+\keyword{internal}

@@ -9,6 +9,7 @@
 
 #' @return A numeric vector having counts within bins normalized by the sum of the variable
 #' @importFrom graphics hist
+#' @keywords internal
 
 get_hist_bins <- function(x, from, to, by, normalized, custom_bins = NULL) {
   assertthat::assert_that(is.numeric(x))

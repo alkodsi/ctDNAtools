@@ -30,19 +30,6 @@ reference:
     - extract_trinucleotide_context
     - vcf_to_mutations_df
 
-  - title: Internals
-    contents:
-    - positivity_test
-    - simulator
-    - get_read_counts
-    - get_mutation_read_names
-    - create_background_panel_instance
-    - get_bam_chr
-    - get_bam_SM
-    - verify_tag
-    - get_hist_bins
-    - compare_simulated_observed
-
   - title: Data
     contents:
     - mutations

@@ -30,3 +30,4 @@ A character vector having the read names
 \description{
 Extract the names of the reads in a bam file that support the variant allele of a single mutation
 }
+\keyword{internal}

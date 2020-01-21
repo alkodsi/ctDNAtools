@@ -14,3 +14,4 @@ get_bam_SM(bam, tag = "")
 \description{
 Helper function to extract SM from a bam file
 }
+\keyword{internal}

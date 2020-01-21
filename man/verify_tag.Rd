@@ -17,3 +17,4 @@ logical, whether tag in bam
 \description{
 Helper function to verify a tag exists
 }
+\keyword{internal}

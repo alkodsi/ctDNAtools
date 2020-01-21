@@ -16,3 +16,4 @@ compare_simulated_observed(simulated, observed, depths)
 \description{
 Compares simulated and observed variant allele counts
 }
+\keyword{internal}

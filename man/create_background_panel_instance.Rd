@@ -35,3 +35,4 @@ This function scans the targets regions in one bam file, and reports the number 
 in addition to the non-reference (VAF) allele frequency. Loci with VAF higher than vaf_threshold are masked with NA. This function is
 used internally by create_background_panel
 }
+\keyword{internal}
