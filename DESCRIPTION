@@ -1,5 +1,5 @@
 Package: ctDNAtools
-Title: Tools to Analyze circulating tumor DNA Sequencing Data
+Title: Tools to Analyze Circulating Tumor DNA Sequencing Data
 Version: 0.3.1
 Authors@R: 
     person(given = "Amjad",
