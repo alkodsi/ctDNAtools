@@ -5,6 +5,7 @@
 [![Lifecycle: Maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Travis build status](https://travis-ci.com/alkodsi/ctDNAtools.svg?branch=master)](https://travis-ci.com/alkodsi/ctDNAtools)
 [![Codecov test coverage](https://codecov.io/gh/alkodsi/ctDNAtools/branch/master/graph/badge.svg)](https://codecov.io/gh/alkodsi/ctDNAtools?branch=master)
+[![DOI:10.1101/2020.01.27.912790](https://zenodo.org/badge/DOI/10.1007/978-3-319-76207-4_15.svg)](https://doi.org/10.1101/2020.01.27.912790)
 <!-- badges: end -->
 
 The ctDNAtools package provides functionalities to analyze circulating tumor DNA (ctDNA)/ cell-free DNA (cfDNA) sequencing data.
@@ -30,4 +31,5 @@ Browse the vignette [here](https://alkodsi.github.io/ctDNAtools/articles/ctDNAto
 
 ## Citation
 
-Citation coming soon
+Alkodsi A, Meriranta L, Pasanen A, Leppä S (2020). “ctDNAtools: An R package to
+work with sequencing data of circulating tumor DNA.” _bioRxiv_.

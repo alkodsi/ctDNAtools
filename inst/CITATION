@@ -1,0 +1,10 @@
+bibentry(bibtype = "article",
+         title = "ct{DNA}tools: An {R} package to work with sequencing data of circulating tumor {DNA}",
+         author = c(person("Amjad", "Alkodsi"),
+                    person("Leo", "Meriranta"),
+                    person("Annika", "Pasanen"),
+                    person("Sirpa", "Leppä")),
+         year = 2020,
+         doi = "10.1101/2020.01.27.912790",
+         journal = "bioRxiv",
+         url = "https://www.biorxiv.org/content/early/2020/01/28/2020.01.27.912790")
