@@ -78,7 +78,7 @@ estimates the mismatch rate for the sample to be tested, and then runs a Monte C
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ctDNAtools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -293,29 +293,35 @@ and an optional black_list (recommended to use) computed from a list of bam file
 
 <span class='co'>## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library</span>
 <span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressMessages</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>))
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='co'># \donttest{</span>
 <span class='co'>## basic usage</span>
 <span class='fu'>test_ctDNA</span>(
   <span class='kw'>mutations</span> <span class='kw'>=</span> <span class='no'>mutations</span>, <span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>,
   <span class='kw'>targets</span> <span class='kw'>=</span> <span class='no'>targets</span>, <span class='kw'>reference</span> <span class='kw'>=</span> <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>,
   <span class='kw'>n_simulation</span> <span class='kw'>=</span> <span class='fl'>100</span>
-)
-
+)</div><div class='output co'>#&gt; <span class='message'>Analyzing Sample T1 ...</span></div><div class='output co'>#&gt; <span class='message'>Estimating background rate ...</span></div><div class='output co'>#&gt; <span class='message'>Getting ref and alt Counts ...</span></div><div class='output co'>#&gt; <span class='message'>Running Monte Carlo simulations</span></div><div class='output co'>#&gt; <span class='message'>Pvalue =  0.0099009900990099</span></div><div class='output co'>#&gt; <span class='message'>Sample T1 is undetermined</span></div><div class='output co'>#&gt;   sample n_mutations n_nonzero_alt total_alt_reads mutations_filtered
+#&gt; 1     T1          10             9              13                  0
+#&gt;   background_rate informative_reads multi_support_reads     pvalue     decision
+#&gt; 1    0.0001403503              1327                  NA 0.00990099 undetermined</div><div class='input'>
 <span class='co'>## More options</span>
 <span class='fu'>test_ctDNA</span>(
   <span class='kw'>mutations</span> <span class='kw'>=</span> <span class='no'>mutations</span>, <span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>,
   <span class='kw'>targets</span> <span class='kw'>=</span> <span class='no'>targets</span>, <span class='kw'>reference</span> <span class='kw'>=</span> <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>,
   <span class='kw'>n_simulation</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>min_base_quality</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>min_mapq</span> <span class='kw'>=</span> <span class='fl'>30</span>,
   <span class='kw'>vaf_threshold</span> <span class='kw'>=</span> <span class='fl'>0.05</span>
-)
-
+)</div><div class='output co'>#&gt; <span class='message'>Analyzing Sample T1 ...</span></div><div class='output co'>#&gt; <span class='message'>Estimating background rate ...</span></div><div class='output co'>#&gt; <span class='message'>Getting ref and alt Counts ...</span></div><div class='output co'>#&gt; <span class='message'>Running Monte Carlo simulations</span></div><div class='output co'>#&gt; <span class='message'>Pvalue =  0.0099009900990099</span></div><div class='output co'>#&gt; <span class='message'>Sample T1 is undetermined</span></div><div class='output co'>#&gt;   sample n_mutations n_nonzero_alt total_alt_reads mutations_filtered
+#&gt; 1     T1          10             9              14                  0
+#&gt;   background_rate informative_reads multi_support_reads     pvalue     decision
+#&gt; 1    0.0001508991              1346                  NA 0.00990099 undetermined</div><div class='input'>
 <span class='co'>## Use phasing information</span>
 <span class='fu'>test_ctDNA</span>(
   <span class='kw'>mutations</span> <span class='kw'>=</span> <span class='no'>mutations</span>, <span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT2</span>,
   <span class='kw'>targets</span> <span class='kw'>=</span> <span class='no'>targets</span>, <span class='kw'>reference</span> <span class='kw'>=</span> <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>,
   <span class='kw'>n_simulation</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>ID_column</span> <span class='kw'>=</span> <span class='st'>"PHASING"</span>
-)
-
+)</div><div class='output co'>#&gt; <span class='message'>Analyzing Sample T2 ...</span></div><div class='output co'>#&gt; <span class='message'>Estimating background rate ...</span></div><div class='output co'>#&gt; <span class='message'>Getting ref and alt Counts ...</span></div><div class='output co'>#&gt; <span class='message'>merging mutations in phase ...</span></div><div class='output co'>#&gt; <span class='message'>Running Monte Carlo simulations</span></div><div class='output co'>#&gt; <span class='message'>Pvalue =  1</span></div><div class='output co'>#&gt; <span class='message'>Sample T2 is undetermined</span></div><div class='output co'>#&gt;   sample n_mutations n_nonzero_alt total_alt_reads mutations_filtered
+#&gt; 1     T2          10             0               0                  0
+#&gt;   background_rate informative_reads multi_support_reads pvalue     decision
+#&gt; 1    9.547441e-05              2413                   0      1 undetermined</div><div class='input'>
 <span class='co'>## Use a black list based on loci</span>
 <span class='no'>bg_panel</span> <span class='kw'>&lt;-</span> <span class='fu'>create_background_panel</span>(
   <span class='kw'>bam_list</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>bamN1</span>, <span class='no'>bamN2</span>, <span class='no'>bamN3</span>),
@@ -326,28 +332,23 @@ and an optional black_list (recommended to use) computed from a list of bam file
 <span class='no'>bl1</span> <span class='kw'>&lt;-</span> <span class='fu'>create_black_list</span>(<span class='no'>bg_panel</span>,
   <span class='kw'>mean_vaf_quantile</span> <span class='kw'>=</span> <span class='fl'>0.99</span>,
   <span class='kw'>min_samples_one_read</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>min_samples_two_reads</span> <span class='kw'>=</span> <span class='fl'>1</span>
-)
-
+)</div><div class='output co'>#&gt; <span class='message'>7 loci added satisfying Mean VAF condition</span></div><div class='output co'>#&gt; <span class='message'>0 loci added satisfying one read condition</span></div><div class='output co'>#&gt; <span class='message'>2 loci added satisfying two reads condition</span></div><div class='output co'>#&gt; <span class='message'>Black list has 7 loci</span></div><div class='input'>
 <span class='fu'>test_ctDNA</span>(
   <span class='kw'>mutations</span> <span class='kw'>=</span> <span class='no'>mutations</span>, <span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>,
   <span class='kw'>targets</span> <span class='kw'>=</span> <span class='no'>targets</span>, <span class='kw'>reference</span> <span class='kw'>=</span> <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>,
   <span class='kw'>n_simulation</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>ID_column</span> <span class='kw'>=</span> <span class='st'>"PHASING"</span>, <span class='kw'>black_list</span> <span class='kw'>=</span> <span class='no'>bl1</span>,
   <span class='kw'>substitution_specific</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)
-}
+)</div><div class='output co'>#&gt; <span class='message'>Analyzing Sample T1 ...</span></div><div class='output co'>#&gt; <span class='message'>Filtering mutations ...</span></div><div class='output co'>#&gt; <span class='message'>Dropped 0 mutations</span></div><div class='output co'>#&gt; <span class='message'>Estimating background rate ...</span></div><div class='output co'>#&gt; <span class='message'>Getting ref and alt Counts ...</span></div><div class='output co'>#&gt; <span class='message'>merging mutations in phase ...</span></div><div class='output co'>#&gt; <span class='message'>Running Monte Carlo simulations</span></div><div class='output co'>#&gt; <span class='message'>Pvalue =  0.0099009900990099</span></div><div class='output co'>#&gt; <span class='message'>Sample T1 is undetermined</span></div><div class='output co'>#&gt;   sample n_mutations n_nonzero_alt total_alt_reads mutations_filtered
+#&gt; 1     T1          10             6               9                  0
+#&gt;   background_rate informative_reads multi_support_reads     pvalue     decision
+#&gt; 1    0.0001193859              1327                   1 0.00990099 undetermined</div><div class='input'><span class='co'># }</span>
 <span class='co'>## Use a substitution-specific black list</span>
 <span class='no'>bg_panel</span> <span class='kw'>&lt;-</span> <span class='fu'>create_background_panel</span>(
   <span class='kw'>bam_list</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>bamN1</span>, <span class='no'>bamN2</span>, <span class='no'>bamN3</span>),
   <span class='kw'>targets</span> <span class='kw'>=</span> <span class='no'>targets</span>, <span class='kw'>reference</span> <span class='kw'>=</span> <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>,
   <span class='kw'>substitution_specific</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘purrr’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:XVector’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    compact</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:GenomicRanges’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    reduce</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:IRanges’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    reduce</span></div><div class='input'>
+)
+
 <span class='no'>bl2</span> <span class='kw'>&lt;-</span> <span class='fu'>create_black_list</span>(<span class='no'>bg_panel</span>,
   <span class='kw'>mean_vaf_quantile</span> <span class='kw'>=</span> <span class='fl'>0.99</span>,
   <span class='kw'>min_samples_one_read</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>min_samples_two_reads</span> <span class='kw'>=</span> <span class='fl'>1</span>

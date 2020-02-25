@@ -78,7 +78,7 @@ in mutated vs non-mutated reads." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ctDNAtools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -215,7 +215,7 @@ a separate column.</p>
     <div class='dont-index'><p><code>summarize_fragment_size</code> <code>bin_fragment_size</code> <code>analyze_fragmentation</code> <code>get_mutations_fragment_size</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"mutations"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"targets"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
 <span class='no'>bamT1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"T1.bam"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
@@ -235,7 +235,7 @@ a separate column.</p>
 
 <span class='co'>## using targets</span>
 <span class='no'>fs3</span> <span class='kw'>&lt;-</span> <span class='fu'>get_fragment_size</span>(<span class='kw'>bam</span> <span class='kw'>=</span> <span class='no'>bamT1</span>, <span class='kw'>targets</span> <span class='kw'>=</span> <span class='no'>targets</span>)
-}</div></pre>
+<span class='co'># }</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

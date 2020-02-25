@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ctDNAtools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -188,7 +188,7 @@ The background will be computed on the target regions after excluding black_list
     <div class='dont-index'><p><code>create_black_list</code> <code>test_ctDNA</code> <code>create_background_panel</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='co'>## Load example data</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"targets"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
 <span class='no'>bamT1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"T1.bam"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
@@ -200,13 +200,51 @@ The background will be computed on the target regions after excluding black_list
 <span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressMessages</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>))
 
 <span class='co'>## basic usage</span>
-<span class='fu'>get_background_rate</span>(<span class='no'>bamT1</span>, <span class='no'>targets</span>, <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>)
-
+<span class='fu'>get_background_rate</span>(<span class='no'>bamT1</span>, <span class='no'>targets</span>, <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>)</div><div class='output co'>#&gt; $rate
+#&gt; [1] 0.0001508991
+#&gt; 
+#&gt; $CA
+#&gt; [1] 5.128819e-05
+#&gt; 
+#&gt; $CG
+#&gt; [1] 3.419213e-05
+#&gt; 
+#&gt; $CT
+#&gt; [1] 0.0001111244
+#&gt; 
+#&gt; $TA
+#&gt; [1] 2.339893e-05
+#&gt; 
+#&gt; $TC
+#&gt; [1] 6.239714e-05
+#&gt; 
+#&gt; $TG
+#&gt; [1] 2.339893e-05
+#&gt; </div><div class='input'>
 <span class='co'>## more options</span>
 <span class='fu'>get_background_rate</span>(<span class='no'>bamT1</span>, <span class='no'>targets</span>, <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>,
   <span class='kw'>min_base_quality</span> <span class='kw'>=</span> <span class='fl'>30</span>, <span class='kw'>min_mapq</span> <span class='kw'>=</span> <span class='fl'>40</span>, <span class='kw'>vaf_threshold</span> <span class='kw'>=</span> <span class='fl'>0.05</span>
-)
-
+)</div><div class='output co'>#&gt; $rate
+#&gt; [1] 0.0001403503
+#&gt; 
+#&gt; $CA
+#&gt; [1] 4.332042e-05
+#&gt; 
+#&gt; $CG
+#&gt; [1] 3.465634e-05
+#&gt; 
+#&gt; $CT
+#&gt; [1] 0.000103969
+#&gt; 
+#&gt; $TA
+#&gt; [1] 2.365334e-05
+#&gt; 
+#&gt; $TC
+#&gt; [1] 6.307556e-05
+#&gt; 
+#&gt; $TG
+#&gt; [1] 1.576889e-05
+#&gt; </div><div class='input'>
 <span class='co'>## with blacklist</span>
 <span class='no'>bg_panel</span> <span class='kw'>&lt;-</span> <span class='fu'>create_background_panel</span>(
   <span class='kw'>bam_list</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>bamN1</span>, <span class='no'>bamN2</span>, <span class='no'>bamN3</span>),
@@ -217,12 +255,32 @@ The background will be computed on the target regions after excluding black_list
 <span class='no'>bl2</span> <span class='kw'>&lt;-</span> <span class='fu'>create_black_list</span>(<span class='no'>bg_panel</span>,
   <span class='kw'>mean_vaf_quantile</span> <span class='kw'>=</span> <span class='fl'>0.99</span>,
   <span class='kw'>min_samples_one_read</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>min_samples_two_reads</span> <span class='kw'>=</span> <span class='fl'>1</span>
-)
-
+)</div><div class='output co'>#&gt; <span class='message'>19 loci added satisfying Mean VAF condition</span></div><div class='output co'>#&gt; <span class='message'>0 loci added satisfying one read condition</span></div><div class='output co'>#&gt; <span class='message'>2 loci added satisfying two reads condition</span></div><div class='output co'>#&gt; <span class='message'>Black list has 19 loci</span></div><div class='input'>
 <span class='fu'>get_background_rate</span>(<span class='no'>bamT1</span>, <span class='no'>targets</span>, <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>,
   <span class='kw'>black_list</span> <span class='kw'>=</span> <span class='no'>bl2</span>
-)
-}</div></pre>
+)</div><div class='output co'>#&gt; $rate
+#&gt; [1] 0.0001427435
+#&gt; 
+#&gt; $CA
+#&gt; [1] 5.128907e-05
+#&gt; 
+#&gt; $CG
+#&gt; [1] 1.709636e-05
+#&gt; 
+#&gt; $CT
+#&gt; [1] 0.0001111263
+#&gt; 
+#&gt; $TA
+#&gt; [1] 2.339893e-05
+#&gt; 
+#&gt; $TC
+#&gt; [1] 6.239714e-05
+#&gt; 
+#&gt; $TG
+#&gt; [1] 2.339893e-05
+#&gt; </div><div class='input'># }
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

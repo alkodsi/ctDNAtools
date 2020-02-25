@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ctDNAtools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -149,19 +149,38 @@
     <p>A data frame with two columns having the substitutions and the trinucleotide context</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"mutations"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"ctDNAtools"</span>)
 <span class='co'>## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library</span>
 <span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressMessages</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>))
 
 <span class='co'>## with destranding</span>
-<span class='fu'>extract_trinucleotide_context</span>(<span class='no'>mutations</span>, <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>)
-
+<span class='fu'>extract_trinucleotide_context</span>(<span class='no'>mutations</span>, <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>)</div><div class='output co'>#&gt;    substitution context
+#&gt; 1            CG     A_A
+#&gt; 2            CA     G_T
+#&gt; 3            TA     A_T
+#&gt; 4            TC     T_A
+#&gt; 5            TA     A_G
+#&gt; 6            CA     G_A
+#&gt; 7            TG     G_T
+#&gt; 8            TG     T_T
+#&gt; 9            TC     T_A
+#&gt; 10           CT     T_T</div><div class='input'>
 <span class='co'>## without destranding</span>
 <span class='fu'>extract_trinucleotide_context</span>(<span class='no'>mutations</span>, <span class='no'>BSgenome.Hsapiens.UCSC.hg19</span>,
   <span class='kw'>destrand</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)
-}</div></pre>
+)</div><div class='output co'>#&gt;    substitution context
+#&gt; 1            CG     A_A
+#&gt; 2            GT     A_C
+#&gt; 3            AT     A_T
+#&gt; 4            TC     T_A
+#&gt; 5            TA     A_G
+#&gt; 6            CA     G_A
+#&gt; 7            AC     A_C
+#&gt; 8            AC     A_A
+#&gt; 9            AG     T_A
+#&gt; 10           CT     T_T</div><div class='input'># }
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
