@@ -6,7 +6,7 @@
 #' @return A data frame with two columns having the substitutions and the trinucleotide context
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("mutations", package = "ctDNAtools")
 #' ## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library
 #' suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))

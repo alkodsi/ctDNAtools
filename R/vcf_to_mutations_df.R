@@ -15,7 +15,7 @@
 #' @importFrom rlang .data
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' vcf <- system.file("extdata", "chr22.vcf.gz", package="VariantAnnotation")
 #' vcf_to_mutations_df(vcf, sample_name = "HG00096")
 #' }

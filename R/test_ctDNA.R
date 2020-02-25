@@ -94,7 +94,7 @@
 #'
 #' ## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library
 #' suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
-#' \dontrun{
+#' \donttest{
 #' ## basic usage
 #' test_ctDNA(
 #'   mutations = mutations, bam = bamT1,

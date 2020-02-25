@@ -128,7 +128,7 @@ bamN3 <- system.file("extdata", "N3.bam", package = "ctDNAtools")
 
 ## Use human reference genome from BSgenome.Hsapiens.UCSC.hg19 library
 suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
-\dontrun{
+\donttest{
 ## basic usage
 test_ctDNA(
   mutations = mutations, bam = bamT1,

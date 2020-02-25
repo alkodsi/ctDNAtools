@@ -15,7 +15,7 @@
 #' @seealso \code{\link{get_fragment_size}}
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("mutations", package = "ctDNAtools")
 #' bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")
 #'

@@ -29,7 +29,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' ## Load example data
 #' data("targets", package = "ctDNAtools")
 #' bamN1 <- system.file("extdata", "N1.bam", package = "ctDNAtools")

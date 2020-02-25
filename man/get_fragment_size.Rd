@@ -83,7 +83,7 @@ When the input mutations is given, the output will label the reads that support 
 a separate column.
 }
 \examples{
-\dontrun{
+\donttest{
 data("mutations", package = "ctDNAtools")
 data("targets", package = "ctDNAtools")
 bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")

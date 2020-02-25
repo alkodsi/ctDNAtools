@@ -21,7 +21,7 @@ to the sample of interest. Once you use this function, make sure that all the va
 are relevant. The function will only return SNVs.
 }
 \examples{
-\dontrun{
+\donttest{
 vcf <- system.file("extdata", "chr22.vcf.gz", package="VariantAnnotation")
 vcf_to_mutations_df(vcf, sample_name = "HG00096")
 }

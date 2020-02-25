@@ -62,7 +62,7 @@
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data("mutations", package = "ctDNAtools")
 #' data("targets", package = "ctDNAtools")
 #' bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")

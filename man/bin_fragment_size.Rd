@@ -46,7 +46,7 @@ are computed. Both equal histogram bins via bin_size and manually customized bin
 By using an input mutations, the function will bin separately the reads that support variant alleles, reference alleles and other reads.
 }
 \examples{
-\dontrun{
+\donttest{
 data("targets", package = "ctDNAtools")
 data("mutations", package = "ctDNAtools")
 bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")

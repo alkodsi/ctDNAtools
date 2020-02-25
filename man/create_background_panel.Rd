@@ -50,7 +50,7 @@ using the furrr and future R packages. All you need to do is call 'plan(multipro
 calling this function.
 }
 \examples{
-\dontrun{
+\donttest{
 ## Load example data
 data("targets", package = "ctDNAtools")
 bamN1 <- system.file("extdata", "N1.bam", package = "ctDNAtools")

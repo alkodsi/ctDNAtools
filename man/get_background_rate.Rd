@@ -44,7 +44,7 @@ Genomic positions having non-reference allele frequency higher than vaf_threshol
 If a black_list is specified, the positions in the black_list (whether substitution_specific or not) will be excluded before computing the background rate.
 }
 \examples{
-\dontrun{
+\donttest{
 ## Load example data
 data("targets", package = "ctDNAtools")
 bamT1 <- system.file("extdata", "T1.bam", package = "ctDNAtools")

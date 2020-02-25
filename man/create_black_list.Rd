@@ -31,7 +31,7 @@ The function applies criteria on the background panel to extract the noisy genom
 at least one, at least two, or at least n (\code{n_reads} parameter) non-reference allele. Additionally the quantile of mean VAF above which the loci are considered noisy
 }
 \examples{
-\dontrun{
+\donttest{
 ## Load example data
 data("targets", package = "ctDNAtools")
 bamN1 <- system.file("extdata", "N1.bam", package = "ctDNAtools")

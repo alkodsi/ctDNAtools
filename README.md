@@ -2,10 +2,10 @@
 # ctDNAtools <a href='https:/alkodsi.github.io/ctDNAtools'><img src='man/figures/logo.png' align="right" height="180" /></a>
 
 <!-- badges: start -->
-[![Lifecycle: Maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Travis build status](https://travis-ci.com/alkodsi/ctDNAtools.svg?branch=master)](https://travis-ci.com/alkodsi/ctDNAtools)
 [![Codecov test coverage](https://codecov.io/gh/alkodsi/ctDNAtools/branch/master/graph/badge.svg)](https://codecov.io/gh/alkodsi/ctDNAtools?branch=master)
-[![DOI:10.1101/2020.01.27.912790](https://zenodo.org/badge/DOI/10.1007/978-3-319-76207-4_15.svg)](https://doi.org/10.1101/2020.01.27.912790)
+[![DOI:10.1101/2020.01.27.912790](https://zenodo.org/badge/DOI/10.1101/2020.01.27.912790.svg)](https://doi.org/10.1101/2020.01.27.912790)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 <!-- badges: end -->
 
 The ctDNAtools package provides functionalities to analyze circulating tumor DNA (ctDNA)/ cell-free DNA (cfDNA) sequencing data.

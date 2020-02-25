@@ -44,7 +44,7 @@ The output include both the fragment end counts and the WPS in their raw format 
 Minimum and maximum bounds of the fragment size are applied before computing WPS and fragment ends counts.
 }
 \examples{
-\dontrun{
+\donttest{
 data("targets", package = "ctDNAtools")
 bamN1 <- system.file("extdata", "N1.bam", package = "ctDNAtools")
 
