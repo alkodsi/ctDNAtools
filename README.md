@@ -9,6 +9,7 @@
 [![CRAN status](https://www.r-pkg.org/badges/version/ctDNAtools)](https://CRAN.R-project.org/package=ctDNAtools)
 <!-- badges: end -->
 [![metacran downloads](https://cranlogs.r-pkg.org/badges/grand-total/ctDNAtools)](https://cran.r-project.org/package=ctDNAtools)
+[![metacran downloads](https://cranlogs.r-pkg.org/badges/ctDNAtools)](https://cran.r-project.org/package=ctDNAtools)
 
 The ctDNAtools package provides functionalities to analyze circulating tumor DNA (ctDNA)/ cell-free DNA (cfDNA) sequencing data.
 The tools cover analysis of ctDNA/cfDNA fragmentation and analysis of cancer minimal residual disease.
