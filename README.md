@@ -6,7 +6,9 @@
 [![Codecov test coverage](https://codecov.io/gh/alkodsi/ctDNAtools/branch/master/graph/badge.svg)](https://codecov.io/gh/alkodsi/ctDNAtools?branch=master)
 [![DOI:10.1101/2020.01.27.912790](https://zenodo.org/badge/DOI/10.1101/2020.01.27.912790.svg)](https://doi.org/10.1101/2020.01.27.912790)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
+[![CRAN status](https://www.r-pkg.org/badges/version/ctDNAtools)](https://CRAN.R-project.org/package=ctDNAtools)
 <!-- badges: end -->
+[![metacran downloads](https://cranlogs.r-pkg.org/badges/grand-total/ctDNAtools)](https://cran.r-project.org/package=ctDNAtools)
 
 The ctDNAtools package provides functionalities to analyze circulating tumor DNA (ctDNA)/ cell-free DNA (cfDNA) sequencing data.
 The tools cover analysis of ctDNA/cfDNA fragmentation and analysis of cancer minimal residual disease.
@@ -19,6 +21,9 @@ The tools cover analysis of ctDNA/cfDNA fragmentation and analysis of cancer min
 
 
 ``` r
+# From CRAN
+install.packages("ctDNAtools")
+
 # From github
 
 # install.packages("devtools")
