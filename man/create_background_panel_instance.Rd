@@ -4,9 +4,17 @@
 \alias{create_background_panel_instance}
 \title{Creates a background panel instance from a bam file (e.g. healthy samples)}
 \usage{
-create_background_panel_instance(bam, targets, reference,
-  vaf_threshold = 0.05, tag = "", min_base_quality = 20,
-  max_depth = 1e+05, min_mapq = 30, substitution_specific = TRUE)
+create_background_panel_instance(
+  bam,
+  targets,
+  reference,
+  vaf_threshold = 0.05,
+  tag = "",
+  min_base_quality = 20,
+  max_depth = 1e+05,
+  min_mapq = 30,
+  substitution_specific = TRUE
+)
 }
 \arguments{
 \item{bam}{A character specifying the path to bam file.}

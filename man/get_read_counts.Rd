@@ -4,8 +4,15 @@
 \alias{get_read_counts}
 \title{Gets read counts for a specific locus in the genome}
 \usage{
-get_read_counts(chr, pos, bam, tag = "", min_base_quality = 20,
-  max_depth = 1e+05, min_mapq = 30)
+get_read_counts(
+  chr,
+  pos,
+  bam,
+  tag = "",
+  min_base_quality = 20,
+  max_depth = 1e+05,
+  min_mapq = 30
+)
 }
 \arguments{
 \item{chr}{chromosome name}

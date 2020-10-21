@@ -4,8 +4,16 @@
 \alias{analyze_fragmentation}
 \title{Provides fragment ends analysis}
 \usage{
-analyze_fragmentation(bam, targets, tag = "", window_size = 120,
-  step_size = 5, min_size = 120, max_size = 180, ...)
+analyze_fragmentation(
+  bam,
+  targets,
+  tag = "",
+  window_size = 120,
+  step_size = 5,
+  min_size = 120,
+  max_size = 180,
+  ...
+)
 }
 \arguments{
 \item{bam}{the input bam file}

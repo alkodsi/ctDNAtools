@@ -4,14 +4,16 @@
 \name{mutations}
 \alias{mutations}
 \title{Example mutations data to use with ctDNAtools package}
-\format{A data frame with 10 rows and 5 columns:
+\format{
+A data frame with 10 rows and 5 columns:
 \describe{
   \item{CHROM}{chromosome}
   \item{POS}{genomic position}
   \item{REF}{Reference allele}
   \item{ALT}{Alternative allele}
   \item{PHASING}{Common ID for mutations in phase}
-}}
+}
+}
 \source{
 In-house
 }

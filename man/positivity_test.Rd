@@ -4,8 +4,7 @@
 \alias{positivity_test}
 \title{Computes a p-value of ctDNA positivity with a Monte-Carlo based sampling test}
 \usage{
-positivity_test(depths, alt_reads, rate, seed = 123,
-  n_simulations = 10000)
+positivity_test(depths, alt_reads, rate, seed = 123, n_simulations = 10000)
 }
 \arguments{
 \item{depths}{a vector with the depths of the variants}

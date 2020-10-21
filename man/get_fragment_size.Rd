@@ -4,10 +4,19 @@
 \alias{get_fragment_size}
 \title{Gets fragment lengths from a bam file}
 \usage{
-get_fragment_size(bam, mutations = NULL, targets = NULL, tag = "",
-  isProperPair = NA, mapqFilter = 30, min_size = 1, max_size = 400,
-  ignore_trimmed = TRUE, different_strands = TRUE,
-  simple_cigar = FALSE)
+get_fragment_size(
+  bam,
+  mutations = NULL,
+  targets = NULL,
+  tag = "",
+  isProperPair = NA,
+  mapqFilter = 30,
+  min_size = 1,
+  max_size = 400,
+  ignore_trimmed = TRUE,
+  different_strands = TRUE,
+  simple_cigar = FALSE
+)
 }
 \arguments{
 \item{bam}{path to bam file.}

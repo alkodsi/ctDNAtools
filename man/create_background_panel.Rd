@@ -4,10 +4,17 @@
 \alias{create_background_panel}
 \title{Creates a background panel from a list of bam files}
 \usage{
-create_background_panel(bam_list, targets, reference,
-  vaf_threshold = 0.05, bam_list_tags = rep("", length(bam_list)),
-  min_base_quality = 10, max_depth = 1e+05, min_mapq = 20,
-  substitution_specific = TRUE)
+create_background_panel(
+  bam_list,
+  targets,
+  reference,
+  vaf_threshold = 0.05,
+  bam_list_tags = rep("", length(bam_list)),
+  min_base_quality = 10,
+  max_depth = 1e+05,
+  min_mapq = 20,
+  substitution_specific = TRUE
+)
 }
 \arguments{
 \item{bam_list}{A character vector of paths to bam files.}

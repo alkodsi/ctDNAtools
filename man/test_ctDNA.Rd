@@ -4,14 +4,28 @@
 \alias{test_ctDNA}
 \title{Tests the ctDNA positivity of a sample}
 \usage{
-test_ctDNA(mutations, bam, targets, reference, tag = "",
-  ID_column = NULL, black_list = NULL, substitution_specific = TRUE,
-  vaf_threshold = 0.1, min_base_quality = 30, max_depth = 1e+05,
-  min_mapq = 40, bam_list = NULL, bam_list_tags = rep("",
-  length(bam_list)), min_alt_reads = 1,
-  min_samples = ceiling(length(bam_list)/10), n_simulations = 10000,
-  pvalue_threshold = 0.05, seed = 123,
-  informative_reads_threshold = 10000)
+test_ctDNA(
+  mutations,
+  bam,
+  targets,
+  reference,
+  tag = "",
+  ID_column = NULL,
+  black_list = NULL,
+  substitution_specific = TRUE,
+  vaf_threshold = 0.1,
+  min_base_quality = 30,
+  max_depth = 1e+05,
+  min_mapq = 40,
+  bam_list = NULL,
+  bam_list_tags = rep("", length(bam_list)),
+  min_alt_reads = 1,
+  min_samples = ceiling(length(bam_list)/10),
+  n_simulations = 10000,
+  pvalue_threshold = 0.05,
+  seed = 123,
+  informative_reads_threshold = 10000
+)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}

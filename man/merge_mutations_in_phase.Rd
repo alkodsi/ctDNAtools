@@ -4,8 +4,14 @@
 \alias{merge_mutations_in_phase}
 \title{Collapses mutations in phase into one event}
 \usage{
-merge_mutations_in_phase(mutations, bam, tag = "",
-  ID_column = "phasingID", min_base_quality = 20, min_mapq = 30)
+merge_mutations_in_phase(
+  mutations,
+  bam,
+  tag = "",
+  ID_column = "phasingID",
+  min_base_quality = 20,
+  min_mapq = 30
+)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}

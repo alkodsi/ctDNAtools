@@ -4,10 +4,18 @@
 \alias{filter_mutations}
 \title{Filters a set of mutations}
 \usage{
-filter_mutations(mutations, bams = NULL, black_list = NULL,
-  tags = rep("", length(bams)), min_alt_reads = 2, min_samples = 2,
-  min_base_quality = 20, max_depth = 1e+05, min_mapq = 30,
-  substitution_specific = TRUE)
+filter_mutations(
+  mutations,
+  bams = NULL,
+  black_list = NULL,
+  tags = rep("", length(bams)),
+  min_alt_reads = 2,
+  min_samples = 2,
+  min_base_quality = 20,
+  max_depth = 1e+05,
+  min_mapq = 30,
+  substitution_specific = TRUE
+)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}

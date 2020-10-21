@@ -4,12 +4,14 @@
 \name{targets}
 \alias{targets}
 \title{Example Genomic targets to use with ctDNAtools package}
-\format{A data frame with 1 row and 3 columns:
+\format{
+A data frame with 1 row and 3 columns:
 \describe{
   \item{chr}{chromosome}
   \item{start}{start genomic position}
   \item{end}{end genomic position}
-}}
+}
+}
 \source{
 In-house
 }

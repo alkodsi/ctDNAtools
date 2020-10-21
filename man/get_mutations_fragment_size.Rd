@@ -4,8 +4,14 @@
 \alias{get_mutations_fragment_size}
 \title{Gets reads fragment lengths for a list of mutations}
 \usage{
-get_mutations_fragment_size(bam, mutations, tag = "",
-  min_base_quality = 20, min_mapq = 30, ...)
+get_mutations_fragment_size(
+  bam,
+  mutations,
+  tag = "",
+  min_base_quality = 20,
+  min_mapq = 30,
+  ...
+)
 }
 \arguments{
 \item{bam}{path to bam file.}

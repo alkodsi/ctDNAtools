@@ -4,8 +4,14 @@
 \alias{get_mutations_read_counts}
 \title{Counts ref and alt reads for a set of mutations}
 \usage{
-get_mutations_read_counts(mutations, bam, tag = "",
-  min_base_quality = 20, max_depth = 1e+05, min_mapq = 30)
+get_mutations_read_counts(
+  mutations,
+  bam,
+  tag = "",
+  min_base_quality = 20,
+  max_depth = 1e+05,
+  min_mapq = 30
+)
 }
 \arguments{
 \item{mutations}{A data frame with the reporter mutations. Should have the columns CHROM, POS, REF, ALT.}

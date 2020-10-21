@@ -4,8 +4,13 @@
 \alias{get_mutations_read_names}
 \title{Gets names of the reads showing reference and alternative allele of a list of mutations}
 \usage{
-get_mutations_read_names(bam, mutations, min_base_quality = 20,
-  tag = "", min_mapq = 30)
+get_mutations_read_names(
+  bam,
+  mutations,
+  min_base_quality = 20,
+  tag = "",
+  min_mapq = 30
+)
 }
 \arguments{
 \item{bam}{path to bam file}

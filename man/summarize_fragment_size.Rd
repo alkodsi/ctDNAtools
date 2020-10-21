@@ -4,8 +4,13 @@
 \alias{summarize_fragment_size}
 \title{Summarizes fragment size in defined genomic regions}
 \usage{
-summarize_fragment_size(bam, regions, tag = "",
-  summary_functions = list(Mean = mean, Median = median), ...)
+summarize_fragment_size(
+  bam,
+  regions,
+  tag = "",
+  summary_functions = list(Mean = mean, Median = median),
+  ...
+)
 }
 \arguments{
 \item{bam}{the input bam file}

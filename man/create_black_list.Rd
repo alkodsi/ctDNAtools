@@ -4,11 +4,14 @@
 \alias{create_black_list}
 \title{Creates a black list of genomic loci based on a background panel created from a list of bam files (e.g. healthy samples)}
 \usage{
-create_black_list(background_panel, mean_vaf_quantile = 0.95,
-  min_samples_one_read = max(2, ceiling(ncol(background_panel$vaf) *
-  0.75)), min_samples_two_reads = max(2,
-  ceiling(ncol(background_panel$vaf) * 0.2)), min_samples_n_reads = NA,
-  n_reads = NA)
+create_black_list(
+  background_panel,
+  mean_vaf_quantile = 0.95,
+  min_samples_one_read = max(2, ceiling(ncol(background_panel$vaf) * 0.75)),
+  min_samples_two_reads = max(2, ceiling(ncol(background_panel$vaf) * 0.2)),
+  min_samples_n_reads = NA,
+  n_reads = NA
+)
 }
 \arguments{
 \item{background_panel}{A list produced by create_background panel function}

@@ -4,9 +4,18 @@
 \alias{get_background_rate}
 \title{Computes the background mismatch rate from a bam file}
 \usage{
-get_background_rate(bam, targets, reference, vaf_threshold = 0.1,
-  tag = "", black_list = NULL, substitution_specific = TRUE,
-  min_base_quality = 20, max_depth = 1e+05, min_mapq = 30)
+get_background_rate(
+  bam,
+  targets,
+  reference,
+  vaf_threshold = 0.1,
+  tag = "",
+  black_list = NULL,
+  substitution_specific = TRUE,
+  min_base_quality = 20,
+  max_depth = 1e+05,
+  min_mapq = 30
+)
 }
 \arguments{
 \item{bam}{path to bam file}
