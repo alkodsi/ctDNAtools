@@ -11,6 +11,7 @@ Description: Contains tools to analyze minimal residual disease and cell-free DN
     More details on the methods can be found in:
     Amjad Alkodsi, Leo Meriranta, Annika Pasanen, Sirpa Leppä (2020) <doi:10.1101/2020.01.27.912790>.
 License: MIT + file LICENSE
+biocViews:
 Depends: 
     R (>= 3.6.0),
 Imports:
